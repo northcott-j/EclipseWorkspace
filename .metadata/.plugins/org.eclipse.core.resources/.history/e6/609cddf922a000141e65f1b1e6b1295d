@@ -1,0 +1,14 @@
+// Assignment 1
+// Northcott Jonathan
+// nrthcoj
+// Lowen Zach
+// lowen.z
+
+interface ITaco {}
+
+class EmptyShell implements ITaco { }
+
+class Filled implements ITaco {
+    
+}
+

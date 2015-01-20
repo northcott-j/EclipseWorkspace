@@ -1,0 +1,3 @@
+interface ITaco { }
+
+class EmptyShell implements ITaco {

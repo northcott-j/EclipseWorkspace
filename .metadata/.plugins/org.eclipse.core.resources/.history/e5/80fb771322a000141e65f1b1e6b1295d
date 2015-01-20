@@ -1,0 +1,8 @@
+interface ITaco {}
+
+class EmptyShell implements ITaco { }
+
+class Filled implements ITaco {
+    
+}
+
