@@ -1,9 +1,3 @@
-// Assignment 1
-// Northcott Jonathan
-// nrthcoj
-// Lowen Zach
-// lowen.z
-
 interface IHabitation {}
 interface ITransportation{}
 
@@ -48,11 +42,11 @@ class Shuttle implements ITransportation{
     int capacity;
     
     
-    Shuttle(IHabitation to, IHabitation from, int fuel, int capacity){
+    Shuttle(IHabitation to, IHabitation from, int f, int c){
         this.to = to;
         this.from = from;
-        this.fuel = fuel;
-        this.capacity = capacity;
+        this.fuel = f;
+        this.capacity = c;
     }
 }
 
@@ -61,21 +55,23 @@ class SpaceElevator implements ITransportation{
     IHabitation from;
     int tonnage;
     
-    SpaceElevator(IHabitation to, IHabitation from, int tonnage){
+    SpaceElevator(IHabitation to, IHabitation from, int t){
         this.to = to;
         this.from = from;
-        this.tonnage = tonnage;
+        this.tonnage = t;
     }
 }
 
-class ExamplesTravel{
+class ExamplesHabitaion {
     IHabitation nausicant = new Planet("Nausicant", 6000000, 8);
     IHabitation earth = new Planet("Earth", 9000000, 14);
     IHabitation remus = new Planet("Remus", 18000000, 23);
     IHabitation watcherGrid = new SpaceStation("WatcherGrid", 1, 0);
     IHabitation deepSpace42 = new SpaceStation("Deep Space 42", 7, 8);
     IHabitation iss = new SpaceStation("International Space Station", 3, 99);
-    
+}
+
+class ExamplesTravel{
     ITransportation shuttle1 = new Shuttle(earth, remus, 10, 20);
     ITransportation shuttle2 = new Shuttle(nausicant, iss, 100, 2);
     ITransportation elevator1 = new SpaceElevator(iss, remus, 321);
