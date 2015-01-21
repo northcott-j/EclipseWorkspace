@@ -258,3 +258,232 @@ class ExampleShapes{
 //================================================================================================================================>>\
 // 1/21/15
 
+// Tolerance is based on expected based on expected result - Relevant vs Absolute 
+
+interface IShape { 
+	double area();
+	double distanceToOrigin();
+	boolean isBiggerThan();
+}
+
+/*
+// Represents a 2-d point (in Cartesian coordinates)
+class CartPt {
+	int x;
+	int y;
+
+	CartPt(int x, int y);	
+	this.x = x;
+	this.y = y;
+}
+
+class Circle implements IShape {
+	double radius;
+	// Center of the circle
+	int x;
+	int y;
+	Circle(double radius, int x, int y) { //<--Initializes fields
+		this.radius = radius;
+		this.x = x;
+		this.y = y;
+	}
+   /* Template:
+   	* Fields
+   	*...this.radius... --- double
+   	*...this.x...      --- int
+   	*...this.y...      --- int
+   	* Methods
+   	*...this.area()             --- double
+   	*...this.distanceToOrigin() --- double
+   	*...this.isBiggerThan()     --- boolean
+   	*Methods of fields
+   	* 
+   	*/
+
+/*	public double area() { 
+		return Math.PI * this.radius * this.radius;
+	}
+
+	// Returns the distance to the origin from the nearest edge 
+	public double distanceToOrigin() { 
+		return Math.sqrt(this.x * this.x + this.y * this.y) - this.radius;
+	}
+
+	public boolean isBiggerThan(IShape other) {
+		return this.area() > other.area();
+	}
+		 Parameters
+		 * other                       --- IShape
+		 * Methods on parameters
+		 * other.area()                --- double
+		 * other.distanceToOrigin()    --- double
+		 * other.isBiggerThan(IShape)  --- boolean
+		
+}
+
+class Square implements IShape {
+	double sideLen;
+	// represents the top left
+	int x;
+	int y;
+
+	Square(double sideLen, int x, int y) {
+		this.sideLen = sideLen;
+		this.x = x;
+		this.y = y;
+	}
+	public double area() {
+		return this.sideLen * this.sideLen;
+	}
+
+	public double distanceToOrigin() {
+		return Math.sqrt(this.x * this.x + this.y * this.y);
+	}
+
+	public boolean isBiggerThan() {
+		return this.area() > other.area();
+	} 
+	
+}
+
+class ExamplesShape {
+	IShape c1 = new Circle(5, 6, 8);
+	IShape c2 = new Circle(10, 3, 4);
+
+	boolean testArea(Tester t) {
+		t.checkInexact(this.c1.area(), 78.5, 0.001);
+	}
+
+	boolean testDistanceToOrigin(Tester t) {
+		return t.checkInexact(this.c1.distanceToOrigin(), 5 , 0.001)
+			&& t.checkInexact(this.c2.distanceToOrigin()), -5, 0.001);
+	}
+
+	boolean testIsBiggerThan(Tester t) {
+		return t.checkExpect(this.c1.isBiggerThan(this.c2), false)
+			&& t.checkExpect(this.c2.isBiggerThan(this.c1), true);
+	}
+}*/
+
+//----------------------------------------------------------------------------->
+// Version 2 with Abstraction
+
+// Represents a 2-d point (in Cartesian coordinates)
+class CartPt {
+	int x;
+	int y;
+
+	CartPt(int x, int y);	
+	this.x = x;
+	this.y = y;
+
+//MISSING METHODS HERE TO ABSTRACT TO OTHER FUNCTIONS
+}
+
+class Circle implements IShape {
+	double radius;
+	// Center of the circle
+	CartPt center;
+	Circle(double radius, CartPt center) { //<--Initializes fields
+		this.radius = radius;
+		this.center = center;
+	}
+   /* Template:
+   	* Fields
+   	*...this.radius... --- double
+	*...this.center... --- CartPt
+   	* Methods
+   	*...this.area()             --- double
+   	*...this.distanceToOrigin() --- double
+   	*...this.isBiggerThan()     --- boolean
+   	*Methods of fields  MISSING STUFF HERE:LLLL
+   	*...this.  
+   	*/
+
+	public double area() { 
+		return Math.PI * this.radius * this.radius;
+	}
+
+	// Returns the distance to the origin from the nearest edge 
+	public double distanceToOrigin() { 
+		return this.center.distanceToOrigin();
+	}
+
+	public boolean isBiggerThan(IShape other) {
+		return this.area() > other.area();
+	}
+		/* Parameters
+		 * other                       --- IShape
+		 * Methods on parameters
+		 * other.area()                --- double
+		 * other.distanceToOrigin()    --- double
+		 * other.isBiggerThan(IShape)  --- boolean
+		*/
+}
+
+class Square implements IShape {
+	double sideLen;
+	// represents the top left
+	CartPt topLeft;
+
+	Square(double sideLen, CartPt topLeft) {
+		this.sideLen = sideLen;
+		this.topLeft = topLeft;
+	}
+	public double area() {
+		return this.sideLen * this.sideLen;
+	}
+
+	public double distanceToOrigin() {
+		return this.topLeft.distanceToOrigin();
+	}
+
+	public boolean isBiggerThan() {
+		return this.area() > other.area();
+	} 
+	
+}
+
+
+
+class Combo implements IShape {
+	IShape shape1;
+	ISHape shape2;
+
+	Combo(IShape shape1, IShape shape2) {
+		this.shape1 = shape1;
+		this.shape2 = shape2;
+	}
+		public double area() {
+		return this.shape1.area() + this.shape2.area();
+	}
+
+	public double distanceToOrigin() {
+		return Math.min(this.shape1.distanceToOrigin(), this.shape2.distanceToOrigin());
+	}
+
+	public boolean isBiggerThan() {
+		return this.area() > other.area();
+	} 
+}
+
+
+
+class ExamplesShape {
+	IShape c1 = new Circle(5, new CartPt(6, 8));
+	IShape c2 = new Circle(10, new CartPt(3, 4));
+
+	boolean testArea(Tester t) {
+		t.checkInexact(this.c1.area(), 78.5, 0.001);
+	}
+
+	boolean testDistanceToOrigin(Tester t) {
+		return t.checkInexact(this.c1.distanceToOrigin(), 5 , 0.001)
+			&& t.checkInexact(this.c2.distanceToOrigin()), -5, 0.001);
+	}
+
+	boolean testIsBiggerThan(Tester t) {
+		return t.checkExpect(this.c1.isBiggerThan(this.c2), false)
+			&& t.checkExpect(this.c2.isBiggerThan(this.c1), true);
+	}
+}
