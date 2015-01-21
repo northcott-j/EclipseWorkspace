@@ -377,7 +377,9 @@ class CartPt {
 	this.x = x;
 	this.y = y;
 
-//MISSING METHODS HERE TO ABSTRACT TO OTHER FUNCTIONS
+	double distanceToOrigin() {
+		return Math.sqrt(this.x * this.x + this.y *this.y);
+	}
 }
 
 class Circle implements IShape {
@@ -396,8 +398,8 @@ class Circle implements IShape {
    	*...this.area()             --- double
    	*...this.distanceToOrigin() --- double
    	*...this.isBiggerThan()     --- boolean
-   	*Methods of fields  MISSING STUFF HERE:LLLL
-   	*...this.  
+   	*Methods of fields  
+   	*...this.center.distanceToOrigin() --- double
    	*/
 
 	public double area() { 
@@ -406,7 +408,7 @@ class Circle implements IShape {
 
 	// Returns the distance to the origin from the nearest edge 
 	public double distanceToOrigin() { 
-		return this.center.distanceToOrigin();
+		return this.center.distanceToOrigin() - this.radius;
 	}
 
 	public boolean isBiggerThan(IShape other) {
