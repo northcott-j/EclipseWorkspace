@@ -2,54 +2,53 @@
 // Northcott Jonathan
 // nrthcoj
 // Lowen Zach
-// zlowen
+// lowen.z
 
-interface IHabitation { }
-interface ITransportation { }
+interface IHabitation {}
+interface ITransportation{}
 
-class Planet implements IHabitation {
+class Planet implements IHabitation{
     String name;
     int population; //in thousands of people
     int spaceports;
     
-    Planet(String name, int population, int spaceports) {
+    Planet(String name, int pop, int sp){
         this.name = name;
-        this.population = population;
-        this.spaceports = spaceports;
+        this.population = pop;
+        this.spaceports = sp;
     }    
 }
 
 
-class SpaceStation implements IHabitation {
+class SpaceStation implements IHabitation{
     String name;
     int population;
-    int transporterPads;
+    int transporter_pads;
     
-    SpaceStation(String name, int population, int transporterPads) {
+    SpaceStation(String name, int pop, int tp){
         this.name = name;
-        this.population = population;
-        this.transporterPads = transporterPads;
+        this.population = pop;
     }
 }
 
-class Transporter implements ITransportation {
+class Transporter implements ITransportation{
     IHabitation to;
     IHabitation from;
     
-    Transporter(IHabitation to, IHabitation from) {
+    Transporter(IHabitation to, IHabitation from){
         this.to = to;
         this.from = from;
     }
 }
 
-class Shuttle implements ITransportation {
+class Shuttle implements ITransportation{
     IHabitation to;
     IHabitation from;
     int fuel;
     int capacity;
     
     
-    Shuttle(IHabitation to, IHabitation from, int fuel, int capacity) {
+    Shuttle(IHabitation to, IHabitation from, int fuel, int capacity){
         this.to = to;
         this.from = from;
         this.fuel = fuel;
@@ -57,19 +56,19 @@ class Shuttle implements ITransportation {
     }
 }
 
-class SpaceElevator implements ITransportation {
+class SpaceElevator implements ITransportation{
     IHabitation to;
     IHabitation from;
     int tonnage;
     
-    SpaceElevator(IHabitation to, IHabitation from, int tonnage) {
+    SpaceElevator(IHabitation to, IHabitation from, int tonnage){
         this.to = to;
         this.from = from;
         this.tonnage = tonnage;
     }
 }
 
-class ExamplesTravel {
+class ExamplesTravel{
     IHabitation nausicant = new Planet("Nausicant", 6000000, 8);
     IHabitation earth = new Planet("Earth", 9000000, 14);
     IHabitation remus = new Planet("Remus", 18000000, 23);

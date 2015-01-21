@@ -30,7 +30,7 @@ class ExamplesTaco {
                      new Filled(
                       new Filled(
                        new EmptyShell(
-                        true), 
+                       true), 
                       "carnitas"), 
                      "salsa"),
                     "lettuce"),
@@ -40,7 +40,7 @@ class ExamplesTaco {
                     new Filled(
                      new Filled(
                       new EmptyShell(
-                       false), 
+                      false), 
                      "veggies"), 
                     "guacamole"),
                    "sour cream");

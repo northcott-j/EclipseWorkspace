@@ -69,7 +69,7 @@ class SpaceElevator implements ITransportation {
     }
 }
 
-class ExamplesTravel {
+class ExamplesTravel{
     IHabitation nausicant = new Planet("Nausicant", 6000000, 8);
     IHabitation earth = new Planet("Earth", 9000000, 14);
     IHabitation remus = new Planet("Remus", 18000000, 23);

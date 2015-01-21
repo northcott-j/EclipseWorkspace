@@ -2,7 +2,7 @@
 // Northcott Jonathan
 // nrthcoj
 // Lowen Zach
-// zlowen
+// lowen.z
 
 class Person {
     String name;
