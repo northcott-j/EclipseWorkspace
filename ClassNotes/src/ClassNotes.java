@@ -489,3 +489,169 @@ class ExamplesShape {
 			&& t.checkExpect(this.c2.isBiggerThan(this.c1), true);
 	}
 }
+
+
+//===========================================================================================>
+// 1/22/15
+
+// Lists - specifically methods
+
+class Book {
+	String name
+	String author
+	int    price
+
+	Book(String name, String author, int price) {
+		this.title  = name;
+		this.author = author;
+		this.price  = price;
+	}
+
+	// does this book have the given title?
+	boolean hasTitle(String title) {
+		return this.name.equals(title);
+	}
+
+	// is this book cheaper than the given book
+	boolean isCheaperThan(Book other) {
+		return !other.isCheaperThanPrice(this.price);
+	}
+
+	// is this books price cheaper than the given price
+	boolean isCheaperThanPrice(double price) {
+		return this.price < price;
+	}
+
+	// Above methods follow a bouncing method passing off information from List all the way to Book
+}
+
+// represents a list of books
+interface ILoBook {
+	// returns the length of this list of books
+	int length();
+
+	// does a book contain a given title
+	boolean containsBookTitle(String title);
+	// returns the list of books in this list with the given title
+	ILoBook allBooksWithTitle(String title);
+	// returns a new list with books sorted by increasing price
+	ILoBook sortByPrice();
+	// insert the given book into this sorted list of books
+	ILoBook insert(Book book);
+}
+
+// returns an empty list of books
+class MtLoBook implements ILoBook {
+	MtLoBook() { }
+// returns the length of this empty list of books
+	public int length() {
+		return 0;
+	}
+
+// does this empty list contain a book of the given title
+	public boolean containsBookTitle(String title) {
+		return false;
+	}
+
+// returns empty list as there are no books in an empty list
+	public ILoBook allBooksWithTitle(String title) {
+		return this;
+	}
+
+// returns a sorted empty list
+	public ILoBook sortByPrice() {
+		return this;
+	}
+
+// insert the given book into this empty sorted list of books
+	public ILoBook insert(Book book) {
+		return new ConsLoBook(book, this);
+	}
+}
+
+class ConsLoBook implements ILoBook {
+	Book first;
+	ILoBook rest;
+	ConsLoBook(Book first, ILoBook rest) {
+		this.first = first;
+		this.rest = rest;
+	}
+	/* TEMPLATE:
+	* Fields
+	* this.first --- Book
+	* this.rest --- ILoBook
+	*
+	* Methods
+	* this.length() --- int
+	* this.containsBookTitle(String) --- boolean
+	* this.allBooksWithTitle(String) --- ILoBook
+	*
+	* Methods of fields
+	* this.first.discount(double)--- double
+	* this.first.discountedBook(double) --- Book
+	* this.first.hasTitle(String) --- boolean
+	* this.rest.length() --- int
+	* this.rest.containsBookTitle(String) --- boolean
+	* this.rest.allBooksWithTitle(String) --- ILoBook
+	* this.rest.sortByPrice() --- ILoBook
+	*/
+
+	// return the length of this non-empty list of books
+	public int length() {
+		return 1 + this.rest.length();
+	}
+
+// does this non-empty list of books contain a book of a given title
+	// if is an expression -> it does stuff
+	// statements return stuff
+	public boolean containsBookTitle(String title) {
+	/*	if (this.first.hasTitle(title)) {
+			return true;
+		}
+		else {
+			return this.rest.containsBookTitle(title);
+		}*/
+		return this.first.hasTitle(title) || this.rest.containsBookTitle(title);
+		//     ^
+		//     |
+		// has standard subject verb object
+	}
+
+	// return list of books that match the given title in this list
+	public ILoBook allBooksWithTitle(String title) {
+		if (this.first.hasTitle(title)) {
+			return new ConsLoBook(this.first, this.rest.allBooksWithTitle(title));
+		}
+		else {
+			return this.rest.allBooksWithTitle(title));
+		}
+	}
+
+// returns sorted list of books contained in this list by increasing price
+	public ILoBook sortByPrice() {
+		this.rest.sortByPrice().insert(this.first);
+	}
+
+// insert this given book into this non-empty list of sorted books
+	public ILoBook insert(Book book) {
+		if (this.first.isCheaperThan(book)) {
+			return new ConsLoBook(this.first, this.rest.insert(book));
+		}
+		else {
+			return new ConsLoBook(book, this);
+		}
+	}
+}
+
+class ExamplesBooks {
+
+	Book hp = new Book("HP", "JKR", 1200);
+	Book bible = new Book("Bilbe", "Jesus", 1000);
+
+	ILoBook list1 = new ConsLoBook(this.hp, 
+						new ConsLoBook(this.hp, 
+							new ConsLoBook(this.hp, new MtLoBook())))
+
+	boolean testLength(Tester t) {
+		return t.checkExpect(this.list1.length(), 3);
+	}
