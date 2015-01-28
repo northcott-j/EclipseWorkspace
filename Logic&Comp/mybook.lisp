@@ -1,6 +1,8 @@
 ; ****************** BEGIN INITIALIZATION FOR ACL2s MODE ****************** ;
 ; (Nothing to see here!  Your actual file is after this initialization code);
 
+; ADD THIS LINE
+
 #+acl2s-startup (er-progn (assign fmt-error-msg "Problem loading the TRACE* book.~%Please choose \"Recertify ACL2s system books\" under the ACL2s menu and retry after successful recertification.") (value :invisible))
 ; only load for interactive sessions: 
 #+acl2s-startup (include-book "trace-star" :uncertified-okp nil :dir :acl2s-modes :ttags ((:acl2s-interaction)) :load-compiled-file nil);v4.0 change
