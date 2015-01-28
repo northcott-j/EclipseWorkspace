@@ -655,3 +655,96 @@ class ExamplesBooks {
 	boolean testLength(Tester t) {
 		return t.checkExpect(this.list1.length(), 3);
 	}
+
+	//==============================================================================>
+	//1/26/15
+
+	/*
+Class person is-a IAT
+	String name;
+	int yob;
+	boolean isMale;
+	IAT dad;
+	IAT mom;
+Ex. Person("Cynthia", 1960, false, this.david, new Unknown());
+Class unknown is-a IAT
+
+Methods on IATs:
+int  furthestKnownGen()
+int  furthestGenInclusive()
+boolean isWellFormed()
+
+boolean isOlderThan (int yob); <- This gives mom and dad our age instead of taking theirs
+int numFemaleAreOver40()
+	*/
+
+// class Unknown
+public int furthestGenInclusive() {
+    return 0;
+}
+
+public int furthestKnownGen() {
+    return 0;
+}
+
+public boolean isWellFormed() {
+    return true; //<- To satisfy and in People field 
+}
+
+public boolean isOlderThan(int yob) {return true;}
+
+// class Person
+public int furthestGenInclusive() {
+    return 1 + Math.max(this.dad.furthestGenInclusive(),
+                        this.mom.furthestGenInclusive());
+}
+
+public int furthestKnownGen() {
+    return Math.max(this.dad.furthestGenInclusive(),
+                    this.mom.furthestGenInclusive());
+// OR
+    return this.furthestGenInclusive() - 1; //<- Subtract myself
+}
+
+// This will not work because:
+/*
+Should be > not <
+Unknown gives a bunch of issues
+Can't access fields of field
+*/
+public boolean isWellFormed() {
+    return (this.yob < this.dad.yob)
+        && (this.yob < this.mom.yob)
+        &&  this.dad.isWellFormed()
+        &&  this.mom.isWellFormed();
+}
+
+//This will work
+//Uses a helper function to pass my yob to my paretns and so on
+public boolean isWellFormed2() {
+    return this.dad.isOlderThan(this.yob)
+        && this.mom.isOlderThan(this.yob)
+        &&  this.dad.isWellFormed()
+        &&  this.mom.isWellFormed();
+}
+
+public boolean isOlderThan(int yob) {
+    return this.yob < yob;
+}
+
+// exclusive
+public int numFemaleAreOver40() {
+    return this.mom.numFemaleAreOver40Help() +
+           this.dad.numFemaleAreOver40Help();
+}
+
+// inclusive
+public int numFemaleAreOver40Help() {
+    if(2015 - this.yob > 40 && !this.isMale) {
+        return 1 + this.mom.numFemaleAreOver40Help() +
+                   this.dad.numFemaleAreOver40Help();
+    } else {
+        return this.mom.numFemaleAreOver40Help() +
+               this.dad.numFemaleAreOver40Help();
+    }
+}
