@@ -3,5 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/home/j_north/EclipseJars/tester.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Jonathan/Documents/EclipseWorkspace/Fundies2 PSet2/tester.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

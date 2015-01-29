@@ -657,7 +657,7 @@ class ExamplesBooks {
 	}
 
 	//==============================================================================>
-	//1/26/15
+	//1/26/15 && 1/29/15
 
 	/*
 Class person is-a IAT
@@ -676,6 +676,7 @@ boolean isWellFormed()
 
 boolean isOlderThan (int yob); <- This gives mom and dad our age instead of taking theirs
 int numFemaleAreOver40()
+String ancNames()
 	*/
 
 // class Unknown
@@ -692,6 +693,15 @@ public boolean isWellFormed() {
 }
 
 public boolean isOlderThan(int yob) {return true;}
+
+public String ancNames() {
+	return "";
+}
+
+public String ancNamesHelp(String rest) {
+	return rest; //<--returns the collector 
+}
+
 
 // class Person
 public int furthestGenInclusive() {
@@ -747,4 +757,58 @@ public int numFemaleAreOver40Help() {
         return this.mom.numFemaleAreOver40Help() +
                this.dad.numFemaleAreOver40Help();
     }
+}
+
+// create a list of all ancesters starting from paternal to maternal
+// this won't work because Unknown calls an extra comma Dwight , ,
+
+public String ancNames() {
+	return this.name.append(",")
+					.append(this.dad.ancNames()).append(",") //<-- remove this makes Dwight,
+					.append(this.mom.ancNames());
+}
+
+// Redo with if statements to guard against over shoot
+public String ancNames() {
+	// LOCAL
+	String momNames = this.mom.ancNames(),
+	String dadNames =this.dad.ancNames();
+
+	if (momNames.equals("") && dadNames.equals("")) {
+		return this.name;
+	}
+	else if(momNames.equals("")) {
+		return this.name.append(", ")
+						.append(dadNames);
+	}
+	else if(dadNames.equals("")) {
+		return this.name.append(", ")
+						.append(momNames);
+	}
+	else {return this.name + ", " + momNames + ", " + dadNames}
+}
+
+/*
+							^
+	                        |
+	               Redo this with helper
+
+*/
+
+// even faster with a help that kept track of remaining data
+// collects data from one side of the family and passes it to the rest
+public String ancNamesHelp(String rest) {
+	String momNames = this.mom.ancNamesHelp(rest) //<--Moms + Rest
+	String dadNames = this.dad.ancNamesHelp(momNames) //<--Dads + Moms + Rest
+
+	if (dadNames.equals("")) {
+		return this.name;
+	} 
+	else this.name.append(", ")
+				  .append(dadNames); //<--Me + Dads + Moms + Rest
+}
+
+// redo ancNames using above
+public String ancNames() {
+	return this.ancNamesHelp("");
 }
