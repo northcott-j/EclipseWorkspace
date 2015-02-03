@@ -6,7 +6,7 @@ interface IData {
 
 class Number implements IData {
 	int val;
-	
+	w
 	Number(int val) {
 		this.val = val;
 	}
