@@ -812,3 +812,90 @@ public String ancNamesHelp(String rest) {
 public String ancNames() {
 	return this.ancNamesHelp("");
 }
+
+//===================================================================================>
+// 2/4/15
+
+interface IAT {
+	IAT youngerIAT(IAT other);
+	IAT youngerIATHelp(IAT other, int otherYob); //<-- pass YOB while you can
+	IAT youngestParent();
+	IAT youngestGrandparent();
+	IAT youngestGreatGP();
+
+	// ABSTRACTION of above three
+	IAT youngestAncInGen(int gensAgo);
+}
+
+//Unknown
+public IAT youngerIAT(IAT other) {
+	return other;
+	// if other is an unknown, I should return unknown else it's a person and return person
+}
+
+public IAT youngerIATHelp(IAT other, int otherYob) {
+	return other;
+}
+
+public IAT youngestParent() {
+	return this;
+}
+
+public IAT youngestGrandparent() {
+	return this;
+}
+
+public IAT youngestGreatGP() {
+	return this.
+}
+
+// ABSTRACTION of above
+
+public IAT youngestAncInGen(int gensAgo) {
+	return this;
+}
+
+//Person
+public IAT youngerIAT(IAT other) {
+	return other.youngerIATHelp(this, this.yob); //<-- has access to yob so it passes it to the helper
+}
+
+public IAT youngerIATHelp(IAT other, int otherYob) {
+	return if (otherYob > this.yob) {
+		return other;
+	}
+	else {
+		return this;
+	}
+}
+
+public IAT youngestParent() {
+	return his.dad.youngestIAT(this.mom);
+}
+
+public IAT youngestGrandparent() {
+	return this.dad.youngestParent().youngerIAT(this.mom.youngestParent());
+}
+
+public IAT youngestGreatGP() {
+	return this.dad.youngestGrandparent().youngerIAT(this.mom.youngestGrandparent());
+}
+
+// ABSTRACTION of above
+
+public IAT youngestAncInGen(int gensAgo) {
+	if (gensAgo == 0) {
+		return this;
+	}
+	else {
+		return this.dad.youngestAncInGen(gensAgo - 1).youngerIAT(this.mom.youngestAncInGen(gensAgo - 1));
+	}
+}
+
+// Example of abstracted youngestGrandparent()
+public IAT youngestGrandparent() {
+	return this.youngestAncInGen(2);
+}
+
+// Gensago is an accumulator parameter that bottoms out when zero
+// Lecture 8 has practice problems with accumulators
