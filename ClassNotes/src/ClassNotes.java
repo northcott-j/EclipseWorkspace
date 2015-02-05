@@ -897,5 +897,155 @@ public IAT youngestGrandparent() {
 	return this.youngestAncInGen(2);
 }
 
-// Gensago is an accumulator parameter that bottoms out when zero
+// gensAgo is an accumulator parameter that bottoms out when zero
 // Lecture 8 has practice problems with accumulators
+
+//=======================================================================================>
+// 2/5/15
+
+// IShape
+double area();
+boolean isBiggerThan(IShape that);
+double distanceToOrigin();
+IShape grow(double factor);
+
+// Circle
+class Circle extends AShape {
+	double radius;
+
+	//CartPt center;
+	//String color;
+		//Inherited 
+
+	Circle(double radius, CartPt center, String color) {
+		super(center, color); //Super must be first!!
+		this.radius = radius;
+	}
+
+	public double distanceToOrigin() {                        /*Overrides inherited distanceToOrigin*/
+		return this.loc.distanceToOrigin() - this.radius;             /* looks at closest method  */
+			/* ---------super()---------- */
+	}
+}
+
+/*
+OVERLOAD = two different methods with the same name but different parameters in the same class
+OVERRIDE = two different methods with the same name and same parameters in two different classes
+*/
+
+// Square
+class Square extends Rect {
+	double side;
+
+	//CartPt topLeft;
+	//String color;
+		//Inherited from Square
+/*
+	Square(double side, CartPt topLeft, String color) {
+			................
+			  ...........
+	}
+
+	<Previous constructor>
+*/
+	Square(double side, CartPt topLeft, String color) {
+		super(side, side, topLeft, color);
+	}
+
+/*
+	public double area() {return this.side * this.siide;}
+
+	public IShape grow(double factor) {
+		return new Square(this.side * factor, this.topLeft, this.color);
+	}
+
+	public boolean isBiggerThan(IShape that) {
+		return this.area() > that.area();
+	}
+
+	<No longer needed as Rect now fulfills all methods>
+*/
+	public IShape grow(double factor) {
+		return new Square(factor * this.width, //or this.length)
+						  this.loc, this.color);
+	}
+}
+
+/*
+ABSTRACTION METHOD --->>> Create a helper class such as CartPt to do distanceToOrigin 
+Sharing Promises(Interfaces)
+Sharing Helpers(Delegation)
+Sharing Fields/Methods (Abstract class)
+*/
+
+// Rect EXTENDS Shape (Concrete class isn't abstract)
+
+// Extends shows inheritance
+	// One class inherits from another gets all of:
+		// The fields and methods
+
+class Rect extends AShape {
+	double length;
+	double width;
+//  loc field means topLeft in Rect
+
+	//CartPt topLeft;
+	//String color;
+	// Now inherited from shape
+
+	Rect(double length, double width, CartPt topLeft, String color) {
+	// Takes fields missing from inherited for the constructor 
+		super(topLeft, color); //<-- Equals super constructor Shape(CartPt loc, String color)
+		this.length = length;
+		this.width = width;
+	}
+
+	public double area() {
+		return this.length * this.width;
+	}
+
+// Needs to be overridden by Square so we don't lose the fact that it's a Square
+	public IShape grow(double factor) {
+		return new Rect(factor * this.length, factor * this.width, this.loc, this.color);
+	}
+}
+
+// Combo
+IShape first;
+IShape second;
+
+/*
+Abstract can't be made directly
+Used to gather code in a common place
+Allows for recycle 
+*/
+
+abstract class AShape implements IShape {
+	CartPt loc;
+	String color;
+
+	AShape(CartPt loc, String color) {
+		this.loc = loc;
+		this.color = color;
+	}
+
+	abstract public double area();
+//     ^
+//     |
+// Delay promise to interface until the class is extended 
+
+	public boolean isBiggerThan(IShape that) {
+		return this.area() > that.area();
+	}
+
+	public double distanceToOrigin() {
+		return this.loc.distanceToOrigin();
+	}
+}
+
+// Still need an interface because Combo still follows IShape not AShape
+// Interfaces are signature and promise things to do
+// Abstracts are laziness to prevent repeat code
+// Thick triangle is-a
+	// Filled is extends
+	// Open is an interface (implements)
