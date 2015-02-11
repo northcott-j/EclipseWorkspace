@@ -1049,3 +1049,65 @@ abstract class AShape implements IShape {
 // Thick triangle is-a
 	// Filled is extends
 	// Open is an interface (implements)
+
+//============================================================================>
+
+//2/11/15
+
+// Interfaces can have fields but they're constants
+interface ITetrisPiece {
+int GAME_HEIGHT = 40;
+
+}
+
+abstract class ATetra implements ITetrisPiece {
+	IColor color;
+	Posn rotCenter;
+	int rotAngle;
+
+	ATetra(IColor color, Posn rotCenter, int rotAngle) {
+		this.color = color;
+		this.rotCenter = rotCenter;
+		this.rotAngle = rotAngle;
+		if(!this.inBounds()) {
+			throw new IllegalArgumentException("Bad pos!");
+		}
+
+	// Does not belong in ITetrisPiece
+	// Fundamental to how they work
+		abstract boolean inBounds(); 
+	}
+
+	ATetra(Color color, int x, int rotAngle) {
+		this(color, new Posn(x, GAME_HEIGHT), rotAngle);
+// This overloads previous constructur 
+// This is extra code		
+/*		this.color = color;
+		this.rotCenter = new Posn(x, Game_HEIGHT);
+		this.rotAngle = rotAngle;*/
+	}
+}
+
+class PieceO extends ATetra{
+
+
+
+}
+
+class PieceL extends ATetra{
+	PieceL(Color color, Posn rotCenter, int rotAngle) {
+		super(color, rotCenter, rotAngle);
+	}
+}
+
+// Error checking and testing for exceptions
+/*
+* Expected Exception
+* String name of the class
+* arguments to constructor
+*/
+return t.checkConstructorException(new IllegalArgumentException("Bad pos!"),
+							"PieceL",
+							new Red(),
+							new Posn(45,6),
+							33);
