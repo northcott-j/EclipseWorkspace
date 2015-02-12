@@ -939,7 +939,7 @@ class Square extends Rect {
 
 	//CartPt topLeft;
 	//String color;
-		//Inherited from Square
+		//Inherited from Rect
 /*
 	Square(double side, CartPt topLeft, String color) {
 			................
@@ -1111,3 +1111,79 @@ return t.checkConstructorException(new IllegalArgumentException("Bad pos!"),
 							new Red(),
 							new Posn(45,6),
 							33);
+
+//===================================================================================>
+// 2/12/15
+/*
+EQUALITY:
+
+PRIMITIVES:
+int: i1 == i2
+boolean: b1 == b2
+double: Math.abs(d1-d2) < 0.0000001
+String: s1.equals(s2)
+
+COMPLEX DATA:
+Posn: p1.x == p2.x && p1.y == p2.y
+Books: *Check fields using primitive types*
+
+*/
+
+//IShape 
+boolean sameShape(IShape that);
+boolean isSquare();
+Square asSquare();
+
+boolean isCirlce();
+boolean asCircle();
+
+boolean isRect();
+boolean asRect();
+
+//Circle is-a IShape
+int rad;
+
+/*public boolean sameShape(IShape that) {
+	// Type Casting - pretend this is a that
+	// Runtime error
+	// ClassCastException when passing the wrong class
+	if(that instanceof Circle) { // Instanceof is special 
+		Circle cthat = (Circle)that; //Overrides Java type - guarentees it's a Circle
+		return this.rad == cthat.rad;
+	}
+	else {
+		return false;
+	}
+}
+*/ //Removed instanceof
+
+public boolean sameShape(IShape that) {
+	if(that.isCirlce()) {
+		Circle cthat = that.asCircle();
+		return this.rad == cthat.rad;
+	}
+	else {
+		return false;
+	}
+}
+
+public boolean isCircle() {return true;}
+public boolean asCircle() {return this;}
+
+public boolean isRect() {return false;}
+public boolean asRect() {throw new ClassCastException("Circle isn't a Rect");}
+//Rect is-a IShape
+int w, h;
+
+public boolean sameShape(IShape that) {
+	if(that instanceof Rect) {
+		Rect rthat = (Rect)that;
+		return (this.w == rthat.w) &&
+			   (this.h == rthat.h);
+	}
+	else {
+		return false;
+	}
+}
+
+//Square is-a Rect
