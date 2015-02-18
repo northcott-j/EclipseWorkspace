@@ -1190,3 +1190,174 @@ public boolean sameShape(IShape that) {
 
 //===================================================================================>
 // 2/18/15
+// EQUALITY
+
+class Circle implements IShape {
+	int radius;
+
+// Returns whether this Circle is the same as the given IShape
+// instanceof + casting equality method
+	public boolean sameShape(IShape that) {
+		if(that instanceof Circle) {
+		Circle cthat = (Circle)that;
+		return this.radius == cthat.radius;
+	}
+	else {
+		return false;
+	}
+}
+
+// This is safe-casting 
+class Square extends Rect {
+
+	public boolean isSquare {
+		return true;
+	}
+
+	public boolean isRect {
+		return false;
+	}
+
+	public boolean isCircle {
+		return false;
+	}
+
+	public Square asSquare {
+		return this;
+	}
+
+	public Rect asRect {
+		throw new ClassCastException("Not a Rect - call isRect first");
+	}
+}
+
+// ============================================================>
+// CONTRAST Above
+// This is called Double-dispatch
+// It's nice because it's all local - to fix square put it in square
+
+interface IShape {
+	boolean sameCircle(Circle);
+	boolean sameRect(Rect);
+	boolean sameTriange(Triangle);
+
+	boolean sameShape(IShape);
+}
+
+abstract class AShape implements IShape {
+	public abstract boolean sameShape(IShape);
+
+	public boolean sameCircle(Circle that) {
+		return false;
+	}
+
+	public boolean sameRect(Rect that) {
+		return false;
+	}
+
+	public boolean sameTriangle(Triangle that) {
+		return false;
+	}
+
+	public boolean sameSquare(Square that) {
+		return false;
+	}
+
+}
+
+class Circle extends AShape {
+
+	public boolean sameCircle(Circle that) {
+		return this.radius == that.radius;
+	} 
+
+/*	Don't need - inherited
+	public boolean sameRect(Rect that) {
+		return false;
+	}
+
+	public boolean sameTriange(Triangle that) {
+		return false;
+	}*/
+
+	public boolean sameShape(IShape that) {
+		// I know that this is a Circle
+		return that.sameCircle(this);
+	}
+}
+
+class Rect extends AShape {
+
+	public boolean sameRect(Rect that) {
+		return this.width == that.width &&
+			   this.height == that.height;
+	}
+
+/*	Don't need - inherited
+	public boolean sameCircle(Circle that) {
+		return false;
+	}
+
+	public boolean sameTriange(Triangle that) {
+		return false;
+	}*/
+
+	public boolean sameShape(IShape that) {
+		// I know that this is a Rect
+		return that.sameRect(this);
+	}
+
+
+}
+
+class Traingle extends AShape {
+
+/*	Don't need - inherited 
+	public boolean sameRect(Rect that) {
+		return false;
+	}
+
+	public boolean sameCircle(Circle that) {
+		return false;
+	}*/
+
+	public boolean sameTriange(Triangle that) {
+		return //Check all fields;
+	}
+
+	public boolean sameShape(IShape that) {
+		return that.sameTriange(this);
+	}
+}
+
+class Square extends Rect {
+
+	public boolean sameSquare(Square that) {
+		return this.sidelength == that.sidelength;
+	}
+
+	public boolean sameShape(IShape that) {
+		return that.sameSquare(this);
+	}
+
+	public boolean sameRect(Rect that) {
+		return false;
+	}
+}
+
+class ExamplesEquality {
+	IShape s1 = new Rect(3, 3);
+	IShape s2 = new Square(3);
+
+	s2.sameShape(s1) = false;
+	s1.sameShape(s2) = ....;
+
+
+/*
+s1 is a Rect
+s2.sameRect(s1);
+s2 extends Rect and inherits sameRect
+-- Uh oh
+Override inherited sameRect in square
+*/
+}
