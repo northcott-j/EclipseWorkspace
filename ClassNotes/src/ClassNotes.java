@@ -1361,3 +1361,85 @@ s2 extends Rect and inherits sameRect
 Override inherited sameRect in square
 */
 }
+
+//=====================================================================>
+// 2/19/15
+
+// Runner
+/*
+String name
+int pos
+int time in seconds
+int age
+boolean isFemale
+*/
+
+/*
+ILoRunner:
+Runner winner();
+ILoRunner topN(int n);
+ILoRunner femaleRunners()--> don't need;
+ILoRunner filter(IRunnerPred p);
+*/
+
+// MtLoRunner
+
+// This method is clunky
+ILoRunner filter(IRunnerPred p) {
+	return this;
+}
+
+
+// ConsLoRunner
+
+/*// This method is clunky
+ILoRunner runnersUnder(int age) {
+	if(this.first.age < age) {
+		new ConsLoRunner(this.first, this.rest.runnersUnder(age));
+	}
+	else {
+		return this.rest.runnersUnder(age);
+	}
+}*/
+
+// This is method 2.0
+ILoRunner filter(IRunnerPred p) {
+	if(p.apply(this.first)) {
+		new ConsLoRunner(this.first, this.rest.filter(p));
+	}
+	else {
+		return this.rest.filter(p);
+	}
+}
+
+interface IRunnerPred {
+	boolean apply(Runner r);
+}
+
+// Represent functions that rip apart data
+class RunnerIsFemale implements IRunnerPred {
+	public boolean apply(Runner r) {
+		return r.isFemale;
+	}
+}
+
+// Represent functions that rip apart data
+class RunnersOverN implements IRunnerPred {
+	int N;
+
+	RunnersOverN(int N) {
+		this.N = N;
+	}
+
+	public boolean apply(Runner t) {
+		return r.age > this.N;
+	}
+}
+
+class ExamplesMarathon {
+	ILoRunner m1 = ...;
+
+// These are called function objects = lambda 
+	marathon.filter(new RunnerIsFemale());
+	marathon.filter(new RunnerOverN(40));
+}
