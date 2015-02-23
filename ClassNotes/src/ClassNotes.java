@@ -1443,3 +1443,93 @@ class ExamplesMarathon {
 	marathon.filter(new RunnerIsFemale());
 	marathon.filter(new RunnerOverN(40));
 }
+
+// =================================================================> 
+// 2/23/15
+
+/*
+SNELL 168 6pm-9pm
+
+3 Q's:
+	- Helpers and recursion 
+	- 10 Pages
+NO TEMPLATES
+YES PURPOSE STATEMENTS
+YES TESTS
+YES OPEN NOTES
+NO CONSTRUCTORS
+COMMENT WHERE METHODS GO
+
+YES BAD CASTING (instaceof)
+YES SAFE CASTING 
+
+NO DOUBLE DISPATCH
+
+MIDTERM SHORTCUTS:
+  makeList(4, 5, 6, 7) instead of new ConsLoItem()
+  1 + 2 ----> 3
+  */
+
+  // in ILoRunner
+ILoRunner filter(IRunnerPred p);
+// ILoRunner sortByTime(); <---- Going to get annoying
+ILoRunner sortBy(IRunnerComperator comp);
+ILoRunner insert(Runner r, IRunnerComperator comp);
+
+interface IRunnerComperator {
+	int compare(Runner r1, Runner r2);
+}
+
+class RunnesByTime implements IRunnerComperator {
+	public int compare(Runner r1, Runner r2) {
+		return r1.time - r2.time;	
+	}
+}
+
+// in MtLoRunner
+public ILoRunner sortBy(IRunnerComperator comp) {
+	return this;
+}
+
+public ILoRunner insert(Runner r, IRunnerComperator comp) {
+	return new ConsLoRunner(r, this);
+}
+
+// in ConsLoRunner
+public ILoRunner sortBy(IRunnerComperator comp) {
+	return this.sortBy(comp).insert(this.first, comp);
+}
+
+public ILoRunner insert(Runner r, IRunnerComperator comp) {
+	if(comp.compare(r, this.first) <= 0) {
+		return new ConsLoRunner(r, this);
+	}
+	else {
+		return new ConsLoRunner(this.first, this.rest.insert(r, comp));
+	}
+}
+
+// Turns OnlyWomen into OnlyMen
+class Not implements IRunnerPred {
+	IRunnerPred p;
+
+	public boolean apply(Runner r) {
+		return !this.p.apply(r);
+	}
+}
+
+class AndThen implements IRunnerComperator {
+	IRunnerComperator c1;
+	IRunnerComperator c2;
+
+	public int compare(Runner r1, Runner r2) {
+		int ans1 = this.c1.compare(r1,r2);
+
+		if(ans1 != 0) {
+			return ans1;
+		}
+		else {
+			return this.c2.compare(r1, r2);
+		}
+	}
+}
