@@ -995,7 +995,7 @@ class Rect extends AShape {
 
 	Rect(double length, double width, CartPt topLeft, String color) {
 	// Takes fields missing from inherited for the constructor 
-		super(topLeft, color); //<-- Equals super constructor Shape(CartPt loc, String color)
+		super(topLeft, color); //<-- Equals super constructor AShape(CartPt loc, String color)
 		this.length = length;
 		this.width = width;
 	}
@@ -1080,7 +1080,7 @@ abstract class ATetra implements ITetrisPiece {
 
 	ATetra(Color color, int x, int rotAngle) {
 		this(color, new Posn(x, GAME_HEIGHT), rotAngle);
-// This overloads previous constructur 
+// This overloads previous constructor 
 // This is extra code		
 /*		this.color = color;
 		this.rotCenter = new Posn(x, Game_HEIGHT);
