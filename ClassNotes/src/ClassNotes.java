@@ -1135,10 +1135,10 @@ boolean isSquare();
 Square asSquare();
 
 boolean isCirlce();
-boolean asCircle();
+Circle asCircle();
 
 boolean isRect();
-boolean asRect();
+Rect asRect();
 
 //Circle is-a IShape
 int rad;
@@ -1168,10 +1168,10 @@ public boolean sameShape(IShape that) {
 }
 
 public boolean isCircle() {return true;}
-public boolean asCircle() {return this;}
+public Circle asCircle() {return this;}
 
 public boolean isRect() {return false;}
-public boolean asRect() {throw new ClassCastException("Circle isn't a Rect");}
+public Rect asRect() {throw new ClassCastException("Circle isn't a Rect");}
 //Rect is-a IShape
 int w, h;
 
