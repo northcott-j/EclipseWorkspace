@@ -68,7 +68,7 @@ This homework is done in groups. The rules are:
    us time and it will cost you points, so please read carefully.
 
 
-Names of ALL group members: FirstName1 LastName1, FirstName2 LastName2, ...
+Names of ALL group members: Raj Narajan, Victor Magierski, Jonathan Northcott
 
 Note: There will be a 10 pt penalty if your names do not follow 
 this format.
@@ -353,62 +353,49 @@ Question 5: Prove:
                (equal (len2 (rev2 x))
                       (len2 x)))))
 
-Part 1:
+           
 C1. (listp x)
 C2. (endp x)
-                
-              (len2 (rev2 x)) = (len2 x)
-             ={C1, C2, Definition of rev2}
-              (equal (len2 nil) (len2 x))
-             ={C2, Definition of endp}
-              (equal (len2 nil) (len2 nil))
-             ={Def. of Equal}
-               T
-
-Part 2:
-C1. (listp x)
-C2. (not (endp x))
-C3. (equal (len2 (rev2 (rest x)))
+C3. (not (endp x))
+C4. (equal (len2 (rev2 (rest x)))
            (len2 (rest x)))
-           
-           (len2 (rev2 x)) = (len2 x)
-           ={Def. rev2, C3}
-           (len2 (app2 (rev2 (rest x)) 
-                       (list (first x)))) = (len2 x)
-           ={
-           
-           
-           
-(implies (and (listp x) 
-              (listp y))
-         (equal (len2 (app2 x y))
-                (+ (len2 x) (len2 y))))
-           
-           
-(defunc app2 (x y)
-  :input-contract (and (listp x) (listp y))
-  :output-contract (listp (app2 x y))
-  (if (endp x)
-      y
-    (cons (first x) (app2 (rest x) y))))
-    
-    (defunc len2 (x)
-  :input-contract (listp x)
-  :output-contract (natp (len2 x))
-  (if (endp x)
-      0
-    (+ 1 (len2 (rest x)))))
-                       
-                       
-(defunc rev2 (x)
-  :input-contract (listp x) 
-  :output-contract (listp (rev2 x))
-  (if (endp x)
-      nil
-    (app2 (rev2 (rest x)) (list (first x)))))
-              
-              
+Derived Contexts:
+C5. x = nil {C1, C2}
 
+We show that 
+
+(implies (and (not (endp x))
+                          (equal (len2 (rev2 (rest x)))
+                                 (len2 (rest x))))
+               (equal (len2 (rev2 x))
+                      (len2 x))) 
+                      
+is false.
+                      
+                      
+                (implies (and (not (endp x))
+                              (equal (len2 (rev2 (rest x)))
+                                     (len2 (rest x))))
+                   (equal (len2 (rev2 x))
+                          (len2 x)))
+                      
+                      = {C5}
+   LHS:            (and (not (endp nil))
+                        (equal (len2 (rev2 (rest x)))
+                               (len2 (rest x))))
+                      = {Definition of endp, def. of not}
+                    (and nil
+                        (equal (len2 (rev2 (rest x)))
+                               (len2 (rest x))))
+                      = {nil /\ x = nil}
+                   nil   
+                
+                 { def. of implies}
+                 
+                 true
+                 
+
+              
 |#
 
 #|
@@ -425,7 +412,41 @@ You can assume that the following is a theorem:
 (implies (listp x) 
          (equal (len2 (rev2 x)) 
                 (len2 x)))
+                
 
+C1. (listp x)
+C2. (listp y)
+T1. (implies (listp x) 
+             (equal (len2 (rev2 x)) 
+                    (len2 x)))
+T2. (implies (and (listp x) 
+                  (listp y))
+         (equal (len2 (app2 x y))
+                (+ (len2 x) (len2 y))))
+                
+                
+                    (len2 (rev2 (app2 x y))) = (len2 (app2 (rev2 y) (rev2 x)))
+                    
+                    RHS: 
+                    (len2 (app2 (rev2 y) (rev2 x)))
+                    
+                    ={T2, C1, C2}
+                    (len2 (rev2 y)) + (len2 (rev2 x))
+                    
+                    ={Arithmetic}
+                    (len2 (rev2 x)) + (len2 (rev2 y))
+                    
+                    ={T1, C1, C2}
+                    (len2 x) + (len2 y)
+                    
+                    ={T2}
+                    (len2 (app2 x y))
+                    
+                    ={C1, C2, Output Contract of app2, T1}
+                    (len2 (rev2 (app2 x y)))
+                    
+                    = LHS
+                    
 |#
 
 #|
@@ -468,4 +489,118 @@ You can assume that the following is a theorem:
               (listp y))
          (equal (len2 (mapcons a x))
                 (len2 x)))
+           
+                
+Part 1: 
+we prove that (implies (endp x)
+                       (equal (len2 (cart-prod x y))
+                              (* (len2 x) (len2 y))))
+is true.
+
+C1. (listp x)
+C2. (listp y)
+C3. (endp x)
+Derived Context:
+C4. x = nil {C1, C3}
+
+              (len2 (cart-prod x y)) = (len2 x) * (len2 y)
+              
+              ={Def Cart-prod, C3}
+              (len2 nil)     = (len2 nil) * (len2 y)
+              
+              ={Def of len2}
+              0 = 0 * (len2 y)
+              
+              ={arithmetic}
+              0 = 0
+              
+              ={Def of =}
+              True
+
+Part 2:
+We prove that (implies (and (not (endp x))
+                            (equal (len2 (cart-prod (rest x) y))
+                                   (* (len2 (rest x)) (len2 y))))
+                       (equal (len2 (cart-prod x y))
+                              (* (len2 x) (len2 y))))
+                              
+is true.
+
+C1. (not (endp x))
+C2. (equal (len2 (cart-prod (rest x) y))
+           (* (len2 (rest x)) (len2 y)))
+Derived Context:
+C3. (consp x) {C1, Definition of endp}
+T1. (implies (and (listp x)
+                  (listp y))
+         (equal (len2 (mapcons a x))
+                (len2 x)))              {Given}
+T2. (implies (and (listp x) 
+                  (listp y))
+         (equal (len2 (app2 x y))
+                (+ (len2 x) (len2 y)))) {Given}
+
+                
+                     (equal (len2 (cart-prod x y))
+                            (* (len2 x) (len2 y)))
+                   
+                    ={Def. of cart-prod, C1}
+                   (len2 (app2 (mapcons (first x) y)
+                               (cart-prod (rest x) y))) = (len2 x) * (len2 y)
+                    
+                    ={T2}
+                    (len2 (mapcons (first x) y)) + (len2 (cart-prod (rest x) y)   = (len2 x) * (len2 y)
+                    
+                    ={C2}
+                    (len2 (mapcons (first x) y)) + (len2 (rest x)) * (len2 y) = (len2 x) * (len2 y)
+                    
+                    ={T1, Input Contract of Len2 means y must be a list}
+                    (len2 y) + (len2 (rest x)) * (len2 y) = (len2 x) * (len2 y)
+                    
+                    ={arithmetic}
+                    (len2 y) * (1 + (len2 (rest x)))  =   (len2 x) * (len2 y)
+                    
+                    ={Definition of len2}
+                    (len2 y) * (len2 x)  = (len2 x) * (len2 y)
+                    
+                    ={Propositional Logic}
+                    True
+                    
+                    
+We showed that the left hand side of 
+
+(implies (and (listp x)
+              (listp y))
+         (and (implies (endp x)
+                       (equal (len2 (cart-prod x y))
+                              (* (len2 x) (len2 y))))
+              (implies (and (not (endp x))
+                            (equal (len2 (cart-prod (rest x) y))
+                                   (* (len2 (rest x)) (len2 y))))
+                       (equal (len2 (cart-prod x y))
+                              (* (len2 x) (len2 y)))))))
+                              
+
+is equivalent to 
+
+(implies (and (listp x) (listp y))  
+         (and t t))
+         
+We now will prove that this is true:
+
+C1. (listp x)
+C2. (listp y)
+
+     ={Def of implies, C1, C2}
+     
+     (and t t ) => (and t t)
+     
+     {definition of and, def of implies}
+     
+     ------
+    ||true||
+     ------
+     
+                    
+                    
 |#
