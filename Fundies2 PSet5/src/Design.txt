@@ -1,0 +1,48 @@
+Inventory of Classes:
+Apple
+	int x
+	int y
+	int (speed)
+	
+Basket
+	int x
+	int y
+	
+AppleGame
+	int HEIGHT
+	int WIDTH
+	int total
+	ILoApple apples
+	Basket basket
+	
+ConsLoApple implements ILoApple
+	Apple first
+	ILoApple rest
+	
+	MtLoApple
+	[none]
+------------------------------------------	
+<APPLE>
+An Apple contains fields x and y to delegate position. Speed is negative to comply with screen coordinates. Speed is used to control the Apple's decent. 
+Apple contains methods that access the fields of an Apple such as the method that makes the Apple fall on each tick.
+
+------------------------------------------
+<CONSLOAPPLE>
+A ConsLoApple is used to produce a list of individual apples. Field first contains an apple and field rest contains an ILoApple.
+Methods on this class recursively run the methods that are performed on individual Apples.
+
+-----------------------------------------
+<MTLOAPPLE>
+A MtLoApple is an empty list. 
+Methods on this class produce the base case for recursive methods in ConsLoApple.
+
+----------------------------------------
+<BASKET>
+A Basket contains fields x and y to control its position in the game. 
+The class Basket contains a method that takes a key press that controls the horizontal movement of the basket. 
+
+-----------------------------------------
+<APPLEGAME>
+HEIGHT and WIDTH are constants that set the boundries for the game. Total keeps track of how many Apples have been caught. Apples contains the list of all of the Apples currently in the game. The Basket contains the current Basket.
+Methods in this class delegate jobs to other classes that have access to the fields necessary to generate the game. 
+AppleGame also contains methods to render the game's image and that produce booleans that restrict the environment and/or end the game.
