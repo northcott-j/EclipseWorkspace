@@ -629,28 +629,22 @@ class ExamplesWebPage {
                 && t.checkExpect(list1.sameLoItem(list1), true)
                 && t.checkExpect(mt.sameLoItem(list1), false)
                 && t.checkExpect(mt.sameLoItem(mt), true);
-    /*
+    }
+    
     boolean testBadCast(Tester t) {
         return t.checkException(
-                new ClassCastException("Text cannot be cast to Image"), 
+                new ClassCastException("This is a Text not an Image"), 
                 t1,                                                     
                 "asImage")                                               
                 && t.checkException(
-                        new ClassCastException("Header cannot be cast to Image"), 
+                        new ClassCastException("This is a Text not an Image"), 
                         h1,
                         "asImage")
                 && t.checkException(
-                        new ClassCastException("Header cannot be cast to Image"), 
-                        h1,
-                        "asImage")
-               
-                && t.checkException(
-                        new ClassCastException("Header cannot be cast to Image"), 
-                        h1,
-                        "asImage")         
-                        
-                        ;    
-      */
+                        new ClassCastException("This is a Text not an Image"), 
+                        p1,
+                        "asImage");
+  
     }
 
 
