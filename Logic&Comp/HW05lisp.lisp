@@ -346,7 +346,7 @@ Question 5: Prove:
 (implies (listp x) 
      (and (implies (endp x)
                    (equal (len2 (rev2 x))
-                          (len2 x)))
+                          (len2 x))) 
               (implies (and (not (endp x))
                           (equal (len2 (rev2 (rest x)))
                                  (len2 (rest x))))
