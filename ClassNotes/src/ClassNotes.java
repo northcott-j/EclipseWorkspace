@@ -1606,3 +1606,95 @@ class ExamplesParameterized {
 													new Cons<String>("world",
 																new Empty<String>))
 }
+
+
+// ===================================================================>
+// 2/26/15
+// How to implement Function Objects for Union Data (Interfaces not Classes)
+// Each object takes a turn being the subject and the object ergo Double Dispatch
+// Meant to patch in behavior later on
+
+/*
+OVERVIEW:
+Call map of Shape2Perims on a list of Shapes
+Shape2Perim calls ACCPEPT on the first shape and passes a IShapeVisitor (this case to check perim)
+Shape class applies func (ShapePerim) applyTo[the class object] with a param of this object
+The func is a ShapePerimVisior class which has methods applyTo[this class object] that calculate perimeter 
+
+*/
+
+interface IShape {
+	double area();
+	// Assume this is in the library
+	// Normally called accept
+	<T> T beAppliedToBy(IShapeFunc<T> f);  
+}
+
+interface IShapFunc<T> { // IShapeVisitor<T> knows how to visit IShapes
+	T applyToCircle(Circle c);
+	T applyToRect(Rect t);
+	T applyToSquare(Square t);
+	// Normally all called visit and are overloaded
+}
+
+interface IList<T> {
+	<U> IList<U> map(IFunc<T, U> func);
+}
+
+interface IFunc<A, R> {
+	R apply(A arg);
+}
+
+// This is useable by Map
+// Ask the Shape what shape are you?
+// This now goes to the IShape classes
+class Shape2Perim implements IFunc<IShape, Double> {
+	public Double apply(IShape s) {
+		return s.beAppliedToBy(new ShapePerim());	
+	}
+}
+
+// This uses Double Dispatch to apply it to shapes
+// This receives a this and a method call and it applies it 
+// No confusion 
+class ShapePerim implements IShapeFunc<Double> { // Normally called ShapePerimVisitor	
+	public Double applyToCircle(Circle c) {
+		return 2 * Math.pi * c.radius;	
+	}
+	
+	public Double applyToRect(Rect r) {
+		return 2 * (r.w + r.h);	
+	}
+	
+	public Double applyToSquare(Square s) {
+		return 4 * s.w	;
+	}
+}
+
+
+// IShape classes are asked what are they by Shape2Perim
+// Pass on themselves to ShapePerim to their specific method
+// Double is calculated
+
+class Circle implements IShape {
+	public <T> beAppliedToBy(IShapeFunc<T> func) {
+		return func.applyToCircle(this);
+	}
+}
+
+class Rect implements IShape {
+	public <T> beAppliedToBy(IShapeFunc<T> func) {
+		return func.applyToRect(this);
+	}
+}
+
+class Square implements IShape {
+	public <T> beAppliedToBy(IShapeFunc<T> func) {
+		return func.applyToSquare(this);
+	}
+}
+
+class ExamplesShape {
+	IList<IShape> shapes = ....;
+	IList<Double> perims = shapes.map(new Shape2Perim());
+}
