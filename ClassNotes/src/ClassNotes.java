@@ -1135,10 +1135,10 @@ boolean isSquare();
 Square asSquare();
 
 boolean isCirlce();
-boolean asCircle();
+Circle asCircle();
 
 boolean isRect();
-boolean asRect();
+Rect asRect();
 
 //Circle is-a IShape
 int rad;
@@ -1168,10 +1168,10 @@ public boolean sameShape(IShape that) {
 }
 
 public boolean isCircle() {return true;}
-public boolean asCircle() {return this;}
+public Circle asCircle() {return this;}
 
 public boolean isRect() {return false;}
-public boolean asRect() {throw new ClassCastException("Circle isn't a Rect");}
+public Rect asRect() {throw new ClassCastException("Circle isn't a Rect");}
 //Rect is-a IShape
 int w, h;
 
@@ -1532,4 +1532,77 @@ class AndThen implements IRunnerComperator {
 			return this.c2.compare(r1, r2);
 		}
 	}
+}
+
+// ============================================================================>
+// 2/25/15
+// Theres a class called Random that can be made  
+// r.nextInt() -> int
+// r.nextInt(6) -> int from 0 - 5
+// new Random([seed can go here]) -> same seed equals same random number
+// CANNOT CREATE A LIST OF INTS DOUBLES OR BOOLEANS 
+// OBJECTS NOT PRIMITIVES 
+// Integer(), Double(), Boolean()
+
+interface IPred<X> {
+	boolean apply(X x);
+}
+
+interface IComperator<X> {
+	int compare(X x1, X x2); 
+}
+
+interface IFunc<A, R> {
+	<R> apply(A arg);
+}
+
+interface IFunc2<A1, A2, R> {
+	R apply(A1 arg1, A2 arg);
+}
+
+//Listof X <-- that's a type variable
+// Parametric or generic interface
+// Normally use <T> not <X> for Type 
+interface IList<X> {
+	int len();
+	IList<X> filter(IPred<X> pred);
+	IList<X> sortBy(IComparetor<X> comp);
+	<Y> /*<-- Declards type for Y*/ IList<Y> map(IFunc<X, Y> func);
+	<Y> <Y> foldr(IFunc2<X, Y, Y> func, Y base) 	
+}
+
+class Empty<X> implements IList<X> {
+	Empty() { }
+	
+	public int len() {
+		return 0;
+	}
+	
+	public <Y> IList<Y> map(IFunc<X, Y> func) {
+		return new Empty<Y>();
+	}	
+}
+
+class Cons<X> implements IList<X> {
+	X first;
+	IList<X> rest;
+	
+	Cons(X first, IList<X> rest) {
+		this.first = first;
+		this.rest = rest;
+	}
+	
+	public int len() {
+		return 1 + this.rest.len();
+	}
+	
+	public <Y> IList<Y> map(IFunc <X, Y> func) {
+		return new Cons<Y>(func.apply(this.first), this.rest.map(func);
+	}
+}
+
+class ExamplesParameterized {
+	IList test = new Cons<String>("hello",
+													new Cons<String>("world",
+																new Empty<String>))
 }
