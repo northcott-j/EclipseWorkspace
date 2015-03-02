@@ -1698,3 +1698,41 @@ class ExamplesShape {
 	IList<IShape> shapes = ....;
 	IList<Double> perims = shapes.map(new Shape2Perim());
 }
+
+// ================================================================>
+// 3/2/15
+/*
+Book =
+String title
+int price
+Author author
+
+Author =
+String name
+int yob
+Book book
+*/
+
+class Book {
+	/*
+	FIELDS
+	*/
+	
+	Book(String title, int price, Author author) {
+		this.title = title;
+		this.price = price;
+		this.author = author;
+		author.book = this;
+	} 
+}
+
+//BAD
+Book htdp = new Book("HtDP", 0, 
+										  new Author("MP", 1950, 
+										  new Book("HtDP", 0, ....)));
+										  
+Book htdp2 = new Book("HtDP", 0,
+												new Author("MF", 1950, null))
+			 this.htdp.author.book = this.htdp; // Assignment Statement = the power of generative recursion
+			 // An Assignment Statement is a mutation 
+			 // This brings up the idea of aliasing 
