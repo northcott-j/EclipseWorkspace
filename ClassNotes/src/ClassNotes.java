@@ -1736,3 +1736,73 @@ Book htdp2 = new Book("HtDP", 0,
 			 this.htdp.author.book = this.htdp; // Assignment Statement = the power of generative recursion
 			 // An Assignment Statement is a mutation 
 			 // This brings up the idea of aliasing 
+			 
+// =====================================================================>
+// 3/4/15
+
+// Sidenote for lab
+interface IListVisitor<T, R> {
+	R visitCons(Cons<T> cons);
+}
+
+// MUTATION - create cycles of data
+Book b1 = new Book("HP7", 20.99, null);
+Author a1 = new Author("Rowling", 1966, b1);
+					b1.author = a1; // Takes place of null
+
+Book b2 = new Book("HP7", 20.99, null);
+Author a2 = new Author("Rowling", 1966, b2);
+     b2.author = b2;
+
+// Now how do we do equality?
+// If a method has a side effect, need purpose and affect
+class Counter {
+	int value;
+	Counter() {
+		this.vaule = 0;
+	
+	// Tick counter up by one = purpose
+	// EFFECT: Changes this.value
+	// No effect = no modify
+	// Effect = modify just this
+	int next() {
+		this.value = this.value + 1;
+		return this.value; 
+	}
+}
+
+class Examples {
+	Counter c1 = new Counter();
+	Counter c2 = new Counter();
+	// EFFECT initializes the data
+	// No return - no types
+	void initializeCounters() {
+		this.c1 = new Counter(5);
+		this.c2 = new Counter(5);
+	}
+/*	Counter x1 -> 1
+	Counter x2 -> 1
+	Counter x3 -> 2
+	Counter x4 -> x1
+THE ABOVE ARE COUNTEREXAMPLES */
+
+// To test give counter an initialVal
+// And define within method to give finite lifetimes
+//SETUP -> TWEAK -> TEST
+// Initialize test state, modify state, test side effects happens
+
+boolean testCounter(Tester t) {
+		// Counter c = new Counter();
+		// Use initializeCounters() instead
+		return t.checkExpect(c.next(), c.next());
+		// False because I've stashed a hidden field in the second c
+		}
+
+	boolean testCounterS(Counter c1, Counter c2, Tester t) {
+		return t.checkExpect(c1.next(), c2.next());
+		// See counterexamples
+		}
+		
+		// TESTS NOW RETURN VOID AND NO NEED FOR RETURN
+	}
+}
