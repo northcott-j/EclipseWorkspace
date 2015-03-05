@@ -1806,3 +1806,44 @@ boolean testCounter(Tester t) {
 		// TESTS NOW RETURN VOID AND NO NEED FOR RETURN
 	}
 }
+
+//============================================================>
+// 3/5/15
+// Incomplete Notes: Didn't really pay attention
+
+class Book {
+	Book(String title, Author author) {
+		this.title = title;
+		this.author = author;
+		this.author.updateBook(this);
+	}
+}
+
+// Under Author
+// EFFECT Modifies this authors book
+void updateBook(Book b) {
+	this.book = b;
+}
+// Want to check if the author is the same as books author
+// How do you check equality?
+
+// Extensional Equality
+// Do two values have the same extent?
+// (have the same fields)
+
+// Intentional Equality
+// Are two values identically the same value?
+// Use == to check INTENTIONAL EQUALITY
+
+class Person {
+	string name;
+	int phone;
+	void updatePhone(int num) {
+		this.phone = num;
+	}
+}
+
+interface ILoPerson {
+	int findPhoneNum(String name);
+	boolean contains(String name);
+}
