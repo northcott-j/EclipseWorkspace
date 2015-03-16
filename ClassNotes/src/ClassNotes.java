@@ -1847,3 +1847,39 @@ interface ILoPerson {
 	int findPhoneNum(String name);
 	boolean contains(String name);
 }
+
+// ===========================================================>
+// 3/16/15
+// Can't alias a list due to unintended consequences 
+
+// HOW TO TEST MUTATING METHOD
+
+void testRemove(Tester t) {
+	// Setup (Knows that the list contains what we want it to)
+	this.setupPhoneLists();
+	
+	// Do the mutation
+	this.work.remove("Bob");
+	
+	// Test side effects
+	// Use predicate rather than create another alias
+	t.checkExpect(this.work.contains("Bob"), false);
+}
+
+// A Sentinel node stands guard at the edge cases
+// One at the end is like empty
+// One  in front makes nodes have a previous and a rest -> all middle 
+// A Sentinel falls under the interface 
+// Super class above Sentinel and ConsLoPerson that contains rest
+// e.g. APersonNode has-a rest which is an ILoPerson
+
+/*
+Sentinel is to make front not be special
+Empty is to make the end not so special
+Cons connects data
+ANode is a Cons or a Sentinel
+ILoPerson is a Cons or an Mt
+
+Now we need another layer above it all to hide everything but Cons
+
+*/
