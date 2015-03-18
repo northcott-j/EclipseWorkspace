@@ -1883,3 +1883,39 @@ ILoPerson is a Cons or an Mt
 Now we need another layer above it all to hide everything but Cons
 
 */
+
+// ===============================================================>
+// 3/18/15
+// MutableList<T> is a class
+// Contains the Sentinel<T> as a header 
+// Wrapper delegates through the sentinel to the data we actually care about
+// This is an example of incapsilation - hide all irrelevant data
+// The above allows for the access of fields of field
+// ArrayList<T> 
+class ArrayUtils {
+	<T, U> ArrayList<U> map(ArrayList<T> src, IFunc<T,U> func) {
+		ArrayList<U> dest = new ArrayList<U>();
+		mapHelp(src, dest, func, 0);
+		return dest;	
+	}
+	
+	<T, U> void mapHelp(ArrayList<T> src, ArrayList<U> dest, IFunc<T, U> func, int index) {
+		if (index >= src.size()) {
+			return;
+		}
+		else {
+		dest.addToBack(func.apply(src.get(index)));
+		mapHelp(src, dest, func, index + 1);
+		}
+	}
+}
+
+// Another way to implement map
+<T, U> ArrayList<U> map2(ArrayList<T> src, IFunc<T,U> func) {
+	ArrayList<U> result = new ArrayList<U>();
+	for (T t : src) {
+		result.addToBack(func.apply(t));
+	}
+	return result;
+	// This is called a for-each loop
+}
