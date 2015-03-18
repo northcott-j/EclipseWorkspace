@@ -164,6 +164,7 @@ class Text implements IItem {
         this.contents = contents;
     }
 
+<<<<<<< HEAD
     /*  TEMPLATE
      * Fields
      * this.contents --- String
@@ -292,6 +293,155 @@ class Paragraph extends Text {
         super(contents);
     }
 
+=======
+>>>>>>> ed7807fd5e8fe3d969fc62a46adece5d6a6b76f5
+    /*  TEMPLATE
+     * Fields
+     * this.contents --- String
+     * 
+     * Methods
+     * this.sameItem(IItem that) --- boolean
+     * this.isImage() --- boolean
+     * this.isLink() --- boolean
+     * this.isText() --- boolean
+     * this.isHeader() --- boolean
+     * this.isParagraph() --- boolean
+     * this.asImage() --- Image
+     * this.asLink() --- Link
+     * this.asText() --- Text
+     * this.asHeader() --- Header
+     * this.asParagraph() --- Paragraph
+     */
+
+<<<<<<< HEAD
+    // Is this Paragraph the same as that IItem?
+    public boolean sameItem(IItem that) {
+        if (that.isParagraph()) {
+            Paragraph pThat = that.asParagraph();
+            return this.contents.equals(pThat.contents);
+=======
+    // Is this Text the same as that IItem?
+    public boolean sameItem(IItem that) {
+        if (that.isText()) {
+            Text tThat = that.asText();
+            return this.contents.equals(tThat.contents);
+>>>>>>> ed7807fd5e8fe3d969fc62a46adece5d6a6b76f5
+        }
+        else {
+            return false;
+        }
+    }
+<<<<<<< HEAD
+    // Is this a Paragraph?    
+    public boolean isParagraph() {
+        return true;
+    }
+    // Cast this as a Header    
+    public Paragraph asParagraph() {
+=======
+
+    // Is this an Image?
+    public boolean isImage() {
+        return false;
+    }
+    // Is this a Link?    
+    public boolean isLink() {
+        return false;
+    }
+    // Is this a Text?    
+    public boolean isText() {
+        return true;
+    }
+    // Cast this as an Image    
+    public Image asImage() {
+        throw new ClassCastException("This is a Text not an Image");
+    }
+    // Cast this as a Link    
+    public Link asLink() {
+        throw new ClassCastException("This is a Text not a Link");
+    }
+    // Cast this as a Text    
+    public Text asText() {
+        return this;
+    }
+    // Is this a Header?
+    public boolean isHeader() {
+        return false;
+    }
+    // Is this a Paragraph?
+    public boolean isParagraph() {
+        return false;
+    }
+    // Cast this as a Header
+    public Header asHeader() {
+        throw new ClassCastException("This is a Text not a Header");
+    }
+    // Cast this as a Paragraph
+    public Paragraph asParagraph() {
+        throw new ClassCastException("This is a Text not a Paragraph");
+    }
+}
+
+class Header extends Text {
+    Header(String contents) {
+        super(contents);
+    }
+
+    /*  TEMPLATE
+     * Fields
+     * this.contents --- String
+     * 
+     * Methods
+     * this.sameItem(IItem that) --- boolean
+     * this.isImage() --- boolean
+     * this.isLink() --- boolean
+     * this.isText() --- boolean
+     * this.isHeader() --- boolean
+     * this.isParagraph() --- boolean
+     * this.asImage() --- Image
+     * this.asLink() --- Link
+     * this.asText() --- Text
+     * this.asHeader() --- Header
+     * this.asParagraph() --- Paragraph
+     */
+
+    // Is this Header the same as that IItem?
+    public boolean sameItem(IItem that) {
+        if (that.isHeader()) {
+            Header hThat = that.asHeader();
+            return this.contents.equals(hThat.contents);
+        }
+        else {
+            return false;
+        }
+    }
+    // Is this a Header?    
+    public boolean isHeader() {
+        return true;
+    }
+    // Cast this as a Header    
+    public Header asHeader() {
+>>>>>>> ed7807fd5e8fe3d969fc62a46adece5d6a6b76f5
+        return this;
+    }
+    // Is this a Text?
+    public boolean isText() {
+        return false;
+    }
+
+    // Cast as a Text
+    public Text asText() {
+<<<<<<< HEAD
+=======
+        throw new ClassCastException("This is a Header not a Text");
+    }
+}
+
+class Paragraph extends Text {
+    Paragraph(String contents) {
+        super(contents);
+    }
+
     /*  TEMPLATE
      * Fields
      * this.contents --- String
@@ -335,6 +485,7 @@ class Paragraph extends Text {
 
     // Cast as a Text
     public Text asText() {
+>>>>>>> ed7807fd5e8fe3d969fc62a46adece5d6a6b76f5
         throw new ClassCastException("This is a Paragraph not a Text");
     }
 }
@@ -570,6 +721,9 @@ class ExamplesWebPage {
             )
         )
     );
+<<<<<<< HEAD
+
+=======
     
     boolean testSameItem(Tester t) {
         return  t.checkExpect(t1.sameItem(h1), false)
@@ -646,6 +800,7 @@ class ExamplesWebPage {
                         "asImage");
   
     }
+>>>>>>> ed7807fd5e8fe3d969fc62a46adece5d6a6b76f5
 
 
 
