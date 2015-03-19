@@ -1919,3 +1919,59 @@ class ArrayUtils {
 	return result;
 	// This is called a for-each loop
 }
+
+// ==================================================================================>
+// 3/19/15
+// Foldl over an array list with a for each loop
+// Have to go into an ArrayUtils class
+<T, R> R foldl(ArrayList<T> src, IFunc2<T, R, R> func, R base) {
+	R result = base;
+	for(T t : src) {
+		result = func.apply(t, result);
+	}
+	return result;
+}
+
+// This is foldr - couonted for loops
+<T, R> R foldr(ArrayList<T> src, IFunc2<T, R, R> func, R base) {
+	R result = base;
+	for(int index = src.size() - 1/*start*/;index >= 0/*end condition*/; index = index - 1/*update to make progress*/) {
+		result = func.apply(src.get(index), result);
+	}
+	return result;
+}
+
+// Find
+<T> int find(ArrayList<T> haystack, T needle) {
+	for(int index = 0; index < haystack.size(); index t = 1) {
+		if(needle.equals(haystack.get(index))) {
+			return index;
+		}
+	}
+	return -1;
+}
+
+// Binary search
+int binSearch(ArrayList<String> haystack, String needle) {
+	return binSearchHelp(haystack, needle, 0, haystack.size())
+}
+
+// search in the interval [loIdx, hiIdx)
+int binSearchHelp(ArrayList<String> haystack, String needle, int loIdx, int hiIdx) {
+	if(loIdx >= hiIdx) {
+		return -1;
+	}
+	
+	int midIdx = (loIdx + hiIdx) / 2;
+	String mid = haystack.get(mid)
+	
+	else if(needle.equals(mid)) {	
+		return midIdx;
+	}
+	else if(needle.compareTo(mid) < 0) {
+		return binSearchHelp(haystack, needle, loIdx, midIdx/*Exclusive so don't change*/);
+	}
+	else {
+		return binSearchHelp(haystack, needle, midIdx + 1 /*Bump up because inclusive*/, hiIdx);
+	}
+}
