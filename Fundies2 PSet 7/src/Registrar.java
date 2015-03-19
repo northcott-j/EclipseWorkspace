@@ -171,7 +171,7 @@ class Instructor {
      * this.courses.howMany( ... ) ...
      */
     
-    // determines whether the given Student is in more than one of this Instructor’s Courses
+    // determines whether the given Student is in more than one of this Instructor���s Courses
     boolean dejavu(Student c) {
         return this.courses.howMany(c) > 1;
     }
@@ -182,22 +182,11 @@ class Instructor {
 class ExamplesRegistrar {
     // == EXAMPLES ==
     // examples of students
-    Student jesus = new Student("Jesus", 1, this.loc1);
-    Student abraham = new Student("Abraham", 41, this.loc2);
-    Student job = new Student("Job", 18, this.loc3);
-    Student noah = new Student("Noah", 23, this.loc4);
-    Student moses = new Student("Moses", 69, this.loc5);
-    // examples of courses
-    Course c1 = new Course("Arch Building", this.god, this.los1);
-    Course c2 = new Course("Math", this.pythagoras, this.los2);
-    Course c3 = new Course("Public Speaking", this.god, this.los3);
-    Course c4 = new Course("Philosophy", this.plato, this.los4);
-    Course c5 = new Course("Dejavu", this.god, this.los5);
-    // examples of instructors
-    Instructor god = new Instructor("God", new ConsLOC(c1, new ConsLOC(c3, 
-            new ConsLOC(c5, this.mtloc))));
-    Instructor pythagoras = new Instructor("Pythagoras", new ConsLOC(c2, this.mtloc));
-    Instructor plato = new Instructor("Plato", new ConsLOC(c4, this.mtloc));
+    Student jesus = new Student("Jesus", 1, null);
+    Student abraham = new Student("Abraham", 41, null);
+    Student job = new Student("Job", 18, null);
+    Student noah = new Student("Noah", 23, null);
+    Student moses = new Student("Moses", 69, null);
     // examples of lists of students
     LOS mtlos = new MtLOS();
     LOS los1 = new ConsLOS(noah, mtlos);
@@ -206,13 +195,38 @@ class ExamplesRegistrar {
     LOS los4 = new ConsLOS(jesus, new ConsLOS(abraham, new ConsLOS(job, 
             new ConsLOS(moses, mtlos))));
     LOS los5 = new ConsLOS(jesus, mtlos);
-    // examples of lists of courses
+    // examples of courses
+    Course c1 = new Course("Arch Building", this.god, this.los1);
+    Course c2 = new Course("Math", this.pythagoras, this.los2);
+    Course c3 = new Course("Public Speaking", this.god, this.los3);
+    Course c4 = new Course("Philosophy", this.plato, this.los4);
+    Course c5 = new Course("Dejavu", this.god, this.los5);
+    // examples of instructors
     LOC mtloc = new MtLOC();
+    Instructor god = new Instructor("God", new ConsLOC(c1, new ConsLOC(c3, 
+            new ConsLOC(c5, this.mtloc))));
+    Instructor pythagoras = new Instructor("Pythagoras", new ConsLOC(c2, this.mtloc));
+    Instructor plato = new Instructor("Plato", new ConsLOC(c4, this.mtloc));
+
+    // examples of lists of courses
     LOC loc1 = new ConsLOC(c2, new ConsLOC(c3, new ConsLOC(c4, new ConsLOC(c5, mtloc))));
     LOC loc2 = new ConsLOC(c3, new ConsLOC(c4, mtloc));
     LOC loc3 = new ConsLOC(c2, mtloc);
     LOC loc4 = new ConsLOC(c1, new ConsLOC(c4, mtloc));
     LOC loc5 = new ConsLOC(c3, new ConsLOC(c4, mtloc));
+    
+    void setData() {
+        this.jesus.courses = this.loc1;
+        this.abraham.courses = this.loc2;
+        this.job.courses = this.loc3;
+        this.noah.courses = this.loc4;
+        this.moses.courses = this.loc5;
+        this.c1.prof = this.god;
+        this.c2.prof = this.pythagoras;
+        this.c3.prof = this.god;
+        this.c4.prof = this.plato;
+        this.c5.prof = this.god;
+    }
     
     // == TESTS ==
     // tests the sameStudent method
@@ -241,6 +255,7 @@ class ExamplesRegistrar {
     }
     // tests the classmates method
     void testClassmates(Tester t) {
+        this.setData();
         t.checkExpect(moses.classmates(abraham), true);
         t.checkExpect(jesus.classmates(job), true);   
         t.checkExpect(abraham.classmates(moses), true);
@@ -249,6 +264,7 @@ class ExamplesRegistrar {
     
     // tests the losContains method
     void testLOSContains(Tester t) {
+        this.setData();
         t.checkExpect(los1.losContains(noah), true);
         t.checkExpect(los2.losContains(abraham), false);
         t.checkExpect(los3.losContains(moses), true);
@@ -257,6 +273,7 @@ class ExamplesRegistrar {
     }
     // tests the courseContains method
     void testCourseContains(Tester t) {
+        this.setData();
         t.checkExpect(c1.courseContains(noah), true);
         t.checkExpect(c2.courseContains(abraham), false);
         t.checkExpect(c3.courseContains(moses), true);
@@ -266,13 +283,15 @@ class ExamplesRegistrar {
       
     // tests the howMany method
     boolean testHowMany(Tester t) {
+        this.setData();
         return t.checkExpect(loc3.howMany(abraham), 0) &&
-                t.checkExpect(loc1.howMany(jesus), 3) && 
+                t.checkExpect(loc1.howMany(jesus), 4) && 
                 t.checkExpect(loc4.howMany(moses), 1) &&
                 t.checkExpect(loc2.howMany(job), 1);
     }
     // tests the locContains method
     boolean testLocContains(Tester t) {
+        this.setData();
         return t.checkExpect(loc1.locContains(c1), false) &&
                 t.checkExpect(loc2.locContains(c2), false) && 
                 t.checkExpect(loc3.locContains(c2), true) &&
@@ -280,6 +299,7 @@ class ExamplesRegistrar {
     }
     // tests the losContains method
     boolean testLosContains(Tester t) {
+        this.setData();
         return t.checkExpect(los1.losContains(abraham), false) &&
                 t.checkExpect(los2.losContains(moses), false) && 
                 t.checkExpect(los3.losContains(abraham), true) &&
@@ -287,6 +307,7 @@ class ExamplesRegistrar {
     }
     // tests the dejavu method
     boolean testDejavu(Tester t) {
+        this.setData();
         return t.checkExpect(pythagoras.dejavu(moses), false) &&
                 t.checkExpect(god.dejavu(jesus), true);
     }
