@@ -1975,3 +1975,91 @@ int binSearchHelp(ArrayList<String> haystack, String needle, int loIdx, int hiId
 		return binSearchHelp(haystack, needle, midIdx + 1 /*Bump up because inclusive*/, hiIdx);
 	}
 }
+
+//======================================================================>
+// 3/23/15
+/*
+0 = kiwi
+1 = cherry
+2 = apple
+3 = date
+4 = banana
+5 = fig
+*/
+
+int findMin(ArrayList<String> source, int startIndex) {
+	int minIndex = startIndex;
+	for(int cur = startIndex + 1; cur < source.size(); cur+=1) {
+		if(source.get(cur).compareTo(source.get(minIndex)) < 0) {
+			minIndex = cur;
+		}
+		return minIndex;
+	}
+}
+
+<T> void swap(ArrayList<T> source, int from, int to) {
+	// Saves the old value
+	T temp = source.get(from);
+	source.set(from, source.get(to));
+	source.set(to, temp);
+}
+
+void selectionSort(ArrayList<String> source) {
+	for(int index = 0; index < source.size(); index+=1) {
+		int minIndex = findMin(source, index);
+		swap(source, index, minIndex);
+	}
+}
+
+<T> ArrayList<T> buildList(int length, IFunc<Integer, T> func) {
+	ArrayList<T> result = new ArrayList<T>();
+	for(int index = 0; index < length; index+=1) {
+		result.add(func.apply(index));
+	}
+	return result;
+}
+
+/*Differences in mutating objects and mutating variables*/
+// Two Possible side effects:
+// Mutates the books in the list or ->
+// Mutates the list 
+// This tells the book to capitalize its title
+// If instead a new book was made, no mutation happens 
+void capitalizeTitles(ArrayList<Books> books) {
+	// Mutates book the list refers to
+	for(Book b : books) {
+		// Separate method to avoid being invasive - books class should modify books
+		b.capitalizeYourself();
+	}
+	
+	// or
+	// Mutates list
+	for(int index = 0; index < books.size(); index+=1) {
+		books.set(index, books.get(index).capitalize());
+	}
+		
+}
+
+// in Books
+void capitalizeYourself() {
+	this.title = this.title.toUppercase();
+}
+
+Book capitalize() {
+	new Book(this.author, this.title.toUppercase());
+}
+
+// While loop
+// Don't know how long this will take loop
+boolean getsToOne(int n) {
+	int cur = n;
+	while(cur != 1) {
+		if(cur % 2 == 0) {
+			cur = cur / 2;
+		}
+		else {
+			cur = 3 * cur + 1;
+		}
+		return true;
+	}
+}
