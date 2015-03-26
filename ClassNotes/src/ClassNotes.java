@@ -2075,3 +2075,74 @@ interface Iterator<T> {
 	boolean hasNext();
 	T next();
 }
+
+// ==========================================================>
+// 3/26/15
+
+// Upper bound is exclusive
+class EvensUpToN implements Iterator<Integer> {
+	int N;
+	int cur;
+	
+	EvenUpToN(int N) {
+		this.N = N;
+		this.cur = 0;
+	}
+	
+	public boolean hasNext() {
+		return this.cur < this.N;
+	}
+	
+	public Integer next() {
+		if(!this.hasNext()) {
+			throw new Exception....
+		}
+		else {
+			int result = this.cur;
+			this.cur += 2;
+			return result;
+		}
+	}
+}
+
+class MergeIter<T> implements Iterator<T> {
+	Iterator<T> as, bs;
+	boolean onAs=true;
+	
+	public boolean hasNext() {
+		return as.hasNext() || b.hasNext();
+	}
+	
+	public T next() {
+		// blow up case
+		if (onAs) {
+			onAs = false;
+			if(as.hasNext()) {
+				return as.next();
+			} else {
+				return bs.next();
+			}
+		}
+		else {
+			onAs = true;
+			if(bs.hasNext()) {
+				return bs.next();
+			}
+			else {
+				return as.next();
+			}
+		}
+	}
+}
+
+// Binary tree of strings -> iterator on strings 
+// ABCDEFG breadth-first HARD
+// HDIBEAJFKCLGMNO in-order 1 -> 2 -> 3 HARDEST 
+// ABDHIECFJKGLMNO depth-first 2 -> 1 -> 3 pre-order HARD
+// HIDEBJKFLNOMGCA  1 -> 3 -> 2 post-order
+
+// breadth-search
+// pull off front - add to back of to-do
+
+// depth-search
+// pull off front - add to front of to-do
