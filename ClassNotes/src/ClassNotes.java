@@ -2063,3 +2063,15 @@ boolean getsToOne(int n) {
 		return true;
 	}
 }
+
+// ==================================================================>
+// 3/25/15
+// Iterations 
+interface Iterable<T> {
+	Iterator<T> getIterator();
+}
+
+interface Iterator<T> {
+	boolean hasNext();
+	T next();
+}
