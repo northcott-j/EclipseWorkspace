@@ -2146,3 +2146,75 @@ class MergeIter<T> implements Iterator<T> {
 
 // depth-search
 // pull off front - add to front of to-do
+
+// ============================================================>
+// 3/30/15
+// Random displacement terrain generation
+class BFIterator<T> implements Iterator<T> {
+	Deque<Node<T>> worklist;
+	BFIterator(Node<T> root) {
+		this.worklist = new Deque<Node<T>>();
+		this.worklist.addToFront(root);
+	}
+	public boolean hasNext() {
+		return !this.worklist.isEmpty();
+	}
+	
+	// stack = put and take off top
+	// q = add and remove from end
+	// deque = double ended q
+	
+	// TO MAKE Depth search -> add to front not back
+	// Right first then left for depth
+	public T next() {
+		if (!this.hasNext()) {// blow up
+		}
+		Node<T> next = worklist.removeFromFront();
+		if (next.left.isNode()) {
+			worklist.addToBack(next.left.asNode());
+		}
+		if (next.right.isNode()) {
+			worklist.addToBack(next.right.asNode());
+		}
+		return next.data;	
+	}
+}
+
+interface IDict<K,V> {
+	V lookup(K key);
+	void add(K key, V value);
+	V remove(K key);
+	int count();
+}
+
+// Hashtable / HashMap<K,V> is built in
+// Hash summarizes data 
+// Hashcode is quick disequality check 
+/*
+if equals returns true - haschode must be equal
+if hashcode returns two different numbers - can't be equal
+*/
+
+class Book {
+	String title;
+	Author author;
+	
+	public int hashCode() {
+		// these are all legit
+		return 4;
+		return this.author.hashCode();
+		return 37 * this.title.hashCode() + this.authorHashCode();	
+	}
+	
+	public boolean sameBook(Book other) {
+		return this.title.equals(other.title) &&
+							this.author.sameAuthor(other.author); 
+	}
+	
+	public boolean equals(Object other) {
+		if (!other instanceof Book) {
+			return false;
+		}
+		return this.sameBook((Book)other);
+	}
+}
