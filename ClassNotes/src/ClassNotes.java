@@ -2161,7 +2161,7 @@ class BFIterator<T> implements Iterator<T> {
 	}
 	
 	// stack = put and take off top
-	// q = add and remove from end
+	// q = add to end and remove from front
 	// deque = double ended q
 	
 	// TO MAKE Depth search -> add to front not back
