@@ -2218,3 +2218,103 @@ class Book {
 		return this.sameBook((Book)other);
 	}
 }
+
+// ========================================================================>
+// 4/6/15
+// Every row is completely flow EXCEPT
+// Last row that is left to right EQUALS
+// A good tree / full
+// PRIORITY QUEUE - A HEAP TREE
+
+/*
+       9                              9    
+     6   7   <- is good             5   7
+    1 5 2       not good ->        1 6 2
+*/
+
+
+/*
+ADDITION EXAMPLE :
+
+                *1*                                  80
+                                           60                   50
+                                      30        50         40        20
+                                    10  20    15
+                                               NEED TO ADD 70
+
+                *2*                                  80
+                                           60                   50
+                                      30        50         40        20
+                                    10  20    15  70
+                                            ADD 70 TO OPEN SPACE
+                                       PUT IN PLACE TO SAVE HEAP PROP
+
+                *3*                                  80
+                                           60                   50
+                                      30        70         40        20
+                                    10  20    15  50
+                                                 SWAP WITH 50
+                                                                                 BUBBLE HEAP UP = UPHEAP
+                *4*                                  80
+                                           70                   50
+                                      30        60         40        20
+                                    10  20    15  50
+                                               SWAP WITH 60
+*/
+/*
+REMOVAL EXAMPLE :
+
+                *1*                                  80
+                                           60                   50
+                                      30        50         40        20
+                                    10  20    15
+                                              NEED TO REMOVE 80
+
+                *2*                                  
+                                           60                   50
+                                      30        50         40        20
+                                    10  20    15  70
+                                          REMOVE ROOT and RETURN IT
+                                       PUT IN PLACE TO SAVE HEAP PROP
+
+                *3*                                  50
+                                           60                   50
+                                      30        70         40        20
+                                    10  20    15  
+                                              MOVE END NODE UP
+                                                                                 BUBBLE HEAP DOWN = DOWNHEAP
+                *4*                                  70
+                                           50                   50
+                                      30        60         40        20
+                                    10  20    15  
+                                                 SWAP DOWN
+                                                                                 BUBBLE HEAP DOWN = DOWNHEAP
+                *5*                                  70
+                                           60                   50
+                                      30        50         40        20
+                                    10  20    15  
+                                                 SWAP DOWN
+*/
+
+/*
+TO IMPLEMENT:
+- Label in Breadth first order
+- STORE IN AN ARRAYLIST USING SORTED INDICES 
+- Parent = n - 1 / 2 FLOORED
+- LN = 2n + 1
+- RN = 2n + 2
+
+EXAMPLE AS ARRAY:
+REMOVE MAX:
+70 60 50 30 50 40 20 10 20 15
+SWAP WITH END:
+15 60 50 30 50 40 20 10 20 70
+SWAP WITH GREATEST CHILD:
+60 15 50 30 50 40 20 10 20 70
+DOWNHEAP:
+60 50 50 30 15 40 20 10 20 70
+DOWNHEAP (IGNORE 70): 
+60 50 50 30 15 40 20 10 20 70 = DONE 
+BLOCK OFF END:
+60 50 50 30 15 40 20 10 20 | 70
+*/
