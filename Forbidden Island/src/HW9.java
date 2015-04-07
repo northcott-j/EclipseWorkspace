@@ -1,14 +1,11 @@
 import tester.*;
 
-import java.util.*;             // Arrays
-
+import java.util.*;             // Gives us Arrays
 import javalib.worldimages.*;   // images, like RectangleImage or OverlayImages
-import javalib.funworld.*;      // the abstract World class and the big-bang library
+import javalib.impworld.*;      // the abstract World class and the big-bang library
 import javalib.colors.*;        // Predefined colors (Red, Green, Yellow, Blue, Black, White)
-import javalib.worldcanvas.*;  // generic world canvas/background
-
+import javalib.worldcanvas.*;   // generic world canvas/background
 import java.awt.Color;          // Represents Colors
-
 
 
 //Represents the ability to produce a sequence of values // of type T, one at a time 
@@ -22,14 +19,13 @@ interface Iterator<T> {
     void remove();
 }
 
-
 //Represents anything that can be iterated over 
 interface Iterable<T> {
     //Returns an iterator over this collection 
     Iterator<T> iterator();
 }
 
-
+// Iterates over a list of Arrays
 class ArrayListIterator<T> implements Iterator<T> {
 
     ArrayList<T> aList;
@@ -40,17 +36,17 @@ class ArrayListIterator<T> implements Iterator<T> {
         this.nextIdx = 0;
 
     }
-
+    // Checks if there's a next item in the ArrayList iterable
     public boolean hasNext() {
         return nextIdx < this.aList.size();
 
     }
-
+    // Returns the next item in an Arraylist iterable
     public T next() {
 
         return aList.get(nextIdx);
     }
-
+    // Throws an exception if you try to remove from an ArrayList
     public void remove() {
         throw new UnsupportedOperationException("You can't do that!");
     }
@@ -63,10 +59,11 @@ class IListIterator<T> implements Iterator<T> {
     IListIterator(IList<T> list) {
         this.list = list;
     }
-
+    // Checks if the IList iterable has a next item
     public boolean hasNext() {
         return this.list.isCons();
     }
+    // Outputs the next item in the Ilist iterable
     public T next() {
 
         Cons<T> itemsAsCons = this.list.asCons();
@@ -74,10 +71,11 @@ class IListIterator<T> implements Iterator<T> {
         this.list = itemsAsCons.rest;
         return answer;
     }
+    // Throws an exception if you try to remove an item from the iterable
     public void remove() {
         throw new UnsupportedOperationException("Don't do this!");
     }
-    
+    // Draws a given list of cells  
     public WorldImage draw() {
         WorldImage boardImage1 = new RectangleImage(new Posn(0,0), 1, 1, Color.white);
         WorldImage boardImage2 = new RectangleImage(new Posn(0,0), 1, 1, Color.white);
@@ -106,9 +104,11 @@ class ICellListIterator implements Iterator<Cell> {
         this.list = list;
     }
 
+    // Checks if the iterable has a next item
     public boolean hasNext() {
         return this.list.isCons();
     }
+    // Outputs the iterable's current item
     public Cell next() {
 
         Cons<Cell> itemsAsCons = this.list.asCons();
@@ -116,10 +116,11 @@ class ICellListIterator implements Iterator<Cell> {
         //this.list = itemsAsCons.rest;
         return answer;
     }
+    // Throws an exception if you try to remove an item from an iterable
     public void remove() {
         throw new UnsupportedOperationException("Don't do this!");
     }
-    
+    // Floods the island when called (by 2 units)
     public IList<Cell> flood(int waterHeight) {
 
         IList<Cell> output = new Empty<Cell>();
@@ -147,18 +148,29 @@ class ICellListIterator implements Iterator<Cell> {
 
         return output;
     }
-    
-    public IList<Cell> elevate() {
+    // Elevates the 5 x 5 cell radius around a pilot
+    public IList<Cell> elevate(Person p) {
         IList<Cell> output = new Empty<Cell>();
         
         while(this.hasNext()) {
             Cell cell = this.next();
-            
-            cell.height = cell.height + 2;
-            output = output.insert(cell);
-            this.list = this.list.asCons().rest;
+
+            if(p.location.x <= (int)cell.x * 10 + 25 && 
+                    p.location.x >= (int)cell.x * 10 - 25 && 
+                    p.location.y <= (int)cell.y * 10 + 25 &&
+                    p.location.y >= (int)cell.y * 10 - 25) {
+
+                cell.height = cell.height + 2;
+                cell.isFlooded = false;
+                output = output.insert(cell);
+                this.list = this.list.asCons().rest;
+            }
+            else {
+                output = output.insert(cell);
+                this.list = this.list.asCons().rest;
+            }
         }
-        
+
         return output;
     }
 }
@@ -170,10 +182,12 @@ class ITargetListIterator implements Iterator<Target> {
     ITargetListIterator(IList<Target> list) {
         this.list = list;
     }
-
+    
+    // Checks if there is another item in the iterable
     public boolean hasNext() {
         return this.list.isCons();
     }
+    // Returns the current item in the iterable
     public Target next() {
 
         Cons<Target> itemsAsCons = this.list.asCons();
@@ -181,11 +195,12 @@ class ITargetListIterator implements Iterator<Target> {
         //this.list = itemsAsCons.rest;
         return answer;
     }
+    // Throws an exception if someone tries to remove from the interable
     public void remove() {
         throw new UnsupportedOperationException("Don't do this!");
     }
     
-
+    // Draws a list of targets
     public WorldImage draw(WorldImage world) {
 
 
@@ -198,14 +213,15 @@ class ITargetListIterator implements Iterator<Target> {
             background = background.overlayImages(nextImage);
             list = this.list.asCons().rest;
             
+            
         }
+        
         return new OverlayImages(world, background);
     }
-    
+    // Checks to see if the pilot has found any targets
     IList<Target> foundTargets(Person p) {
         
         IList<Target> output = new Empty<Target>();
-        
         while(this.hasNext()) {
             
             Target t = this.next();
@@ -224,7 +240,7 @@ class ITargetListIterator implements Iterator<Target> {
         return output;
         
     }
-    
+    // Checks if any targets are flooded
     boolean flooded(IList<Cell> board) {
         
         boolean b = false;
@@ -242,8 +258,6 @@ class ITargetListIterator implements Iterator<Target> {
     
 }
 
-
-
 // ArrayUtils class
 class ArrayUtils {
 
@@ -257,6 +271,53 @@ class ArrayUtils {
         }
         return board;
     }
+    
+
+    ArrayList<ArrayList<Cell>> terrainCells(ArrayList<ArrayList<Cell>> array, int oX, int oY, int width) {
+
+        if (width > 1) {
+            ArrayList<ArrayList<Cell>> temp = new ArrayList<ArrayList<Cell>>();
+            temp = this.quadAlgo(array, oX, oY, width);
+            temp = this.quadAlgo(temp, oX + width, oY, width);
+            temp = this.quadAlgo(temp, oX + width, oY + width, width);
+            temp = this.quadAlgo(temp, oX, oY + width, width);
+            temp = terrainCells(temp, oX, oY, width / 2);
+            temp = terrainCells(temp, oX + width, oY, width / 2);
+            temp = terrainCells(temp, oX + width, oY + width, width / 2);
+            temp = terrainCells(temp, oX, oY + width, width / 2);
+            return temp;
+        }
+        else {
+            return array;
+        }
+    }
+
+    ArrayList<ArrayList<Cell>> quadAlgo(ArrayList<ArrayList<Cell>> array, int oX, int oY, int width) {
+        //double rand = Math.random() * ForbiddenIslandWorld.ISLAND_SIZE;
+        Random rand = new Random();
+        double tL = array.get(oY).get(oX).height;
+        double tR = array.get(oY).get(oX + width).height;
+        double bR = array.get(oY + width).get(oX + width).height;
+        double bL = array.get(oY + width).get(oX).height;
+
+        // Top
+        array.get(oY).get(oX + width / 2).height = 
+                (rand.nextDouble() - rand.nextDouble()) * width + ((tL + tR) / 2);
+        // Right
+        array.get(oY + width / 2).get(oX + width).height = 
+                (rand.nextDouble() - rand.nextDouble()) * width + ((tR + bR) / 2);
+        // Bottom
+        array.get(oY + width).get(oX + width / 2).height = 
+                (rand.nextDouble() - rand.nextDouble()) * width + ((bL + bR) / 2);
+        // Left
+        array.get(oY + width / 2).get(oX).height = 
+                (rand.nextDouble() - rand.nextDouble()) * width + ((tL + bL) / 2);
+        // Middle
+        array.get(oY + width / 2).get(oX + width / 2).height =
+                (rand.nextDouble() - rand.nextDouble()) * width + ((tL + tR + bL + bR) / 4);
+        return array;
+    }
+
 }
 
 // interface to represent functions
@@ -269,16 +330,13 @@ interface IPred<P> {
     boolean apply(P pred);
 }
 
+// Represents all ILists (which are iterable)
 interface IList<T> extends Iterable<T>{
 
     // Inserts item into given list
     IList<T> insert(T t);
     // Appends two lists
     IList<T> append(IList<T> l);
-    // Maps function onto each item in given list
-    <U> IList<U> map(IFunc<T, U> func);
-    // Filters list using given predicate
-    IList<T> filter(IPred<T> func);
     // Accepts a given visitor
     <R> R accept(IListVisitor<T, R> visitor);
     // Returns the size of the list
@@ -307,16 +365,6 @@ class Empty<T> implements IList<T> {
         return l;
     }
 
-    // Maps function onto this list
-    public <U> IList<U> map(IFunc<T, U> func) {
-        return new Empty<U>();
-    }
-
-    // Filters through this list
-    public IList<T> filter(IPred<T> func) {
-        return this;
-    }
-
     // Accepts a visitor function object
     public <R> R accept(IListVisitor<T, R> visitor) {
         return visitor.visitM(this);
@@ -339,9 +387,7 @@ class Empty<T> implements IList<T> {
     public Cons<T> asCons() {
         throw new UnsupportedOperationException("Not a Cons!");
     }
-/*
 
-    */
     // Iterator for an ConsList
     public Iterator<T> iterator() {
         return new IListIterator<T>(this);
@@ -365,23 +411,6 @@ class Cons<T> implements IList<T> {
     // Appends two lists
     public IList<T> append(IList<T> l) {
         return new Cons<T>(this.first, this.rest.append(l));
-    }
-
-    //Maps a given function onto this list
-    public <U> IList<U> map(IFunc<T, U> func) {
-        return new Cons<U>(func.apply(this.first), this.rest.map(func));
-    }
-
-
-    // Filters this list using given pred
-    public IList<T> filter(IPred<T> func) {
-        if (func.apply(this.first)) {
-            return new Cons<T>(this.first, this.rest.filter(func));
-        }
-        else {
-            return this.rest.filter(func);
-        }
-
     }
 
     // Inserts item to front of given list
@@ -412,6 +441,7 @@ class Cons<T> implements IList<T> {
     public Iterator<T> iterator() {
         return new IListIterator<T>(this);
     }
+    
     // Checks if given location is not flooded
     public boolean legalLocation(Posn p) {
         
@@ -524,6 +554,7 @@ class Cell {
 
 }
 
+// Represents an Oceancell
 class OceanCell extends Cell {
 
 
@@ -542,7 +573,8 @@ class OceanCell extends Cell {
     boolean isCell() {
         return false;
     }
-
+    
+    // Draws the given cell
     WorldImage draw() {
         return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, Color.blue);
     }
@@ -576,6 +608,7 @@ class Person {
         }
     }
     
+    // Moves a person based on the given key
     Person moveOnKey(String ke, IList<Cell> board) {
         if (ke.equals("left") && this.legalLocation("left", board)) {
             location.x = location.x - 10;
@@ -598,12 +631,14 @@ class Person {
         }
     }
     
+    // Draws the pilot
     WorldImage draw() {
         WorldImage person = new FromFileImage(this.location, "pilot-icon.png");
         
         return person;
     }
     
+    // Checks if the person is on a flooded cell
     boolean flooded(IList<Cell> board) {
         
         return !board.legalLocation(this.location);
@@ -611,19 +646,18 @@ class Person {
         
     }
 
-
 }
 
 class Target {
    Posn location;
-   boolean isFound;
    
    Target(Posn location) {
        this.location = location;
-       this.isFound = false;
+       
    }
    
-   public WorldImage draw() {
+   // Draws the individual target
+   WorldImage draw() {
        
        return new CircleImage(location, 5, Color.black);
        
@@ -632,32 +666,56 @@ class Target {
    // Makes a list of 5 randomly placed targets
    public IList<Target> makeList() {
 
-
+           
            IList<Target> output = new Empty<Target>();
-
+           
            while(output.size() < 6) {
 
                Target t = new Target(new Posn((int)(Math.random() * 540),
                        (int)(Math.random() * 640)));
                
-               if(t.location.x > 200 && t.location.x < 700 &&
-                  t.location.y > 200 && t.location.y < 500) {
+               
+               if(Math.abs(ForbiddenIslandWorld.ISLAND_SIZE/2 * 10 - t.location.x) +
+                       Math.abs(ForbiddenIslandWorld.ISLAND_SIZE/2 * 10 - t.location.y) < 300){
 
                output = output.insert(t);
                }
            }
+           
            return output;
        }
-   }
-
    
+}
+
+// Represents the helicopter, which is the end game
+class HelicopterTarget extends Target {
+    
+    Posn location;
+    
+    HelicopterTarget(Posn location) {
+        super(location);
+    }
+    
+    // Draws the helicopter image
+    WorldImage draw() {
+        
+        return new FromFileImage(this.location, "helicopter.png");   
+    }
+}
 
 
 class ForbiddenIslandWorld extends World {
 
-    static final int ISLAND_SIZE = 64;
+    // Represents the Island Size
+    static int ISLAND_SIZE = 64;
+    // Represents a range of colors to be used to show Island cell height
     static final int RGB_INC = 255 / (ISLAND_SIZE / 2);
+    // Has the game started yet?
     static boolean INITIALIZED = false;
+    // Checks if end condition has been met
+    static boolean ENDED = false;
+    // Checks if game has been paused
+    static boolean PAUSED = false;
 
     // All the cells of the game, including the ocean
     IList<Cell> board;
@@ -689,9 +747,10 @@ class ForbiddenIslandWorld extends World {
     // Floods the island
     void floodIsland() {
         
+        //Eventually becomes the outputed list
         IList<Cell> output = new Empty<Cell>();
 
-        
+        //EFFECT : Adds each modified cell to the output list
         for(int count = 0 ; count < this.board.size() - 1 ; count+=1) {
             Cons<Cell> tempB = (Cons<Cell>)this.board;
             Cell cell = tempB.first;
@@ -715,60 +774,86 @@ class ForbiddenIslandWorld extends World {
     }
     
     // Changes the world for every tick
-    public ForbiddenIslandWorld onTick() {
+    public void onTick() {
         
-        
-        
+        ITargetListIterator itli = new ITargetListIterator(targets);
+        // Checks if game hasn't started yet
         if(!INITIALIZED) {
-            this.board = this.generateMountainCells();
+            this.board = this.generateMountainCellsTerrain();
             INITIALIZED = true;
             int tempTimer = timer + 1;
             timer = tempTimer;
-            return new ForbiddenIslandWorld(this.board, new Person(new Posn(320, 320)), targets);
+            person = new Person(new Posn(320, 320));
         }
+        // Checks if end condition has been met
+        else if (itli.flooded(board) || person.flooded(board)) {
+            ENDED = true;
+            board = new Empty<Cell>();
+        }
+        // Checks if game is paused
+        else if (PAUSED) {
+            // Stops the if statement from going on
+        }
+        // Adds to countup timer
         else if ((timer + 1) % 10 == 0) {
-        
-        ICellListIterator icli = new ICellListIterator(board);
-        board = icli.flood(waterHeight);    
-        //this.floodIsland();
-        return new ForbiddenIslandWorld(board, person, timer + 1, targets);
-        }
-        
-        else {
 
-            return new ForbiddenIslandWorld(board, person, timer + 1, targets);
+            ICellListIterator icli = new ICellListIterator(board);
+            board = icli.flood(waterHeight);    
+            //this.floodIsland();
+            timer = timer + 1;
+        }
+
+        else {
+            timer = timer + 1;
         }
         
     }
     
     // Moves Person for each key event or returns this new Island type
     //EFFECT : Changes board based on chosen Island type
-    
-    // Produces a new world for each key event
-    public ForbiddenIslandWorld onKeyEvent(String ke) {
+    public void onKeyEvent(String ke) {
         
         Target t = new Target(new Posn(0,0));
-        
-        if (ke.equals("m")) {
+        // Returns regular mountain
+        if (ke.equals("m") && !PAUSED) {
             this.board = this.generateMountainCells();
             timer = 0;
-            t.makeList();
+            targets = t.makeList();
+            person = new Person(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5));
+            ENDED = false;
         }
-        else if (ke.equals("r")) {
+        // Returns random mountain
+        else if (ke.equals("r") && !PAUSED) {
             this.board = this.generateMountainCellsRandom();
             targets = t.makeList();
             timer = 0;
+            person = new Person(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5));
+            ENDED = false;
         }
-        else if(ke.equals("b")) {
+        // Engineers up pilot's 5x5 region
+        else if(ke.equals("b") && !PAUSED) {
             this.board = this.engineerCells();
         }
-        else {
+        // Generates random terrain mountain
+        else if(ke.equals("t") && !PAUSED) {
+            this.board = this.generateMountainCellsTerrain();
+            timer = 0;
+            targets = t.makeList();
+            person = new Person(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5));
+            ENDED = false;
+        }
+        // Pauses the game
+        else if(ke.equals("p")) {
+            PAUSED = !PAUSED;
+        }
+        // Moves the player if not paused
+        else if (!PAUSED) {
             person = this.person.moveOnKey(ke, board);
             ITargetListIterator itli = new ITargetListIterator(targets);
             targets = itli.foundTargets(person);
         }
+
         
-        return this;
     }
     
     // Makes an image of the given world for each tick
@@ -781,25 +866,43 @@ class ForbiddenIslandWorld extends World {
 
         // Produces new IList of Cells
         IListIterator<Cell> ili = new IListIterator<Cell>(board);
-        //return ili.draw();
         
         WorldImage background = (ili.draw()).overlayImages(person.draw()).overlayImages(time);
-        
-        Target t = new Target(new Posn(0,0));
-        
-        //IList<Target> targetList = t.makeList();
-        
-        //targets = targetList;
-        
+                
         ITargetListIterator itli = new ITargetListIterator(targets);
         
-        return itli.draw(background);
-        // return background;
+        // Returns end image
+        if (ENDED) {
+            return new FromFileImage(new Posn(200, 200), "drowning.jpeg");
+        }
+        // Draws black paused screen
+        else if (PAUSED) {
+            WorldImage cover =
+                    new RectangleImage(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5),
+                            ISLAND_SIZE * 10, ISLAND_SIZE * 10, Color.black);
+            cover = new OverlayImages(itli.draw(background), cover);
+            WorldImage text = new TextImage(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5), "PAUSED", 39, 1, Color.white);
+            return new OverlayImages(cover, text);
+        }
+        // Draws world
+        else {
+            return itli.draw(background);
+            // return background;
+        }
+
       
     }
     
     // Generates the lists of lists of cells for Mountain world
+
+    // Generates the lists of lists of cells for Mountain world
     IList<Cell> generateMountainCells() {
+        if (ISLAND_SIZE % 2 == 0) {
+            
+        }
+        else {
+            ISLAND_SIZE = ISLAND_SIZE - 1;
+        }
         // Generates heights for Mountain
         ArrayList<ArrayList<Double>> heights = new ArrayList<ArrayList<Double>>();
         ArrayList<ArrayList<Cell>> cells = new ArrayList<ArrayList<Cell>>(); 
@@ -854,7 +957,7 @@ class ForbiddenIslandWorld extends World {
                     c.top = c;
                     c.bottom = cells.get(y + 1).get(x);                    
                 }
-                
+
                 else if (c.isCell()) {
                     c.left = cells.get(y).get(x - 1);
                     c.right = cells.get(y).get(x + 1);
@@ -863,28 +966,88 @@ class ForbiddenIslandWorld extends World {
                 }
             }
         }
-        
+
         ArrayUtils arrayUtils = new ArrayUtils();
         return arrayUtils.flatten(cells);
     }
 
-    
+
+
     // Generates the lists of lists of cells for Mountain world
     IList<Cell> generateMountainCellsTerrain() {
+        if (ISLAND_SIZE % 2 == 0) {
+            ISLAND_SIZE = ISLAND_SIZE + 1;
+        }
+        else {
+            
+        }
+        // CAN BE REWRITTEN IN TERMS OF MOUNTAIN
         // Generates heights for Mountain
+        ArrayList<ArrayList<Double>> heights = new ArrayList<ArrayList<Double>>();
         ArrayList<ArrayList<Cell>> cells = new ArrayList<ArrayList<Cell>>(); 
+        for(int y = 0 ; y < ISLAND_SIZE ; y+= 1) {
+            ArrayList<Double> row = new ArrayList<Double>();
+            for(int x = 0 ; x < ISLAND_SIZE  ; x+= 1) {
+                int manHeight = Math.abs((ISLAND_SIZE / 2) - x) + Math.abs((ISLAND_SIZE / 2) - y);
+                if (manHeight >= 32) {
+                    row.add((double)(ISLAND_SIZE / 2) - manHeight);
+                }
+                else {
+                    row.add(Math.abs((Math.random() * (double)(ISLAND_SIZE / 2) - manHeight)));
+                }
+            }
+            heights.add(row);
+        }
         // Generates the cells for a Mountain
-        for(int y = 0 ; y < ISLAND_SIZE + 1 ; y+= 1) {
+        for(int y = 0 ; y < ISLAND_SIZE ; y+= 1) {
             ArrayList<Cell> row = new ArrayList<Cell>();
-            for(int x = 0 ; x < ISLAND_SIZE + 1 ; x+= 1) {
-                    Cell temp = new Cell(19.0, x, y, false);
-                    row.add(temp);
+            for(int x = 0 ; x < ISLAND_SIZE ; x+= 1) {
+                double cellHeight = heights.get(y).get(x);
+                if (cellHeight <= 0) {
+                    OceanCell ocean = new OceanCell(cellHeight, x, y, true);
+                    row.add(ocean);
+                }
+                else {
+                    Cell land = new Cell(cellHeight, x, y, false);
+                    row.add(land);
+                }
             }
             cells.add(row);
         }
-        
+
+        cells.get(0).get(0).height = 0;
+        cells.get(0).get(ISLAND_SIZE - 1).height = 0;
+        cells.get(ISLAND_SIZE - 1).get(0).height = 0;
+        cells.get(ISLAND_SIZE - 1).get(ISLAND_SIZE - 1).height = 0;
+
+        cells.get(ISLAND_SIZE / 2).get(ISLAND_SIZE / 2).height = ISLAND_SIZE;
+
+        cells.get(0).get(ISLAND_SIZE / 2).height = 1;
+        cells.get(ISLAND_SIZE - 1).get(ISLAND_SIZE / 2).height = 1;
+        cells.get(0).get(ISLAND_SIZE - 1).height = 1;
+        cells.get(ISLAND_SIZE / 2).get(ISLAND_SIZE - 1).height = 1;
+
+        ArrayUtils arrayUtils = new ArrayUtils();
+        cells = arrayUtils.terrainCells(cells, 0, 0, ISLAND_SIZE / 2);
+
+        // Generates the cells for a Mountain
         for(int y = 0 ; y < ISLAND_SIZE ; y+= 1) {
-            for(int x = 0 ; x < ISLAND_SIZE ; x+=1) {
+            for(int x = 0 ; x < ISLAND_SIZE ; x+= 1) {
+                Cell cell = cells.get(y).get(x);
+                if (cell.height <= 0) {
+                    OceanCell ocean = new OceanCell(cell.height, x, y, true);
+                    cells.get(y).set(x, ocean);
+                }
+                else {
+                    Cell land = new Cell(cell.height, cell.x, cell.y, false);
+                    cells.get(y).set(x, land);
+                }
+            }
+        }
+
+        // Fixes Cell connections
+        for(int y = 1 ; y < ISLAND_SIZE ; y+= 1) {
+            for(int x = 1 ; x < ISLAND_SIZE ; x+=1) {
                 Cell c = cells.get(y).get(x);
                 if (c.x == 0 && c.isCell()) {
                     c.left = c;
@@ -910,7 +1073,7 @@ class ForbiddenIslandWorld extends World {
                     c.top = c;
                     c.bottom = cells.get(y + 1).get(x);                    
                 }
-                
+
                 else if (c.isCell()) {
                     c.left = cells.get(y).get(x - 1);
                     c.right = cells.get(y).get(x + 1);
@@ -919,29 +1082,20 @@ class ForbiddenIslandWorld extends World {
                 }
             }
         }
-        
-        cells.get(0).get(0).height = 0;
-        cells.get(0).get(ISLAND_SIZE + 1).height = 0;
-        cells.get(ISLAND_SIZE + 1).get(0).height = 0;
-        cells.get(ISLAND_SIZE + 1).get(ISLAND_SIZE + 1).height = 0;
-        
-        cells.get((ISLAND_SIZE + 1) / 2).get((ISLAND_SIZE + 1) / 2).height = ISLAND_SIZE;
-        
-        cells.get(0).get(ISLAND_SIZE / 2 + 1).height = 1;
-        cells.get(ISLAND_SIZE).get(ISLAND_SIZE / 2 + 1).height = 1;
-        cells.get(0).get(ISLAND_SIZE + 1).height = 1;
-        cells.get(ISLAND_SIZE / 2 + 1).get(ISLAND_SIZE).height = 1;        
-        
-        
-            
-        ArrayUtils arrayUtils = new ArrayUtils();
+
+
         return arrayUtils.flatten(cells);
     }
-    
-    
-    
+
+
     // Generates the lists of lists of cells for Mountain world
     IList<Cell> generateMountainCellsRandom() {
+        if (ISLAND_SIZE % 2 == 0) {
+            
+        }
+        else {
+            ISLAND_SIZE = ISLAND_SIZE - 1;
+        }
         // CAN BE REWRITTEN IN TERMS OF MOUNTAIN
         // Generates heights for Mountain
         ArrayList<ArrayList<Double>> heights = new ArrayList<ArrayList<Double>>();
@@ -950,9 +1104,9 @@ class ForbiddenIslandWorld extends World {
             ArrayList<Double> row = new ArrayList<Double>();
             for(int x = 0 ; x < ISLAND_SIZE  ; x+= 1) {
                 int manHeight = Math.abs((ISLAND_SIZE / 2) - x) + Math.abs((ISLAND_SIZE / 2) - y);
-                
+
                 if (manHeight >= 32) {
-                row.add((double)(ISLAND_SIZE / 2) - manHeight);
+                    row.add((double)(ISLAND_SIZE / 2) - manHeight);
                 }
                 else {
                     row.add(Math.abs((Math.random() * (double)(ISLAND_SIZE / 2) - manHeight)));
@@ -1004,7 +1158,7 @@ class ForbiddenIslandWorld extends World {
                     c.top = c;
                     c.bottom = cells.get(y + 1).get(x);                    
                 }
-                
+
                 else if (c.isCell()) {
                     c.left = cells.get(y).get(x - 1);
                     c.right = cells.get(y).get(x + 1);
@@ -1013,18 +1167,20 @@ class ForbiddenIslandWorld extends World {
                 }
             }
         }
-        
+
         ArrayUtils arrayUtils = new ArrayUtils();
         return arrayUtils.flatten(cells);
     }
 
+    
+    
     // Engineers cells to elevate
     IList<Cell> engineerCells() {
         ICellListIterator icli = new ICellListIterator(board);
-        return icli.elevate();
+        return icli.elevate(person);
     }
     
-    
+    /*
     public WorldEnd worldEnds() {
         
         ITargetListIterator itli = new ITargetListIterator(targets);
@@ -1038,13 +1194,19 @@ class ForbiddenIslandWorld extends World {
             return new WorldEnd(false, this.makeImage());
         }
     }
-}
 
+*/
+    
+}
 // Examples for the ForbiddenIslandGame
 class ExamplesFIGame {
-    
+
+    Cell c1 = new Cell(5.0, 320, 320, false);
+    IList<Cell> ilc = new Cons<Cell>(c1, new Empty<Cell>());
     Target t = new Target(new Posn(0,0));
-    ForbiddenIslandWorld f1 = new ForbiddenIslandWorld(new Empty<Cell>(), new Person(new Posn(320,320)), t.makeList());
-    
-    boolean runAnimation = this.f1.bigBang(640, 640, .5);
+    ForbiddenIslandWorld f1 = new ForbiddenIslandWorld(new Empty<Cell>(),
+            new Person(new Posn(320,320)), t.makeList());
+    {
+        this.f1.bigBang(640, 640, .5);
+    }
 }
