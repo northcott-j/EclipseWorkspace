@@ -1,10 +1,12 @@
 import tester.*;
 
 import java.util.*;             // Gives us Arrays
+
 import javalib.worldimages.*;   // images, like RectangleImage or OverlayImages
 import javalib.impworld.*;      // the abstract World class and the big-bang library
 import javalib.colors.*;        // Predefined colors (Red, Green, Yellow, Blue, Black, White)
 import javalib.worldcanvas.*;   // generic world canvas/background
+
 import java.awt.Color;          // Represents Colors
 
 
@@ -54,7 +56,7 @@ class ArrayListIterator<T> implements Iterator<T> {
 
 // Iterates over an IList
 class IListIterator<T> implements Iterator<T> {
-    
+
     IList<T> list;
     IListIterator(IList<T> list) {
         this.list = list;
@@ -85,7 +87,7 @@ class IListIterator<T> implements Iterator<T> {
             Cell c = (Cell)this.next();
             WorldImage cellImage = c.draw();
             if (count % 2 == 0) {
-            boardImage1 = new OverlayImages(boardImage1, cellImage);
+                boardImage1 = new OverlayImages(boardImage1, cellImage);
             }
             else {
                 boardImage2 = new OverlayImages(boardImage2, cellImage);
@@ -98,7 +100,7 @@ class IListIterator<T> implements Iterator<T> {
 
 // Iterates over an Ilist<Cell> 
 class ICellListIterator implements Iterator<Cell> {
-    
+
     IList<Cell> list;
     ICellListIterator(IList<Cell> list) {
         this.list = list;
@@ -132,12 +134,12 @@ class ICellListIterator implements Iterator<Cell> {
                     cell.top.isFlooded || 
                     cell.bottom.isFlooded || 
                     cell.right.isFlooded)) {
-                
+
                 cell.height = cell.height - waterHeight;
                 cell.isFlooded = true;
                 output = output.insert(this.next());
                 this.list = this.list.asCons().rest;
-                
+
             }
             else {
                 cell.height = cell.height - waterHeight;
@@ -151,7 +153,7 @@ class ICellListIterator implements Iterator<Cell> {
     // Elevates the 5 x 5 cell radius around a pilot
     public IList<Cell> elevate(Person p) {
         IList<Cell> output = new Empty<Cell>();
-        
+
         while(this.hasNext()) {
             Cell cell = this.next();
 
@@ -177,12 +179,12 @@ class ICellListIterator implements Iterator<Cell> {
 
 // Iterates over an IList<Target>
 class ITargetListIterator implements Iterator<Target> {
-    
+
     IList<Target> list;
     ITargetListIterator(IList<Target> list) {
         this.list = list;
     }
-    
+
     // Checks if there is another item in the iterable
     public boolean hasNext() {
         return this.list.isCons();
@@ -192,14 +194,13 @@ class ITargetListIterator implements Iterator<Target> {
 
         Cons<Target> itemsAsCons = this.list.asCons();
         Target answer = itemsAsCons.first;
-        //this.list = itemsAsCons.rest;
         return answer;
     }
     // Throws an exception if someone tries to remove from the interable
     public void remove() {
         throw new UnsupportedOperationException("Don't do this!");
     }
-    
+
     // Draws a list of targets
     public WorldImage draw(WorldImage world) {
 
@@ -212,50 +213,50 @@ class ITargetListIterator implements Iterator<Target> {
             WorldImage nextImage = next.draw();
             background = background.overlayImages(nextImage);
             list = this.list.asCons().rest;
-            
-            
+
+
         }
-        
+
         return new OverlayImages(world, background);
     }
     // Checks to see if the pilot has found any targets
     IList<Target> foundTargets(Person p) {
-        
+
         IList<Target> output = new Empty<Target>();
         while(this.hasNext()) {
-            
+
             Target t = this.next();
             if  (t.location.x >= p.location.x - 5 && t.location.x <= p.location.x + 5 &&
                     t.location.y >= p.location.y - 5 && t.location.y <= p.location.y + 5) {
                 this.list = this.list.asCons().rest;
-            // Removes target from list    
+                // Removes target from list    
             }
-            
+
             else {
                 output = output.insert(t);
                 this.list = this.list.asCons().rest;
             }
-            
+
         }
         return output;
-        
+
     }
     // Checks if any targets are flooded
     boolean flooded(IList<Cell> board) {
-        
+
         boolean b = false;
-        
+
         while(this.hasNext()) {
-            
+
             if(!board.legalLocation(this.next().location)) {
                 b = true;
             }
             this.list = this.list.asCons().rest;
-            
+
         }
         return b;
     }
-    
+
 }
 
 // ArrayUtils class
@@ -271,7 +272,7 @@ class ArrayUtils {
         }
         return board;
     }
-    
+
 
     ArrayList<ArrayList<Cell>> terrainCells(ArrayList<ArrayList<Cell>> array, int oX, int oY, int width) {
 
@@ -316,6 +317,52 @@ class ArrayUtils {
         array.get(oY + width / 2).get(oX + width / 2).height =
                 (rand.nextDouble() - rand.nextDouble()) * width + ((tL + tR + bL + bR) / 4);
         return array;
+    }
+
+    // CHEATS ===============================================>
+    // Sets engineer build count to given number 
+    String resetEngineer = "12345678";
+    // Turns water to wine
+    String waterToWine = "h202wine";
+    // Turns on God Mode
+    String godMode = "sgodvals";
+    // Sets Build Engineer to Unlimited
+    String buildInfinity = "infinidy";
+
+    boolean cheatEntered(ArrayList<String> keys) { 
+        // Index range of key array
+        int keySize = keys.size() - 1;
+        // Gets last eight keys (length of cheats)
+        String checkKeys = "";
+        if (keySize >= 7) {
+        for(int k = 7 ; k >= 0 ; k-=1) {
+           checkKeys = checkKeys + keys.get(k);
+        }
+     }
+        return checkKeys.equals(godMode) || checkKeys.equals(resetEngineer) ||
+               checkKeys.equals(waterToWine) || checkKeys.equals(buildInfinity);
+    }
+
+    void whatCheat(ArrayList<String> keys) {
+        // Gets last eight keys (length of cheats)
+        String checkKeys = "";
+        for(int k = 7 ; k >= 0 ; k-=1) {
+            checkKeys = checkKeys + keys.get(k);
+         }
+        ForbiddenIslandWorld.keys.clear();
+        if (checkKeys.equals(godMode)) {
+            ForbiddenIslandWorld.GOD_MODE = !ForbiddenIslandWorld.GOD_MODE;
+        }
+        else if (checkKeys.equals(resetEngineer)) {
+            ForbiddenIslandWorld.engineersLeft = ForbiddenIslandWorld.ENGINEER;
+        }
+        else if (checkKeys.equals(waterToWine)) {
+            ForbiddenIslandWorld.WINE = !ForbiddenIslandWorld.WINE;
+        }
+        else if (checkKeys.equals(buildInfinity)) {
+            ForbiddenIslandWorld.engineersLeft = 9999;
+        }
+        
     }
 
 }
@@ -441,16 +488,19 @@ class Cons<T> implements IList<T> {
     public Iterator<T> iterator() {
         return new IListIterator<T>(this);
     }
-    
+
     // Checks if given location is not flooded
     public boolean legalLocation(Posn p) {
-        
+
         // Turns IList<Cell> into Cons<Cell>
         Cons<Cell> cellList = (Cons<Cell>)this;
-        if(p.x <= (int)cellList.first.x * 10 + 5 && p.x >= (int)cellList.first.x * 10 - 5 && 
+        if (p.x < 10 || p.x > ForbiddenIslandWorld.ISLAND_SIZE * 10 - 10 &&
+            p.y < 10 || p.y> ForbiddenIslandWorld.ISLAND_SIZE * 10 - 10) {
+            return false;
+        }
+        else if(p.x <= (int)cellList.first.x * 10 + 5 && p.x >= (int)cellList.first.x * 10 - 5 && 
                 p.y <= (int)cellList.first.y * 10 + 5 && p.y >= (int)cellList.first.y * 10 - 5) {
             return !cellList.first.isFlooded;
-            // return false;
         }
         else {
             return this.rest.legalLocation(p);
@@ -492,7 +542,7 @@ class Cell {
         this.bottom = this;
         this.isFlooded = isFlooded;
     }
-    
+
     // Checks to see if this is a land cell
     boolean isCell() {
         return true;
@@ -503,11 +553,11 @@ class Cell {
         if (this.height > 0 && !isFlooded) {
             return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, 
                     new Color((int)Math.min(255, this.height * ForbiddenIslandWorld.RGB_INC), 
-                    255,
-                    (int)Math.min(255, this.height * ForbiddenIslandWorld.RGB_INC)));
+                            255,
+                            (int)Math.min(255, this.height * ForbiddenIslandWorld.RGB_INC)));
         }
         else if (!isFlooded) {
-            
+
             if(this.height < -8) {
                 return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, 
                         new Color(170, 0, 0));
@@ -523,14 +573,14 @@ class Cell {
             else {
                 return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, 
                         new Color(0, 195, 0));
-            
+
             }
         }
-            
-        
+
+
         else {
-            
-            
+
+
             if(this.height < -12) {
                 return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, 
                         new Color(0, 0, 0));
@@ -546,9 +596,9 @@ class Cell {
             else {
                 return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, 
                         new Color(0, 195, 150));
-            
+
             }
-            
+
         }
     }
 
@@ -568,26 +618,32 @@ class OceanCell extends Cell {
         super(height, x, y, isFlooded);
         this.isFlooded = true;
     }
-    
+
     // Checks to see if this is a land cell
     boolean isCell() {
         return false;
     }
-    
+
     // Draws the given cell
     WorldImage draw() {
-        return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, Color.blue);
+        if (ForbiddenIslandWorld.WINE) {
+            return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, Color.red);
+        }
+        else {
+            return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, Color.blue);
+        }
+        
     }
 }
 
 class Person {
-    
+
     Posn location;
-    
+
     Person(Posn location) {
         this.location = location;
     }
-    
+
     // Checks if given move is allowed
     boolean legalLocation(String ke, IList<Cell> board) {
         if (ke.equals("left")) {
@@ -607,98 +663,97 @@ class Person {
             return board.legalLocation(newPosnD);
         }
     }
-    
+
     // Moves a person based on the given key
     Person moveOnKey(String ke, IList<Cell> board) {
-        if (ke.equals("left") && this.legalLocation("left", board)) {
+        if (ke.equals("left") && (this.legalLocation("left", board) || ForbiddenIslandWorld.GOD_MODE)) {
             location.x = location.x - 10;
             return this;
         }
-        else if (ke.equals("right") && this.legalLocation("right", board)) {
+        else if (ke.equals("right") && (this.legalLocation("right", board) || ForbiddenIslandWorld.GOD_MODE)) {
             location.x = location.x + 10;
             return this;
         }
-        else if (ke.equals("up") && this.legalLocation("up", board)) {
+        else if (ke.equals("up") && (this.legalLocation("up", board) || ForbiddenIslandWorld.GOD_MODE)) {
             location.y = location.y - 10;
             return this;
         }
-        else if (ke.equals("down") && this.legalLocation("down", board)) {
+        else if (ke.equals("down") && (this.legalLocation("down", board) || ForbiddenIslandWorld.GOD_MODE)) {
             location.y = location.y + 10;
             return this;
         }
         else {
+            ForbiddenIslandWorld.keys.add(0, ke);
             return this;
         }
     }
-    
+
     // Draws the pilot
     WorldImage draw() {
         WorldImage person = new FromFileImage(this.location, "pilot-icon.png");
-        
+
         return person;
     }
-    
+
     // Checks if the person is on a flooded cell
     boolean flooded(IList<Cell> board) {
-        
+
         return !board.legalLocation(this.location);
-        
-        
+
+
     }
 
 }
 
 class Target {
-   Posn location;
-   
-   Target(Posn location) {
-       this.location = location;
-       
-   }
-   
-   // Draws the individual target
-   WorldImage draw() {
-       
-       return new CircleImage(location, 5, Color.black);
-       
-   }
-   
-   // Makes a list of 5 randomly placed targets
-   public IList<Target> makeList() {
+    Posn location;
 
-           
-           IList<Target> output = new Empty<Target>();
-           
-           while(output.size() < 6) {
+    Target(Posn location) {
+        this.location = location;
 
-               Target t = new Target(new Posn((int)(Math.random() * 540),
-                       (int)(Math.random() * 640)));
-               
-               
-               if(Math.abs(ForbiddenIslandWorld.ISLAND_SIZE/2 * 10 - t.location.x) +
-                       Math.abs(ForbiddenIslandWorld.ISLAND_SIZE/2 * 10 - t.location.y) < 300){
+    }
 
-               output = output.insert(t);
-               }
-           }
-           
-           return output;
-       }
-   
+    // Draws the individual target
+    WorldImage draw() {
+
+        return new CircleImage(location, 5, Color.black);
+
+    }
+
+    // Makes a list of 5 randomly placed targets
+    public IList<Target> makeList() {
+
+
+        IList<Target> output = new Empty<Target>();
+
+        while(output.size() < 6) {
+
+            Target t = new Target(new Posn((int)(Math.random() * 540),
+                    (int)(Math.random() * 640)));
+
+
+            if(Math.abs(ForbiddenIslandWorld.ISLAND_SIZE/2 * 10 - t.location.x) +
+                    Math.abs(ForbiddenIslandWorld.ISLAND_SIZE/2 * 10 - t.location.y) < 300){
+
+                output = output.insert(t);
+            }
+        }
+
+        return output;
+    }
+
 }
 
 // Represents the helicopter, which is the end game
 class HelicopterTarget extends Target {
-    
-    Posn location;
-    
+
     HelicopterTarget(Posn location) {
         super(location);
     }
-    
+
     // Draws the helicopter image
     WorldImage draw() {
-        
+
         return new FromFileImage(this.location, "helicopter.png");   
     }
 }
@@ -716,6 +771,18 @@ class ForbiddenIslandWorld extends World {
     static boolean ENDED = false;
     // Checks if game has been paused
     static boolean PAUSED = false;
+    // Checks if game has been won
+    static boolean WON = false;
+    // Sets the number of engineer moves
+    static  int ENGINEER = 5;
+    // Variable to count down to zero with keypress
+    static int engineersLeft = ENGINEER;
+    // Toggles God Mode
+    static boolean GOD_MODE = false;
+    // Turns water to wine
+    static boolean WINE = false;
+    // Array of keypresses
+    static ArrayList<String> keys = new ArrayList<String>();
 
     // All the cells of the game, including the ocean
     IList<Cell> board;
@@ -727,26 +794,30 @@ class ForbiddenIslandWorld extends World {
     int timer;
     // Represents the targets left available in the game
     IList<Target> targets;
+    // Represents the helicopter
+    HelicopterTarget heli;
 
     ForbiddenIslandWorld(IList<Cell> board, Person person, IList<Target> targets) {
-       this.board = board;
-       this.waterHeight = 2;
-       this.person = person;
-       this.timer = 0;
-       this.targets = targets;
+        this.board = board;
+        this.waterHeight = 2;
+        this.person = person;
+        this.timer = 0;
+        this.targets = targets;
+        this.heli = new HelicopterTarget(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5));
     }
-    
+
     ForbiddenIslandWorld(IList<Cell> board, Person person, int timer, IList<Target> targets) {
         this.board = board;
         this.waterHeight = 2;
         this.person = person;
         this.timer = timer;
         this.targets = targets;
-     }
-    
+        this.heli = new HelicopterTarget(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5));
+    }
+
     // Floods the island
     void floodIsland() {
-        
+
         //Eventually becomes the outputed list
         IList<Cell> output = new Empty<Cell>();
 
@@ -755,9 +826,9 @@ class ForbiddenIslandWorld extends World {
             Cons<Cell> tempB = (Cons<Cell>)this.board;
             Cell cell = tempB.first;
             if (waterHeight >= cell.height && (cell.left.isFlooded || 
-                                               cell.top.isFlooded || 
-                                               cell.bottom.isFlooded || 
-                                               cell.right.isFlooded)) {
+                    cell.top.isFlooded || 
+                    cell.bottom.isFlooded || 
+                    cell.right.isFlooded)) {
                 cell.height -= waterHeight;
                 cell.isFlooded = true;
                 output.insert(cell);
@@ -768,15 +839,16 @@ class ForbiddenIslandWorld extends World {
                 output.insert(cell);
                 tempB = (Cons<Cell>)tempB.rest;
             }
-            
+
             this.board = output;
         }
     }
-    
+
     // Changes the world for every tick
     public void onTick() {
-        
+
         ITargetListIterator itli = new ITargetListIterator(targets);
+        ArrayUtils arrayUtil = new ArrayUtils();
         // Checks if game hasn't started yet
         if(!INITIALIZED) {
             this.board = this.generateMountainCellsTerrain();
@@ -786,7 +858,7 @@ class ForbiddenIslandWorld extends World {
             person = new Person(new Posn(320, 320));
         }
         // Checks if end condition has been met
-        else if (itli.flooded(board) || person.flooded(board)) {
+        else if ((itli.flooded(board) || person.flooded(board)) && !GOD_MODE) {
             ENDED = true;
             board = new Empty<Cell>();
         }
@@ -794,25 +866,33 @@ class ForbiddenIslandWorld extends World {
         else if (PAUSED) {
             // Stops the if statement from going on
         }
+        else if (arrayUtil.cheatEntered(keys)) {
+            arrayUtil.whatCheat(keys);
+        }
+        // Checks the see if the player has won
+        else if (!targets.isCons() && person.location.x > heli.location.x - 10 &&
+                person.location.x < heli.location.x + 10 &&
+                person.location.y > heli.location.y - 10 &&
+                person.location.y < heli.location.y + 10) {
+            WON = true;
+        }
         // Adds to countup timer
         else if ((timer + 1) % 10 == 0) {
 
             ICellListIterator icli = new ICellListIterator(board);
             board = icli.flood(waterHeight);    
-            //this.floodIsland();
             timer = timer + 1;
         }
 
         else {
             timer = timer + 1;
         }
-        
+
     }
-    
+
     // Moves Person for each key event or returns this new Island type
     //EFFECT : Changes board based on chosen Island type
     public void onKeyEvent(String ke) {
-        
         Target t = new Target(new Posn(0,0));
         // Returns regular mountain
         if (ke.equals("m") && !PAUSED) {
@@ -821,6 +901,8 @@ class ForbiddenIslandWorld extends World {
             targets = t.makeList();
             person = new Person(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5));
             ENDED = false;
+            WON = false;
+            engineersLeft = ENGINEER;
         }
         // Returns random mountain
         else if (ke.equals("r") && !PAUSED) {
@@ -829,10 +911,13 @@ class ForbiddenIslandWorld extends World {
             timer = 0;
             person = new Person(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5));
             ENDED = false;
+            WON = false;
+            engineersLeft = ENGINEER;
         }
         // Engineers up pilot's 5x5 region
-        else if(ke.equals("b") && !PAUSED) {
+        else if(ke.equals("b") && !PAUSED && engineersLeft > 0) {
             this.board = this.engineerCells();
+            engineersLeft-=1;
         }
         // Generates random terrain mountain
         else if(ke.equals("t") && !PAUSED) {
@@ -841,6 +926,8 @@ class ForbiddenIslandWorld extends World {
             targets = t.makeList();
             person = new Person(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5));
             ENDED = false;
+            WON = false;
+            engineersLeft = ENGINEER;
         }
         // Pauses the game
         else if(ke.equals("p")) {
@@ -853,9 +940,9 @@ class ForbiddenIslandWorld extends World {
             targets = itli.foundTargets(person);
         }
 
-        
+
     }
-    
+
     // Makes an image of the given world for each tick
     public WorldImage makeImage() {
 
@@ -866,14 +953,16 @@ class ForbiddenIslandWorld extends World {
 
         // Produces new IList of Cells
         IListIterator<Cell> ili = new IListIterator<Cell>(board);
-        
+
         WorldImage background = (ili.draw()).overlayImages(person.draw()).overlayImages(time);
-                
+
+        WorldImage heliDraw = heli.draw();
+
         ITargetListIterator itli = new ITargetListIterator(targets);
-        
+
         // Returns end image
         if (ENDED) {
-            return new FromFileImage(new Posn(200, 200), "drowning.jpeg");
+            return new FromFileImage(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5), "drowning.jpeg");
         }
         // Draws black paused screen
         else if (PAUSED) {
@@ -881,24 +970,29 @@ class ForbiddenIslandWorld extends World {
                     new RectangleImage(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5),
                             ISLAND_SIZE * 10, ISLAND_SIZE * 10, Color.black);
             cover = new OverlayImages(itli.draw(background), cover);
-            WorldImage text = new TextImage(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5), "PAUSED", 39, 1, Color.white);
+            WorldImage text = new TextImage(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5), 
+                    "PAUSED", 
+                    39, 1, Color.white);
             return new OverlayImages(cover, text);
+        }
+        else if (WON) {
+            return new FromFileImage(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5), "winner.jpg");
         }
         // Draws world
         else {
-            return itli.draw(background);
+            return new OverlayImages(itli.draw(background), heliDraw);
             // return background;
         }
 
-      
+
     }
-    
+
     // Generates the lists of lists of cells for Mountain world
 
     // Generates the lists of lists of cells for Mountain world
     IList<Cell> generateMountainCells() {
         if (ISLAND_SIZE % 2 == 0) {
-            
+
         }
         else {
             ISLAND_SIZE = ISLAND_SIZE - 1;
@@ -979,7 +1073,7 @@ class ForbiddenIslandWorld extends World {
             ISLAND_SIZE = ISLAND_SIZE + 1;
         }
         else {
-            
+
         }
         // CAN BE REWRITTEN IN TERMS OF MOUNTAIN
         // Generates heights for Mountain
@@ -1091,7 +1185,7 @@ class ForbiddenIslandWorld extends World {
     // Generates the lists of lists of cells for Mountain world
     IList<Cell> generateMountainCellsRandom() {
         if (ISLAND_SIZE % 2 == 0) {
-            
+
         }
         else {
             ISLAND_SIZE = ISLAND_SIZE - 1;
@@ -1172,31 +1266,16 @@ class ForbiddenIslandWorld extends World {
         return arrayUtils.flatten(cells);
     }
 
-    
-    
+
+
     // Engineers cells to elevate
     IList<Cell> engineerCells() {
         ICellListIterator icli = new ICellListIterator(board);
         return icli.elevate(person);
     }
-    
-    /*
-    public WorldEnd worldEnds() {
-        
-        ITargetListIterator itli = new ITargetListIterator(targets);
-        
-        if (itli.flooded(board) || person.flooded(board)) {
-            return new WorldEnd(true, 
-                    new FromFileImage(new Posn(200, 200), "drowning.jpeg"));
-        
-        }
-        else {
-            return new WorldEnd(false, this.makeImage());
-        }
-    }
 
-*/
-    
+    // NEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEDDDD SIDE EFFECT STATEMENTS
+
 }
 // Examples for the ForbiddenIslandGame
 class ExamplesFIGame {
