@@ -2318,3 +2318,122 @@ DOWNHEAP (IGNORE 70):
 BLOCK OFF END:
 60 50 50 30 15 40 20 10 20 | 70
 */
+
+// ==========================================================================================================>
+// 4/8/15
+// Mothahfuckin Graphs
+class Vertex<T> {
+	T data;
+	IList<Edge> outedges;
+}
+
+class Edge {
+	Vertex<T> from, to;
+}
+
+class Graph<T> {
+	IList<Vertex<T>> vertices;
+}
+
+// OPERATIONS
+/*
+- Is there a path from V1 to V2 in the graph?
+- Is V1 connected directly to V2?
+- What's the cheapest path from V1 to V2?
+- What are all vertices connect to V1? - a helper for Party Count
+*/
+
+boolean hasPath(Vertex<T> v1, Vertex<T> v2) {
+	Queue<Vertex<T>> worklist = new Queue<Vertex<T>>();
+	ArrayList<Vertex<T>> seenAlready = new ArrayList<Vertex<T>>();
+	worklist.enqueue(v1);
+	while(!worklist.isEmpty()) {
+		Vertex<T> next = worklist.dequeue();
+		if (next == v2) {
+			return trure;
+		}
+		else if (seenAlready.contains(next)) {
+		
+		}
+		else {
+			for(Edge<T> edge : next.outedges) {
+				worklist.enqueue(edge.to);
+			}
+			seenAlready.add(next);
+		}
+	}
+	return false;
+}
+
+
+// =========================================================================>
+// 4/9/15
+
+/*FINAL REVIEW*/
+
+// Extensional Equality
+// Do two values have the same extent?
+// (have the same fields)
+
+// Intentional Equality
+// Are two values identically the same value?
+// Use == to check INTENTIONAL EQUALITY
+// Usually aliases
+
+// VISITORS!!!!!!!!!!!!!!
+
+interface IShape {
+	<R> R accept(IShapeVisitor<R> visitor);
+}
+
+interface IFunc<A, R> {
+	R accept(A arg);
+}
+
+interface IShapeVisitor<R> extends IFunc<IShape, R> {
+	R visit( ... );
+	R visit( ... );
+}
+
+class shapeArea implements IShapeVisitor<Double> {
+	public Double apply(IShape shape) {
+		return shape.accept(this);
+	} // inherited from IFunc
+	public Double visit(Circle c);
+	public Double visit(Rect r);
+	public Double visit(Square s);
+}
+
+class Square implements IShape {
+	public accept(ISHapeVisitor<R> visitor) {
+		return visitor.visit(this);
+	}
+}
+
+// DEQUEUE ITERATORS 
+interface Iterator<T> {
+	T next();
+	boolean hasNext();
+	// IGNORE
+	void remove();
+}
+
+class DequeForwardIterator<T> implements Iterator<T> {
+	ANode<T> cur;
+	DequeForwardIterator(Deque<T> deque) {
+		this.cur = this.header.next;
+	}
+
+	public T next() {
+		if (!this.hasNext()) {
+			// BLOW UP
+		}
+		Node<T> curNode = (Node<T>)this.cur;
+		this.cur = this.cur.next;
+		return curNode.data;
+	}
+
+	public boolean hasNext() {
+		return this.cur instanceof Node;
+	}
+}

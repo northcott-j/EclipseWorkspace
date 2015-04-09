@@ -76,10 +76,10 @@ class IListIterator<T> implements Iterator<T> {
     }
     // Draws a given list of cells  
     public WorldImage draw() {
-        WorldImage boardImage1 = new RectangleImage(new Posn(0, 0), 1, 1, Color.white);
-        WorldImage boardImage2 = new RectangleImage(new Posn(0, 0), 1, 1, Color.white);
+        WorldImage boardImage1 = new RectangleImage(new Posn(0,0), 1, 1, Color.white);
+        WorldImage boardImage2 = new RectangleImage(new Posn(0,0), 1, 1, Color.white);
         int count = 0;
-        while (this.hasNext()) {
+        while(this.hasNext()) {
             // Gets next Cell
             Cell c = (Cell)this.next();
             WorldImage cellImage = c.draw();
@@ -89,7 +89,7 @@ class IListIterator<T> implements Iterator<T> {
             else {
                 boardImage2 = new OverlayImages(boardImage2, cellImage);
             }
-            count += 1;
+            count +=1;
         }
         return new OverlayImages(boardImage1, boardImage2);
     }
@@ -122,7 +122,7 @@ class ICellListIterator implements Iterator<Cell> {
     // Floods the island when called (by 2 units)
     public IList<Cell> flood(int waterHeight) {
         IList<Cell> output = new Empty<Cell>();
-        while  (this.hasNext()) {
+        while(this.hasNext()) {
 
             Cell cell = this.next();
 
@@ -150,10 +150,10 @@ class ICellListIterator implements Iterator<Cell> {
     public IList<Cell> elevate(Person p) {
         IList<Cell> output = new Empty<Cell>();
 
-        while  (this.hasNext()) {
+        while(this.hasNext()) {
             Cell cell = this.next();
 
-            if (p.location.x <= (int)cell.x * 10 + 25 && 
+            if(p.location.x <= (int)cell.x * 10 + 25 && 
                     p.location.x >= (int)cell.x * 10 - 25 && 
                     p.location.y <= (int)cell.y * 10 + 25 &&
                     p.location.y >= (int)cell.y * 10 - 25) {
@@ -202,9 +202,9 @@ class ITargetListIterator implements Iterator<Target> {
     public WorldImage draw(WorldImage world) {
 
 
-        WorldImage background = new RectangleImage(new Posn(0, 0), 1, 1, Color.white);
+        WorldImage background = new RectangleImage(new Posn(0,0), 1, 1, Color.white);
 
-        while  (this.hasNext()) {
+        while(this.hasNext()) {
 
             Target next = this.next();
             WorldImage nextImage = next.draw();
@@ -219,7 +219,7 @@ class ITargetListIterator implements Iterator<Target> {
     IList<Target> foundTargets(Person p) {
 
         IList<Target> output = new Empty<Target>();
-        while  (this.hasNext()) {
+        while(this.hasNext()) {
 
             Target t = this.next();
             if  (p.isNear(t.location)) {
@@ -241,9 +241,9 @@ class ITargetListIterator implements Iterator<Target> {
 
         boolean b = false;
 
-        while (this.hasNext()) {
+        while(this.hasNext()) {
 
-            if (!board.legalLocation(this.next().location)) {
+            if(!board.legalLocation(this.next().location)) {
                 b = true;
             }
             this.list = this.list.asCons().rest;
@@ -259,8 +259,8 @@ class ArrayUtils {
 
     IList<Cell> flatten(ArrayList<ArrayList<Cell>> array) {
         IList<Cell> board = new Empty<Cell>();
-        for (int y = 0 ; y < ForbiddenIslandWorld.ISLAND_SIZE ; y += 1) {
-            for (int x = 0 ; x < ForbiddenIslandWorld.ISLAND_SIZE ; x += 1) {
+        for(int y = 0 ; y < ForbiddenIslandWorld.ISLAND_SIZE ; y+=1){
+            for(int x = 0 ; x < ForbiddenIslandWorld.ISLAND_SIZE ; x+=1) {
                 Cell cell = array.get(y).get(x);
                 board = board.insert(cell);
             }
@@ -298,7 +298,7 @@ class ArrayUtils {
         double tR = array.get(oY).get(oX + width).height;
         double bR = array.get(oY + width).get(oX + width).height;
         double bL = array.get(oY + width).get(oX).height;
-        // if it's the left quadrant coordinates
+        // If it's the left quadrant coordinates
         if (quad.equals("left")) {
             // Top
             array.get(oY).get(oX + width / 2).height = 
@@ -317,7 +317,7 @@ class ArrayUtils {
                     (rand.nextDouble() - rand.nextDouble()) * width + ((tL + tR + bL + bR) / 4);
             return array;
         }
-        // if it's the right quadrant coordinates
+        // If it's the right quadrant coordinates
         else if (quad.equals("right")) {
             // Top
             array.get(oY).get(oX + width / 2).height = 
@@ -334,7 +334,7 @@ class ArrayUtils {
             return array;
 
         }
-        // if it's the bottom right quadrant coordinates
+        // If it's the bottom right quadrant coordinates
         else if (quad.equals("bright")) {
             // Right
             array.get(oY + width / 2).get(oX + width).height = 
@@ -351,7 +351,7 @@ class ArrayUtils {
             return array;
 
         }
-        // if it's the bottom left quadrant coordinates
+        // If it's the bottom left quadrant coordinates
         else if (quad.equals("bleft")) {
             // Bottom
             array.get(oY + width).get(oX + width / 2).height = 
@@ -375,12 +375,12 @@ class ArrayUtils {
 
         int limit = 0;
 
-        if (type.equals("terrain")) {
+        if(type.equals("terrain")) {
             limit = 1;
         }
 
-        for (int y = limit ; y < ForbiddenIslandWorld.ISLAND_SIZE ; y += 1) {
-            for (int x = limit ; x < ForbiddenIslandWorld.ISLAND_SIZE ; x += 1) {
+        for(int y = limit ; y < ForbiddenIslandWorld.ISLAND_SIZE ; y+= 1) {
+            for(int x = limit ; x < ForbiddenIslandWorld.ISLAND_SIZE ; x+=1) {
                 Cell c = cells.get(y).get(x);
                 // Left bounds
                 if (c.x == 0 && c.isCell()) {
@@ -428,9 +428,9 @@ class ArrayUtils {
 
         ArrayList<ArrayList<Cell>> cells = new ArrayList<ArrayList<Cell>>(); 
 
-        for (int y = 0 ; y < ForbiddenIslandWorld.ISLAND_SIZE ; y += 1) {
+        for(int y = 0 ; y < ForbiddenIslandWorld.ISLAND_SIZE ; y+= 1) {
             ArrayList<Cell> row = new ArrayList<Cell>();
-            for (int x = 0 ; x < ForbiddenIslandWorld.ISLAND_SIZE ; x += 1) {
+            for(int x = 0 ; x < ForbiddenIslandWorld.ISLAND_SIZE ; x+= 1) {
                 double cellHeight = heights.get(y).get(x);
                 if (cellHeight <= 0) {
                     OceanCell ocean = new OceanCell(cellHeight, x, y, true);
@@ -452,12 +452,12 @@ class ArrayUtils {
         String checkKeys = "";
         int keySize = keys.size() - 1;
         if (keySize >= 7) {
-            for (int k = 7 ; k >= 0 ; k -= 1) {
+            for(int k = 7 ; k >= 0 ; k-=1) {
                 checkKeys = checkKeys + keys.get(k);
             }
         }
         else {
-            for (int k = keySize ; k >= 0 ; k -= 1) {
+            for(int k = keySize ; k >= 0 ; k-=1) {
                 checkKeys = checkKeys + keys.get(k);
             }
         }
@@ -497,7 +497,7 @@ class Cheats {
         // Gets last eight keys (length of cheats)
         String checkKeys = "";
         if (keySize >= 7) {
-            for (int k = 7 ; k >= 0 ; k -= 1) {
+            for(int k = 7 ; k >= 0 ; k-=1) {
                 checkKeys = checkKeys + keys.get(k);
             }
         }
@@ -512,19 +512,19 @@ class Cheats {
     void whatCheat(ArrayList<String> keys) {
         // Gets last eight keys (length of cheats)
         String checkKeys = "";
-        for (int k = 7 ; k >= 0 ; k -= 1) {
+        for(int k = 7 ; k >= 0 ; k-=1) {
             checkKeys = checkKeys + keys.get(k);
         }
         // SIDE EFFECT:
         // Changes GOD_MODE boolean flag
-        ForbiddenIslandWorld.KEYS.clear();
+        ForbiddenIslandWorld.keys.clear();
         if (checkKeys.equals(godMode)) {
             ForbiddenIslandWorld.GOD_MODE = !ForbiddenIslandWorld.GOD_MODE;
         }
         // SIDE EFFECT:
-        // Changes ENGINEERSLEFT variable to original
+        // Changes engineersLeft variable to original
         else if (checkKeys.equals(resetEngineer)) {
-            ForbiddenIslandWorld.ENGINEERSLEFT = ForbiddenIslandWorld.ENGINEER;
+            ForbiddenIslandWorld.engineersLeft = ForbiddenIslandWorld.ENGINEER;
         }
         // SIDE EFFECT:
         // Changes WINE boolean flag
@@ -532,9 +532,9 @@ class Cheats {
             ForbiddenIslandWorld.WINE = !ForbiddenIslandWorld.WINE;
         }
         // SIDE EFFECT:
-        // Changes ENGINEERSLEFT to infinity (9999)
+        // Changes engineersLeft to infinity (9999)
         else if (checkKeys.equals(buildInfinity)) {
-            ForbiddenIslandWorld.ENGINEERSLEFT = 9999;
+            ForbiddenIslandWorld.engineersLeft = 9999;
         }
         // SIDE EFFECT:
         // Changes ALIEN boolean flag
@@ -559,20 +559,20 @@ class Cheats {
         // SIDE EFFECT:
         // Changes FLOOD_SPEED
         else if (checkKeys.equals(floodFast)) {
-            if (ForbiddenIslandWorld.FLOOD_SPEED != 2) {
-                ForbiddenIslandWorld.FLOOD_SPEED -= 2;
+            if (!(ForbiddenIslandWorld.FLOOD_SPEED == 2)) {
+                ForbiddenIslandWorld.FLOOD_SPEED-=2;
             }
         }
         // SIDE EFFECT:
         // Changes FLOOD_SPEED
         else if (checkKeys.equals(floodSlow)) {
-            ForbiddenIslandWorld.FLOOD_SPEED += 2;
+            ForbiddenIslandWorld.FLOOD_SPEED+=2;
         }
     }
 }
 
 // Represents all ILists (which are iterable)
-interface IList<T> extends Iterable<T> {
+interface IList<T> extends Iterable<T>{
     // Inserts item into given list
     IList<T> insert(T t);
     int size();
@@ -660,10 +660,10 @@ class Cons<T> implements IList<T> {
         // Turns IList<Cell> into Cons<Cell>
         Cons<Cell> cellList = (Cons<Cell>)this;
         if (p.x < 10 || p.x > ForbiddenIslandWorld.ISLAND_SIZE * 10 - 10 &&
-                p.y < 10 || p.y > ForbiddenIslandWorld.ISLAND_SIZE * 10 - 10) {
+                p.y < 10 || p.y> ForbiddenIslandWorld.ISLAND_SIZE * 10 - 10) {
             return false;
         }
-        else if (p.x <= (int)cellList.first.x * 10 + 5 && p.x >= (int)cellList.first.x * 10 - 5 && 
+        else if(p.x <= (int)cellList.first.x * 10 + 5 && p.x >= (int)cellList.first.x * 10 - 5 && 
                 p.y <= (int)cellList.first.y * 10 + 5 && p.y >= (int)cellList.first.y * 10 - 5) {
             return !cellList.first.isFlooded;
         }
@@ -678,14 +678,10 @@ class Cons<T> implements IList<T> {
 class Cell {
     // represents absolute height of this cell, in feet
     double height;
-    // In logical coordinates, with the origin at the top-left corner of the screen
-    int x;
-    int y;
+    // In logical coordinates, with the origin at the top-left corner of the scren
+    int x, y;
     // the four adjacent cells to this one
-    Cell left;
-    Cell top;
-    Cell right;
-    Cell bottom;
+    Cell left, top, right, bottom;
     // reports whether this cell is flooded or not
     boolean isFlooded;
 
@@ -729,15 +725,15 @@ class Cell {
         // For cells below sea level but not flooded
         else if (!isFlooded) {
 
-            if (this.height < -8) {
+            if(this.height < -8) {
                 return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, 
                         new Color(170, 0, 0));
             }
-            else if (this.height < -6) {
+            else if(this.height < -6) {
                 return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, 
                         new Color(0, 130, 0));
             }
-            else if (this.height < -4)  {
+            else if(this.height < -4)  {
                 return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, 
                         new Color(0, 170, 0));
             }
@@ -749,15 +745,15 @@ class Cell {
         }
         // For cells that are flooded
         else {
-            if (this.height < -12) {
+            if(this.height < -12) {
                 return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, 
                         new Color(0, 0, 0));
             }
-            else if (this.height < -8) {
+            else if(this.height < -8) {
                 return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, 
                         new Color(0, 0, 50));
             }
-            else if (this.height < -4)  {
+            else if(this.height < -4)  {
                 return new RectangleImage(new Posn(this.x * 10, this.y * 10), 10, 10, 
                         new Color(0, 0, 100));
             }
@@ -816,11 +812,11 @@ class Person {
             Posn newPosnL = new Posn(location.x - 10, location.y);
             return board.legalLocation(newPosnL);
         }
-        else if (ke.equals("right")) {
+        else if(ke.equals("right")) {
             Posn newPosnR = new Posn(location.x + 10, location.y);
             return board.legalLocation(newPosnR);
         }
-        else if (ke.equals("up")) {
+        else if(ke.equals("up")) {
             Posn newPosnU = new Posn(location.x, location.y - 10);
             return board.legalLocation(newPosnU);
         }
@@ -859,7 +855,7 @@ class Person {
         // Key recorder
         else if (!(ke.equals("left") || ke.equals("up") || ke.equals("down") || 
                 ke.equals("right") || ke.equals("b"))) {
-            ForbiddenIslandWorld.KEYS.add(0, ke);
+            ForbiddenIslandWorld.keys.add(0, ke);
             return this;
         }
         // All other cases
@@ -910,12 +906,12 @@ class Target {
     public IList<Target> makeList() {
         IList<Target> output = new Empty<Target>();
 
-        while (output.size() < 6) {
+        while(output.size() < 6) {
             Target t = new Target(new Posn((int)(Math.random() * 540),
                     (int)(Math.random() * 640)));
 
-            if (Math.abs(ForbiddenIslandWorld.ISLAND_SIZE / 2 * 10 - t.location.x) +
-                    Math.abs(ForbiddenIslandWorld.ISLAND_SIZE / 2 * 10 - t.location.y) < 300) {
+            if(Math.abs(ForbiddenIslandWorld.ISLAND_SIZE/2 * 10 - t.location.x) +
+                    Math.abs(ForbiddenIslandWorld.ISLAND_SIZE/2 * 10 - t.location.y) < 300) {
 
                 output = output.insert(t);
             }
@@ -961,7 +957,7 @@ class ScubaTarget extends Target {
                 new ScubaTarget(new Posn((int)(320 * Math.random()), 
                         (int)(320 * Math.random())));
 
-        if (board.legalLocation(temp.location)) {
+        if(board.legalLocation(temp.location)) {
             return temp;
         }
         else {
@@ -972,7 +968,13 @@ class ScubaTarget extends Target {
     // Checks if Scuba has been located
     boolean found(Person p) {
 
-        return p.isNear(this.location);
+        if(p.isNear(this.location)) {
+
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
 
@@ -991,7 +993,7 @@ class ForbiddenIslandWorld extends World {
     // Sets the number of engineer moves
     static  int ENGINEER = 5;
     // Variable to count down to zero with keypress
-    static int ENGINEERSLEFT = ENGINEER;
+    static int engineersLeft = ENGINEER;
     // Toggles God Mode
     static boolean GOD_MODE = false;
     // Turns water to wine
@@ -1007,7 +1009,7 @@ class ForbiddenIslandWorld extends World {
     // Does game need to shuffle targets?
     static boolean SHUFFLE = false;
     // Array of keypresses
-    static ArrayList<String> KEYS = new ArrayList<String>();
+    static ArrayList<String> keys = new ArrayList<String>();
 
 
     // All the cells of the game, including the ocean
@@ -1040,7 +1042,7 @@ class ForbiddenIslandWorld extends World {
         this.targets = targets;
         this.heli = new HelicopterTarget(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5));
         this.hasScuba = false;
-        this.scuba = new ScubaTarget(new Posn(0, 0));
+        this.scuba = new ScubaTarget(new Posn(0,0));
         this.useScuba = false;
         this.scubaTimer = 5;
     }
@@ -1053,7 +1055,7 @@ class ForbiddenIslandWorld extends World {
         this.targets = targets;
         this.heli = new HelicopterTarget(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5));
         this.hasScuba = false;
-        this.scuba = new ScubaTarget(new Posn(0, 0));
+        this.scuba = new ScubaTarget(new Posn(0,0));
         this.useScuba = false;
         this.scubaTimer = 5;
     }
@@ -1061,7 +1063,7 @@ class ForbiddenIslandWorld extends World {
     // Sets the conditions for each restart
     void init() {
 
-        Target t = new Target(new Posn(0, 0));
+        Target t = new Target(new Posn(0,0));
         targets = t.makeList();
         timer = 0;
         hasScuba = false;
@@ -1071,7 +1073,7 @@ class ForbiddenIslandWorld extends World {
         ENDED = false;
         WON = false;
         this.scubaTimer = 5;
-        ENGINEERSLEFT = ENGINEER;
+        engineersLeft = ENGINEER;
 
     }
 
@@ -1083,8 +1085,8 @@ class ForbiddenIslandWorld extends World {
         //Eventually becomes the outputed list
         IList<Cell> output = new Empty<Cell>();
 
-        //EFFECT : Adds each modif ied cell to the output list
-        for (int count = 0 ; count < this.board.size() - 1 ; count += 1) {
+        //EFFECT : Adds each modified cell to the output list
+        for(int count = 0 ; count < this.board.size() - 1 ; count+=1) {
             Cons<Cell> tempB = (Cons<Cell>)this.board;
             Cell cell = tempB.first;
             if (waterHeight >= cell.height && (cell.left.isFlooded || 
@@ -1107,11 +1109,11 @@ class ForbiddenIslandWorld extends World {
 
     // Changes the world for every tick
     public void onTick() {
-        Target t = new Target(new Posn(0, 0));
+        Target t = new Target(new Posn(0,0));
         ITargetListIterator itli = new ITargetListIterator(targets);
         Cheats cheats = new Cheats();
         // Checks if game hasn't started yet and user has read first statement
-        if (!INITIALIZED && KEYS.size() == 0) {
+        if(!INITIALIZED && keys.size() == 0) {
             // Don't do anything
         }
         // Checks to see if game hasn't started
@@ -1134,8 +1136,8 @@ class ForbiddenIslandWorld extends World {
             this.targets = t.makeList();
             SHUFFLE = false;
         }
-        else if (cheats.cheatEntered(KEYS)) {
-            cheats.whatCheat(KEYS);
+        else if (cheats.cheatEntered(keys)) {
+            cheats.whatCheat(keys);
         }
         else if (FROZEN) {
             // Stops the if statement from going on
@@ -1181,30 +1183,30 @@ class ForbiddenIslandWorld extends World {
             init();
         }
         // Engineers up pilot's 5x5 region
-        else if (ke.equals("b") && !PAUSED && ENGINEERSLEFT > 0) {
+        else if(ke.equals("b") && !PAUSED && engineersLeft > 0) {
             this.board = this.engineerCells();
-            ENGINEERSLEFT -= 1;
+            engineersLeft-=1;
         }
         // Generates random terrain mountain
-        else if (ke.equals("t") && !PAUSED) {
+        else if(ke.equals("t") && !PAUSED) {
             this.board = this.generateMountainCellsTerrain();
             init();
         }
         // Pauses the game
-        else if (ke.equals("p")) {
+        else if(ke.equals("p")) {
             PAUSED = !PAUSED;
         }
         // Represents backspace for cheat codes
-        else if (ke.equals("`")) {
-            if (KEYS.size() == 0) {
-                // Not supposed to do anything with empty KEYS
+        else if(ke.equals("`")) {
+            if (keys.size() == 0) {
+
             }
             else { 
-                KEYS.remove(0);
+                keys.remove(0);
             }
         }
         // Activates Scuba Gear (with "/")
-        else if (ke.equals("/") && hasScuba && scubaTimer >= 0) {
+        else if(ke.equals("/") && hasScuba == true && scubaTimer >= 0) {
             useScuba = true;
         }
         // Moves the player if not paused
@@ -1214,7 +1216,7 @@ class ForbiddenIslandWorld extends World {
             targets = itli.foundTargets(person);
 
             // Checks if Scuba gear has been claimed
-            if (scuba.found(person)) {
+            if(scuba.found(person)) {
                 hasScuba = true;
             }
         }
@@ -1226,7 +1228,7 @@ class ForbiddenIslandWorld extends World {
         int cAlign = ISLAND_SIZE * 8;
         //Builds left
         TextImage engLeftDraw = new TextImage(new Posn(cAlign, 50), 
-                "Builds Left: " + Integer.toString(ENGINEERSLEFT), 15 , 1, 
+                "Builds Left: " + Integer.toString(engineersLeft), 15 , 1, 
                 Color.white);
         // God mode on?
         TextImage godModeDraw = new TextImage(new Posn(cAlign, 75), 
@@ -1246,7 +1248,7 @@ class ForbiddenIslandWorld extends World {
                 Color.white);
 
         return engLeftDraw.overlayImages(godModeDraw).overlayImages(alienDraw
-        ).overlayImages(frozenDraw).overlayImages(floodSpeedDraw); 
+                ).overlayImages(frozenDraw).overlayImages(floodSpeedDraw); 
 
     }
 
@@ -1255,7 +1257,7 @@ class ForbiddenIslandWorld extends World {
         ArrayUtils arrayUtil = new ArrayUtils();
 
         // Represents the current keys pressed
-        TextImage keysImage = arrayUtil.drawKeys(KEYS);
+        TextImage keysImage = arrayUtil.drawKeys(keys);
 
         // Represents the amount of time spent playing the game
         TextImage time = new TextImage(new Posn(50, 50), 
@@ -1314,7 +1316,7 @@ class ForbiddenIslandWorld extends World {
             return new OverlayImages(itli.draw(background), heliDraw).overlayImages(gameHUD);
         }
         // Draws world if scuba has been found
-        else if (hasScuba) {
+        else if (hasScuba){
 
             return itli.draw(background).overlayImages(heliDraw).overlayImages(scubaCountDown);
 
@@ -1329,7 +1331,7 @@ class ForbiddenIslandWorld extends World {
     // Generates the lists of lists of cells for Mountain world
     IList<Cell> generateMountainCells() {
         if (ISLAND_SIZE % 2 == 0) {
-            // Does nothing because Island Size is even
+
         }
         else {
             ISLAND_SIZE = ISLAND_SIZE - 1;
@@ -1337,9 +1339,9 @@ class ForbiddenIslandWorld extends World {
         // Generates heights for Mountain
         ArrayList<ArrayList<Double>> heights = new ArrayList<ArrayList<Double>>();
         ArrayList<ArrayList<Cell>> cells = new ArrayList<ArrayList<Cell>>(); 
-        for (int y = 0 ; y < ISLAND_SIZE ; y += 1) {
+        for(int y = 0 ; y < ISLAND_SIZE ; y+= 1) {
             ArrayList<Double> row = new ArrayList<Double>();
-            for (int x = 0 ; x < ISLAND_SIZE  ; x += 1) {
+            for(int x = 0 ; x < ISLAND_SIZE  ; x+= 1) {
                 int manHeight = Math.abs((ISLAND_SIZE / 2) - x) + Math.abs((ISLAND_SIZE / 2) - y);
                 row.add((double)(ISLAND_SIZE / 2) - manHeight);
             }
@@ -1359,15 +1361,17 @@ class ForbiddenIslandWorld extends World {
         if (ISLAND_SIZE % 2 == 0) {
             ISLAND_SIZE = ISLAND_SIZE + 1;
         }
-        
+        else {
+
+        }
         // Generates heights for Mountain
         ArrayList<ArrayList<Double>> heights = new ArrayList<ArrayList<Double>>();
         ArrayList<ArrayList<Cell>> cells = new ArrayList<ArrayList<Cell>>();
         ArrayUtils arrayUtils = new ArrayUtils();
 
-        for (int y = 0 ; y < ISLAND_SIZE ; y += 1) {
+        for(int y = 0 ; y < ISLAND_SIZE ; y+= 1) {
             ArrayList<Double> row = new ArrayList<Double>();
-            for (int x = 0 ; x < ISLAND_SIZE  ; x += 1) {
+            for(int x = 0 ; x < ISLAND_SIZE  ; x+= 1) {
                 int manHeight = Math.abs((ISLAND_SIZE / 2) - x) + Math.abs((ISLAND_SIZE / 2) - y);
                 if (manHeight >= 32) {
                     row.add((double)(ISLAND_SIZE / 2) - manHeight);
@@ -1396,8 +1400,8 @@ class ForbiddenIslandWorld extends World {
         cells = arrayUtils.terrainCells(cells, 0, 0, ISLAND_SIZE / 2, "left");
 
         // Generates the cells for a Mountain
-        for (int y = 0 ; y < ISLAND_SIZE ; y += 1) {
-            for (int x = 0 ; x < ISLAND_SIZE ; x += 1) {
+        for(int y = 0 ; y < ISLAND_SIZE ; y+= 1) {
+            for(int x = 0 ; x < ISLAND_SIZE ; x+= 1) {
                 Cell cell = cells.get(y).get(x);
                 if (cell.height <= 0) {
                     OceanCell ocean = new OceanCell(cell.height, x, y, true);
@@ -1417,7 +1421,7 @@ class ForbiddenIslandWorld extends World {
     // Generates the lists of lists of cells for Mountain world
     IList<Cell> generateMountainCellsRandom() {
         if (ISLAND_SIZE % 2 == 0) {
-            // Do nothing because Island size is even
+
         }
         else {
             ISLAND_SIZE = ISLAND_SIZE - 1;
@@ -1426,9 +1430,9 @@ class ForbiddenIslandWorld extends World {
         // Generates heights for Mountain
         ArrayList<ArrayList<Double>> heights = new ArrayList<ArrayList<Double>>();
         ArrayList<ArrayList<Cell>> cells = new ArrayList<ArrayList<Cell>>(); 
-        for (int y = 0 ; y < ISLAND_SIZE ; y += 1) {
+        for(int y = 0 ; y < ISLAND_SIZE ; y+= 1) {
             ArrayList<Double> row = new ArrayList<Double>();
-            for (int x = 0 ; x < ISLAND_SIZE  ; x += 1) {
+            for(int x = 0 ; x < ISLAND_SIZE  ; x+= 1) {
                 int manHeight = Math.abs((ISLAND_SIZE / 2) - x) + Math.abs((ISLAND_SIZE / 2) - y);
 
                 if (manHeight >= 32) {
@@ -1454,125 +1458,124 @@ class ForbiddenIslandWorld extends World {
         return icli.elevate(person);
     }
 }
-
 //Examples for the ForbiddenIslandGame
 class ExamplesFIGame {
 
+ 
+ 
+ Cell c1 = new Cell(5.0, 320, 320, false);
+ IList<Cell> ilc = new Cons<Cell>(c1, new Empty<Cell>());
+ Target target = new Target(new Posn(0,0));
+ Target target2 = new Target(new Posn(40,40));
 
+ 
+ 
+ ForbiddenIslandWorld f1 = new ForbiddenIslandWorld(new Empty<Cell>(),
+         new Person(new Posn(320,320)), target.makeList());
 
-    Cell c1 = new Cell(5.0, 320, 320, false);
-    IList<Cell> ilc = new Cons<Cell>(c1, new Empty<Cell>());
-    Target target = new Target(new Posn(0, 0));
-    Target target2 = new Target(new Posn(40, 40));
+ Person p = new Person(new Posn(12,10));
+ Posn pos1 = new Posn(10,9);
+ Posn pos2 = new Posn(120, 5);
+ Posn pos3 = new Posn(299, 299);
+ Posn pos4 = new Posn(293, 293);
+ Cell c2 = new Cell(5.0, 20, 20, false);
+ Cell c3 = new Cell(5.0, 30, 30, true);
+ Cell c4 = new Cell(5.0, 40, 40, false);
+ ArrayList<Cell> cellArray = new ArrayList<Cell>();
+ 
+ IList<Cell> cellList = new Cons<Cell>(c1, new Cons<Cell>(c2, 
+         new Cons<Cell>(c3, new Cons<Cell>(c4, new Empty<Cell>()))));
+ IList<Cell> emptyCellList = new Empty<Cell>();
+ IList<Target> targetList = new Cons<Target>(target, new Cons<Target>(target2, 
+         new Empty<Target>()));
+ IList<Double> doubleList = new Cons<Double>(2.0, new Cons<Double>(5.4,
+         new Cons<Double>(12.1, new Empty<Double>())));
+ 
+ ICellListIterator icli = new ICellListIterator(cellList);    
+ IListIterator<Cell> ili = new IListIterator<Cell>(cellList);
+ IListIterator<Cell> ili2 = new IListIterator<Cell>(emptyCellList);
+ ITargetListIterator itli = new ITargetListIterator(targetList);
+ ArrayListIterator<Cell> ali = new ArrayListIterator<Cell>(cellArray);
+ 
+ 
+ void init() {
 
-
-
-    ForbiddenIslandWorld f1 = new ForbiddenIslandWorld(new Empty<Cell>(),
-            new Person(new Posn(320, 320)), target.makeList());
-/*
-    Person p = new Person(new Posn(12, 10));
-    Posn pos1 = new Posn(10, 9);
-    Posn pos2 = new Posn(120, 5);
-    Posn pos3 = new Posn(299, 299);
-    Posn pos4 = new Posn(293, 293);
-    Cell c2 = new Cell(5.0, 20, 20, false);
-    Cell c3 = new Cell(5.0, 30, 30, true);
-    Cell c4 = new Cell(5.0, 40, 40, false);
-    ArrayList<Cell> cellArray = new ArrayList<Cell>();
-
-    IList<Cell> cellList = new Cons<Cell>(c1, new Cons<Cell>(c2, 
-            new Cons<Cell>(c3, new Cons<Cell>(c4, new Empty<Cell>()))));
-    IList<Cell> emptyCellList = new Empty<Cell>();
-    IList<Target> targetList = new Cons<Target>(target, new Cons<Target>(target2, 
-            new Empty<Target>()));
-    IList<Double> doubleList = new Cons<Double>(2.0, new Cons<Double>(5.4,
-            new Cons<Double>(12.1, new Empty<Double>())));
-
-    ICellListIterator icli = new ICellListIterator(cellList);    
-    IListIterator<Cell> ili = new IListIterator<Cell>(cellList);
-    IListIterator<Cell> ili2 = new IListIterator<Cell>(emptyCellList);
-    ITargetListIterator itli = new ITargetListIterator(targetList);
-    ArrayListIterator<Cell> ali = new ArrayListIterator<Cell>(cellArray);
-
-
-    void init() {
-
-        cellList = new Cons<Cell>(c1, new Cons<Cell>(c2, 
-                new Cons<Cell>(c3, new Cons<Cell>(c4, new Empty<Cell>()))));
-        emptyCellList = new Empty<Cell>();
-        targetList = new Cons<Target>(target, new Cons<Target>(target2, 
-                new Empty<Target>()));
-        doubleList = new Cons<Double>(2.0, new Cons<Double>(5.4,
-                new Cons<Double>(12.1, new Empty<Double>())));
-
-
-        icli = new ICellListIterator(cellList);    
-        ili = new IListIterator<Cell>(cellList);
-        ili2 = new IListIterator<Cell>(emptyCellList);
-        itli = new ITargetListIterator(targetList);
-        ali = new ArrayListIterator<Cell>(cellArray);
-    }
-
-
-    // Test the isNear() Method
-    void testIsNear(Tester t) {
-        init();
-        t.checkExpect(p.isNear(pos1), true);
-        t.checkExpect(p.isNear(pos2), false);
-    }
-    // Tests the size method
-    void testSize(Tester t) {
-        init();
-        t.checkExpect(doubleList.size(), 3);
-    }
-
-    // Tests the Legal Location Method
-    void testLegalLocation(Tester t) {
-        init();
-        t.checkExpect(cellList.legalLocation(pos1), true);
-        t.checkExpect(cellList.legalLocation(pos2), true);
-        t.checkExpect(cellList.legalLocation(pos3), false);
-        t.checkExpect(cellList.legalLocation(pos4), true);
-
-
-    }
-
-    // Tests the makeList method 
-    void testMakeList(Tester t) {
-        init();
-        t.checkExpect(target.makeList().size(), 6);
-        t.checkExpect(target2.makeList().size(), 6);
-
-    }
-
-    void testIterator(Tester t) {
-        init();
-
-        cellArray.add(c1);
-        cellArray.add(c2);
-        cellArray.add(c3);
-
-
-        t.checkExpect(ili.next(), c1);
-        t.checkExpect(ili.hasNext(), true);
-        t.checkExpect(ili2.hasNext(), false);
-        t.checkExpect(itli.hasNext(), true);
-        t.checkExpect(itli.next(), target);
-        t.checkExpect(ali.hasNext(), true);
-        t.checkExpect(ali.next(), c1);
-        t.checkExpect(icli.hasNext(), true);
-        t.checkExpect(icli.next(), c1);
-    }
-
-    void testFlood(Tester t) {
-        init();
-        t.checkExpect(icli.flood(4).size(), cellList.size());
-    }
-
-*/     
- {
-     this.f1.bigBang(640, 640, .5);
- }
+     cellList = new Cons<Cell>(c1, new Cons<Cell>(c2, 
+             new Cons<Cell>(c3, new Cons<Cell>(c4, new Empty<Cell>()))));
+     emptyCellList = new Empty<Cell>();
+     targetList = new Cons<Target>(target, new Cons<Target>(target2, 
+             new Empty<Target>()));
+     doubleList = new Cons<Double>(2.0, new Cons<Double>(5.4,
+             new Cons<Double>(12.1, new Empty<Double>())));
      
 
+     icli = new ICellListIterator(cellList);    
+     ili = new IListIterator<Cell>(cellList);
+     ili2 = new IListIterator<Cell>(emptyCellList);
+     itli = new ITargetListIterator(targetList);
+     ali = new ArrayListIterator<Cell>(cellArray);
+ }
+ 
+ 
+ // Test the isNear() Method
+ void testIsNear(Tester t) {
+     init();
+     t.checkExpect(p.isNear(pos1), true);
+     t.checkExpect(p.isNear(pos2), false);
+ }
+ // Tests the size method
+ void testSize(Tester t) {
+     init();
+     t.checkExpect(doubleList.size(), 3);
+ }
+ 
+ // Tests the Legal Location Method
+ void testLegalLocation(Tester t) {
+     init();
+     t.checkExpect(cellList.legalLocation(pos1), true);
+     t.checkExpect(cellList.legalLocation(pos2), true);
+     t.checkExpect(cellList.legalLocation(pos3), false);
+     t.checkExpect(cellList.legalLocation(pos4), true);
+     
+     
+ }
+ 
+ // Tests the makeList method 
+ void testMakeList(Tester t) {
+     init();
+     t.checkExpect(target.makeList().size(), 6);
+     t.checkExpect(target2.makeList().size(), 6);
+     
+ }
+ 
+ void testIterator(Tester t) {
+     init();
+     
+     cellArray.add(c1);
+     cellArray.add(c2);
+     cellArray.add(c3);
+     
+     
+     t.checkExpect(ili.next(), c1);
+     t.checkExpect(ili.hasNext(), true);
+     t.checkExpect(ili2.hasNext(), false);
+     t.checkExpect(itli.hasNext(), true);
+     t.checkExpect(itli.next(), target);
+     t.checkExpect(ali.hasNext(), true);
+     t.checkExpect(ali.next(), c1);
+     t.checkExpect(icli.hasNext(), true);
+     t.checkExpect(icli.next(), c1);
+ }
+ 
+ void testFlood(Tester t) {
+     init();
+     t.checkExpect(icli.flood(4).size(), cellList.size());
+ }
+ 
+/*   
+ void runGame(){
+     this.f1.bigBang(640, 640, .5);
+ }
+*/
+ 
 }
