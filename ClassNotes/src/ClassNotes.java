@@ -2437,3 +2437,62 @@ class DequeForwardIterator<T> implements Iterator<T> {
 		return this.cur instanceof Node;
 	}
 }
+
+// =======================================================================>
+// 4/13/15
+// MAZE GAME:
+/*
+UPTO: 60 x 40 -> 100 x 60
+While loop until end condtion can't do it - animation
+on-tick is the body of the while loop big-bang is the while 
+FUNDAMENTAL POINT = Cells
+Black are walls - red are gap in rows
+Tree
+Every node can be reached
+Paths don't meet - dead end
+MINIMUM SPANNING TREE:
+PRIM'S
+- Pick the cheapest edge
+- Pick the cheapest edge connected to the current tree
+  that doesn't create a cycle
+- Use it
+- REPEAT until all nodes are connected
+- V vertices = V - 1 edges
+KRUSKAL
+- While not connected ->
+  Pick the cheapest edge that doesn't create a cycle 
+- Use it 
+
+NEW DATA STRUCTURE:
+A B C D E F G H I
+A B C D E F G H I - Connected to themselves (mini trees)
+
+A B C D E F G H I
+A B C D E F H H I - G is connect to H
+
+A B C D E F G H I 
+A B C D E F H H H - I is connected to H
+
+A B C D E F G H I 
+A B D D E F H H H - C is connected to D
+
+A B C D E F G H I
+A B D D H F H H H - G is connnected to E
+                    E goes to H which is the base
+                    Give each tree a name 
+
+A B C D E F G H I
+A B D D H F H F H - E is connected to F (now H is apart of the F tree)
+
+A B C D E F G H I
+A D D D H F H F H - B is connected to C
+
+KIDS POINTING TO PARENTS - Unique root
+
+Use a hash map from Node name to another node name -> HashMap<NodeName, NodeName>
+To find name of blob that it's in
+	Finds when connected node is itself and returns that node
+THEN merge two blobs 
+	Connect blob of n1 to blob of n2
+
+*/
