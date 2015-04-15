@@ -404,26 +404,101 @@ demonstrate that a number x is divisible by 17, you have to show that x can
 be written in the form x = 17 * y , for some natural number y.
 
 |#
+(defunc expt (a b)
+  :input-contract (and (natp a) (natp b))
+  :output-contract (natp (expt a b))
+  (if (equal b 0) 1 (* a (expt a (- b 1)))))
+
+(check= (expt 10 2) 100)
+(check= (expt 10 4) 10000)
+
 (defunc seq (x) 
   :input-contract (natp x)
   :output-contract (natp (seq x))
-  (cond ((equal x 0) 1003)
-        ((equal x 1) (+ 9010 (seq (- x 1))))
-        (t (* 10 (seq (- x 1))))))
+  (if (equal x 0) 1003
+      (+ (* (expt 10 x) 901) (seq (- x 1)))))
 
 
 (check= (seq 0) 1003)
 (check= (seq 1) 10013)
-(check= (seq 2) 100130)
-(check= (seq 3) 1001300)
-(check= (integerp (/ (seq 3) 17)) t)#|ACL2s-ToDo-Line|#
-
+(check= (seq 2) 100113)
+(check= (seq 3) 1001113)
+(check= (integerp (/ (seq 3) 17)) t)
 
 (test? (implies (natp i) (integerp (/ (seq i) 17)))) 
+(test? (implies (and (natp x) (natp y) (natp z) (not (equal z 0)) (integerp (/ x z))
+       (integerp (/ (* x y) z)))))#|ACL2s-ToDo-Line|#
 
-INDUCTION INTERESTING CASE:
-(natp x) ^ ~(equal x 0) ^ ~(equal x 1) => (integerp (/ (seq (- x 1) 17)))
+                                                               
 
+#|
+PHI = (integerp (/ (seq x) 17))
+
+If seq is divisible by 17, the quotient will be an integer
+
+INDUCTION SCHEME FOR SEQ:
+I.
+(not (natp x)) => (integerp (/ (seq x) 17))
+C1. (natp x)
+
+nil => true
+
+II.
+(natp x) ^ (equal x 0) => (integerp (/ (seq x) 17))
+C1. (natp x)
+C2. (equal x 0)
+
+      ={Evaluate seq, C2
+      
+(integerp (/ 1003 17))
+
+true
+
+III.
+INDUCTION INTERESTING CASE of SEQ:
+(natp x) ^ ~(equal x 0) ^ phi|((x (- x 1))) => (integerp (/ (seq x) 17))
+
+C1. (natp x)
+C2. ~(equal x 0)
+C3. (natp (- x 1)) => (integerp (/ (seq (- x 1)) 17))
+C4. (natp (- x 1) {C1, C2
+C5. (integerp (/ (seq (- x 1)) 17)) {MP, C4
+C6. (natp 17) {Def. of natp
+C7. (natp (* (expt 10 x) 901)) {def. expt, multiplication, (natp 901)
+C8. (not (equal 17 0)) {def. equals
+C9. (integerp (/ 901 17)) {def. integer, arithmetic
+C10. (integerp (/ (* (expt 10 x) 901) 17)) {T2, oc. expt, (natp 901) C6, C8, C9, MP
+
+T1. (implies (and (natp x) (natp y) (natp z) (not (equal z 0)) (integerp (/ x z)) 
+                                                               (integerp (/ y z))))
+             (integerp (/ (+ x y) z)))) 
+
+;; If two numbers are divisible by z, then their sum is divisible by z
+    
+T2. (implies (and (natp x) (natp y) (natp z) (not (equal z 0)) (integerp (/ x z))
+             (integerp (/ (* x y) z)))))
+             
+;; If x is divisible by z, then the product of x and y is divisible by z
+             
+
+RHS:
+      ={def. seq, C2
+    
+(integerp (/ (+ (* (expt 10 x) 901) (seq (- x 1))) 17))
+
+      ={Arithmetic, T1, C7, oc. of seq, C6, C8
+      
+(integerp (/ (* (expt 10 x) 901) 17)) ^ (integerp (/ (seq (- x 1)) 17)) =>
+(integerp (/ (+ (* (expt 10 x) 901) (seq (- x 1))) 17))
+
+      ={C5, C10, MP
+
+(integerp (/ (+ (* (expt 10 x) 901) (seq (- x 1))) 17))
+
+true.
+      
+
+|#
 #|
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

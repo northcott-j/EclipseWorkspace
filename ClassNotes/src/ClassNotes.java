@@ -2496,3 +2496,56 @@ THEN merge two blobs
 	Connect blob of n1 to blob of n2
 
 */
+
+// ============================================================================>
+// 4/15/15
+// Javascript
+"hello " + 2510 = "hello 2510"
+42 + true = 43
+42 + "hello" = "42hello"
+// If there is any possible way to come up with an answer - do it;
+[1, 2, 3] = ArrayList
+var nums = above;
+nums.length = 3;
+nums[1] = 2;
+nums + "" = "1,2,3"
+[] + [] = ""
+var obj = {"x": 5, "y": 42, "z": true, "a": "hello"} = HashMap
+obj.x = 5;
+obj.z = true;
+obj + "" = "[object Object]"
+{} + [] = 0
+[] + {} = "[object Object]"
+{} + {} = NaN
+var ans = 0;
+for (var i = 0; i < 10; i += 1) {
+	if (i == 5) { ans += "!"; }
+	ans += 1;
+}
+above returns "5!11111"
+function CatMaker(name) {
+	this.name = name;
+	this.sound = "meow";
+}
+var fluffy = new CatMaker("Fluffy");
+fluffy = CatMaker {name: "Fluffy", sound: "meow"}
+var fluffier = {name: "Fluffier", __proto__: fluffy};
+fluffier = Object {name: "Fluffy", sound: "meow"}
+fluffy.age = 10;
+fluffy = CatMaker {name: "Fluffy", sound: "meow", age: 10}
+fluffier = Object {name: "Fluffy", sound: "meow", age: 10}
+// Changes only fluffier not fluffy
+fluffier.sound = "WOOF!";
+// Changes from Object to CatMaker
+fluffiest.constructor = CatMaker;
+// Removes age at runtime
+delete fluffier.age
+// Modifies the entire universe
+CatMaker();
+fluffy["sou" + "nd"] = fluffy["sound"]
+function getField(obj, fieldName) { return obj[fieldName]; }
+getField(fluffy, "na" + "me") = "Fluffy";
+getField(fluffy, "na" + "metoo") = undefined = null;
+var temp = {};
+for (p : fluffy) { temp[p] = fluffy[p]; }
+temp = fluffy = Object {name: "Fluffy", sound: "meow", age: 10};
