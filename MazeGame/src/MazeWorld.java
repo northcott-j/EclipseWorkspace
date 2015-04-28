@@ -172,7 +172,7 @@ class Node {
             
         }
         // RaceMode colors
-        else if(raceMode) {
+        else if (raceMode) {
 
             base = new RectangleImage(new Posn(screenX, screenY), 
                     MazeGame.CELLSIZE, MazeGame.CELLSIZE, Color.white);
@@ -345,11 +345,11 @@ class PointPicker {
 // Class for the Main Game
 class MazeGame extends World {
     // The Width of the board
-    static final int WIDTH = 30;
+    static final int WIDTH = 100;
     // The Height of the board
-    static final int HEIGHT = 30;
+    static final int HEIGHT = 60;
     // Size of each cell in pixels
-    static final int CELLSIZE = 20;
+    static final int CELLSIZE = 10;
     // Has the game been initialized?
     static boolean INITIALIZED = false;
     // Sets whether or not to build the maze step by step 
@@ -535,7 +535,7 @@ class MazeGame extends World {
             this.pointPicker.keyPress(ke);
         }
         // Initializes Race Mode
-        else if(ke.equals("a")) {
+        else if (ke.equals("a")) {
             raceMode = true;
         }
         // Goes all the way back to the point picker phase
