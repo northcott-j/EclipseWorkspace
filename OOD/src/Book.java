@@ -2,6 +2,9 @@
  * Public book class
  */
 public class Book implements Publication {
+    // FIELDS PRIVATE FINAL
+    // Iterators are allowed to change
+    // Cyclic data is the other
     private final String author, title, genre;
     private final String pub, loc, isbn;
     private final int year, pages;
