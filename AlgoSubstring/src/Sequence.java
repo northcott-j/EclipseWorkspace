@@ -4,6 +4,7 @@ import java.util.ArrayList;
  *
  * Represents a sequence of stock purchases
  *
+ * DOES NOT PROTECT AGAINST MUTATION LIKE PREVIOUSLY THOUGHT
  * */
 
 class Sequence {

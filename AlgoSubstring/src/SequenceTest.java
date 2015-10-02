@@ -12,6 +12,7 @@ public class SequenceTest extends TestCase {
     Sequence seq2 = new Sequence();
     Sequence seq3 = new Sequence();
     Sequence seq4 = new Sequence();
+    Sequence seq5 = new Sequence();
 
     void seqInitiator() {
         seq1.order.add("Yahoo");
@@ -35,6 +36,13 @@ public class SequenceTest extends TestCase {
         seq4.order.add("Google");
         seq4.order.add("Samsung");
         seq4.order.add("HTC");
+
+        seq5.order.add("Yahoo");
+        seq5.order.add("Apple");
+        seq5.order.add("Google");
+        seq5.order.add("Samsung");
+        seq5.order.add("Samsung");
+        seq5.order.add("HTC");
     }
 
     @Test
@@ -63,5 +71,13 @@ public class SequenceTest extends TestCase {
     public void testIsSubseq4() {
         seqInitiator();
         assertTrue(seq1.isSubseq(seq1));
+    }
+
+    @Test
+    // test mutation protection
+    public void testIsSubseq5() {
+        seqInitiator();
+        seq1.isSubseq(seq2);
+        assertEquals(seq5.order, seq1.order);
     }
 }
