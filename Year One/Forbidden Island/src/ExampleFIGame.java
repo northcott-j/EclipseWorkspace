@@ -1,10 +1,15 @@
 import tester.*;
+import java.applet.Applet;
+import java.awt.Graphics;
 
 import java.util.*;             // Gives us Arrays
+
+import javax.imageio.ImageIO;
 
 import javalib.worldimages.*;   // images, like RectangleImage or OverlayImages
 import javalib.impworld.*;      // the abstract World class and the big-bang library
 import java.awt.Color;          // Represents Colors
+import java.net.URL;
 
 
 //Represents the ability to produce a sequence of values // of type T, one at a time 
@@ -871,10 +876,10 @@ class Person {
     // Draws the pilot
     WorldImage draw() {
         if (!ForbiddenIslandWorld.ALIENS) {
-            return new FromFileImage(this.location, "pilot-icon.png");   
+            return new FromFileImage(this.location, URLUtils.pilotPath);   
         }
         else {
-            return new FromFileImage(this.location, "alien.png"); 
+            return new FromFileImage(this.location, URLUtils.alienPath); 
         }
     }
 
@@ -903,7 +908,7 @@ class Target {
 
     // Draws the individual target
     WorldImage draw() {
-        return new FromFileImage(location, "target.png");
+        return new FromFileImage(location, URLUtils.targetPath);
     }
 
     // Makes a list of 5 randomly placed targets
@@ -934,10 +939,10 @@ class HelicopterTarget extends Target {
     // Draws the helicopter image
     WorldImage draw() {
         if (!ForbiddenIslandWorld.ALIENS) {
-            return new FromFileImage(this.location, "helicopter.png");   
+            return new FromFileImage(this.location, URLUtils.helicopterPath);   
         }
         else {
-            return new FromFileImage(this.location, "space-ship.png"); 
+            return new FromFileImage(this.location, URLUtils.shipPath); 
         }
     }
 }
@@ -953,7 +958,7 @@ class ScubaTarget extends Target {
     // Draws the Scuba Gear
     WorldImage draw() {
 
-        return new FromFileImage(this.location, "scuba.png");
+        return new FromFileImage(this.location, URLUtils.scubaPath);
     }
 
     ScubaTarget randomLocation(IList<Cell> board) {
@@ -1282,7 +1287,7 @@ class ForbiddenIslandWorld extends World {
 
         // Returns end image
         if (ENDED) {
-            return new FromFileImage(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5), "drowning.jpeg");
+            return new FromFileImage(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5), URLUtils.drowningPath);
         }
         else if (!INITIALIZED) {
             WorldImage text = new TextImage(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5), 
@@ -1307,7 +1312,7 @@ class ForbiddenIslandWorld extends World {
         }
         // Draws winner screen
         else if (WON) {
-            return new FromFileImage(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5), "winner.jpg");
+            return new FromFileImage(new Posn(ISLAND_SIZE * 5, ISLAND_SIZE * 5), URLUtils.winnerPath);
         }
         // Draws world
         else if (HUD) {
@@ -1455,124 +1460,150 @@ class ForbiddenIslandWorld extends World {
     }
 }
 
-//Examples for the ForbiddenIslandGame
+class URLUtils {
+
+	static String alienPath = "";
+	static String drowningPath = "";
+	static String helicopterPath = "";
+	static String pilotPath = "";
+	static String scubaPath = "";
+	static String shipPath = "";
+	static String targetPath = "";
+	static String winnerPath = "";
+	
+	URLUtils() {}
+    // Builds all paths
+    void urlToPath() {
+	    alienPath = "alien.png";
+	    drowningPath = "drowning.jpeg";
+	    helicopterPath = "helicopter.png";
+	    pilotPath = "pilot-icon.png";
+	    scubaPath = "scuba.png";
+	    shipPath = "space-ship.png";
+	    targetPath = "target.png";
+	    winnerPath = "winner.jpg";
+    }
+}
+
 class ExamplesFIGame {
 
+			Cell c1 = new Cell(5.0, 320, 320, false);
+		    IList<Cell> ilc = new Cons<Cell>(c1, new Empty<Cell>());
+		    Target target2 = new Target(new Posn(40, 40));
+
+		/*
+		    Person p = new Person(new Posn(12, 10));
+		    Posn pos1 = new Posn(10, 9);
+		    Posn pos2 = new Posn(120, 5);
+		    Posn pos3 = new Posn(299, 299);
+		    Posn pos4 = new Posn(293, 293);
+		    Cell c2 = new Cell(5.0, 20, 20, false);
+		    Cell c3 = new Cell(5.0, 30, 30, true);
+		    Cell c4 = new Cell(5.0, 40, 40, false);
+		    ArrayList<Cell> cellArray = new ArrayList<Cell>();
+
+		    IList<Cell> cellList = new Cons<Cell>(c1, new Cons<Cell>(c2, 
+		            new Cons<Cell>(c3, new Cons<Cell>(c4, new Empty<Cell>()))));
+		    IList<Cell> emptyCellList = new Empty<Cell>();
+		    IList<Target> targetList = new Cons<Target>(target, new Cons<Target>(target2, 
+		            new Empty<Target>()));
+		    IList<Double> doubleList = new Cons<Double>(2.0, new Cons<Double>(5.4,
+		            new Cons<Double>(12.1, new Empty<Double>())));
+
+		    ICellListIterator icli = new ICellListIterator(cellList);    
+		    IListIterator<Cell> ili = new IListIterator<Cell>(cellList);
+		    IListIterator<Cell> ili2 = new IListIterator<Cell>(emptyCellList);
+		    ITargetListIterator itli = new ITargetListIterator(targetList);
+		    ArrayListIterator<Cell> ali = new ArrayListIterator<Cell>(cellArray);
 
 
-    Cell c1 = new Cell(5.0, 320, 320, false);
-    IList<Cell> ilc = new Cons<Cell>(c1, new Empty<Cell>());
-    Target target = new Target(new Posn(0, 0));
-    Target target2 = new Target(new Posn(40, 40));
+		    void init() {
+
+		        cellList = new Cons<Cell>(c1, new Cons<Cell>(c2, 
+		                new Cons<Cell>(c3, new Cons<Cell>(c4, new Empty<Cell>()))));
+		        emptyCellList = new Empty<Cell>();
+		        targetList = new Cons<Target>(target, new Cons<Target>(target2, 
+		                new Empty<Target>()));
+		        doubleList = new Cons<Double>(2.0, new Cons<Double>(5.4,
+		                new Cons<Double>(12.1, new Empty<Double>())));
+
+
+		        icli = new ICellListIterator(cellList);    
+		        ili = new IListIterator<Cell>(cellList);
+		        ili2 = new IListIterator<Cell>(emptyCellList);
+		        itli = new ITargetListIterator(targetList);
+		        ali = new ArrayListIterator<Cell>(cellArray);
+		    }
+
+
+		    // Test the isNear() Method
+		    void testIsNear(Tester t) {
+		        init();
+		        t.checkExpect(p.isNear(pos1), true);
+		        t.checkExpect(p.isNear(pos2), false);
+		    }
+		    // Tests the size method
+		    void testSize(Tester t) {
+		        init();
+		        t.checkExpect(doubleList.size(), 3);
+		    }
+
+		    // Tests the Legal Location Method
+		    void testLegalLocation(Tester t) {
+		        init();
+		        t.checkExpect(cellList.legalLocation(pos1), true);
+		        t.checkExpect(cellList.legalLocation(pos2), true);
+		        t.checkExpect(cellList.legalLocation(pos3), false);
+		        t.checkExpect(cellList.legalLocation(pos4), true);
+
+
+		    }
+
+		    // Tests the makeList method 
+		    void testMakeList(Tester t) {
+		        init();
+		        t.checkExpect(target.makeList().size(), 6);
+		        t.checkExpect(target2.makeList().size(), 6);
+
+		    }
+
+		    void testIterator(Tester t) {
+		        init();
+
+		        cellArray.add(c1);
+		        cellArray.add(c2);
+		        cellArray.add(c3);
+
+
+		        t.checkExpect(ili.next(), c1);
+		        t.checkExpect(ili.hasNext(), true);
+		        t.checkExpect(ili2.hasNext(), false);
+		        t.checkExpect(itli.hasNext(), true);
+		        t.checkExpect(itli.next(), target);
+		        t.checkExpect(ali.hasNext(), true);
+		        t.checkExpect(ali.next(), c1);
+		        t.checkExpect(icli.hasNext(), true);
+		        t.checkExpect(icli.next(), c1);
+		    }
+
+		    void testFlood(Tester t) {
+		        init();
+		        t.checkExpect(icli.flood(4).size(), cellList.size());
+		    }
+
+		*/     
+		 public static void main(String [] args) {
+			 	URLUtils util = new URLUtils();
+			    Target target = new Target(new Posn(0, 0));
+			    ForbiddenIslandWorld f1 = new ForbiddenIslandWorld(new Empty<Cell>(),
+			            new Person(new Posn(320, 320)), target.makeList());
+			    util.urlToPath();
+		        f1.bigBang(640, 640, .5);
+		 }
+		     
+
+		}
 
 
 
-    ForbiddenIslandWorld f1 = new ForbiddenIslandWorld(new Empty<Cell>(),
-            new Person(new Posn(320, 320)), target.makeList());
-/*
-    Person p = new Person(new Posn(12, 10));
-    Posn pos1 = new Posn(10, 9);
-    Posn pos2 = new Posn(120, 5);
-    Posn pos3 = new Posn(299, 299);
-    Posn pos4 = new Posn(293, 293);
-    Cell c2 = new Cell(5.0, 20, 20, false);
-    Cell c3 = new Cell(5.0, 30, 30, true);
-    Cell c4 = new Cell(5.0, 40, 40, false);
-    ArrayList<Cell> cellArray = new ArrayList<Cell>();
 
-    IList<Cell> cellList = new Cons<Cell>(c1, new Cons<Cell>(c2, 
-            new Cons<Cell>(c3, new Cons<Cell>(c4, new Empty<Cell>()))));
-    IList<Cell> emptyCellList = new Empty<Cell>();
-    IList<Target> targetList = new Cons<Target>(target, new Cons<Target>(target2, 
-            new Empty<Target>()));
-    IList<Double> doubleList = new Cons<Double>(2.0, new Cons<Double>(5.4,
-            new Cons<Double>(12.1, new Empty<Double>())));
-
-    ICellListIterator icli = new ICellListIterator(cellList);    
-    IListIterator<Cell> ili = new IListIterator<Cell>(cellList);
-    IListIterator<Cell> ili2 = new IListIterator<Cell>(emptyCellList);
-    ITargetListIterator itli = new ITargetListIterator(targetList);
-    ArrayListIterator<Cell> ali = new ArrayListIterator<Cell>(cellArray);
-
-
-    void init() {
-
-        cellList = new Cons<Cell>(c1, new Cons<Cell>(c2, 
-                new Cons<Cell>(c3, new Cons<Cell>(c4, new Empty<Cell>()))));
-        emptyCellList = new Empty<Cell>();
-        targetList = new Cons<Target>(target, new Cons<Target>(target2, 
-                new Empty<Target>()));
-        doubleList = new Cons<Double>(2.0, new Cons<Double>(5.4,
-                new Cons<Double>(12.1, new Empty<Double>())));
-
-
-        icli = new ICellListIterator(cellList);    
-        ili = new IListIterator<Cell>(cellList);
-        ili2 = new IListIterator<Cell>(emptyCellList);
-        itli = new ITargetListIterator(targetList);
-        ali = new ArrayListIterator<Cell>(cellArray);
-    }
-
-
-    // Test the isNear() Method
-    void testIsNear(Tester t) {
-        init();
-        t.checkExpect(p.isNear(pos1), true);
-        t.checkExpect(p.isNear(pos2), false);
-    }
-    // Tests the size method
-    void testSize(Tester t) {
-        init();
-        t.checkExpect(doubleList.size(), 3);
-    }
-
-    // Tests the Legal Location Method
-    void testLegalLocation(Tester t) {
-        init();
-        t.checkExpect(cellList.legalLocation(pos1), true);
-        t.checkExpect(cellList.legalLocation(pos2), true);
-        t.checkExpect(cellList.legalLocation(pos3), false);
-        t.checkExpect(cellList.legalLocation(pos4), true);
-
-
-    }
-
-    // Tests the makeList method 
-    void testMakeList(Tester t) {
-        init();
-        t.checkExpect(target.makeList().size(), 6);
-        t.checkExpect(target2.makeList().size(), 6);
-
-    }
-
-    void testIterator(Tester t) {
-        init();
-
-        cellArray.add(c1);
-        cellArray.add(c2);
-        cellArray.add(c3);
-
-
-        t.checkExpect(ili.next(), c1);
-        t.checkExpect(ili.hasNext(), true);
-        t.checkExpect(ili2.hasNext(), false);
-        t.checkExpect(itli.hasNext(), true);
-        t.checkExpect(itli.next(), target);
-        t.checkExpect(ali.hasNext(), true);
-        t.checkExpect(ali.next(), c1);
-        t.checkExpect(icli.hasNext(), true);
-        t.checkExpect(icli.next(), c1);
-    }
-
-    void testFlood(Tester t) {
-        init();
-        t.checkExpect(icli.flood(4).size(), cellList.size());
-    }
-
-*/     
- {
-     this.f1.bigBang(640, 640, .5);
- }
-     
-
-}

@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="javalib">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../EclipseJars/javalib.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../EclipseJars/javalib.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

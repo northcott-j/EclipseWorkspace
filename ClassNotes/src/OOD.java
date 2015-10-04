@@ -121,6 +121,80 @@ Efficiency, especially when implementing higher level data structures
 // Primitive types vs Reference types
 /*
 
+PRIMS:
+boolean
+byte
+short
+char
+int
+float
+long
+double
 
+Boxed - obj:
+Class with single field of prim types
+Boolean
+Byte
+Short
+Character
+Integer
+Float
+Long
+Double
+*/
+
+/*
+SWITCH
+ints
+character
+string
+*/
+
+switch (c) {
+	case 's':
+		//method
+		break;
+	case 'S':
+		//method
+		break;
+	default:
+		unrecognized();
+}
+
+// Enumerations
+/*
+
+- a Special kind of class
+- Creates a finite set of named values
+- Represents a small, fixed set
 
 */
+
+enum Status {
+	Playing, Stalemate, Won
+}
+
+enum Binop {
+	Add, Sub, Mul, Div, Pow
+}
+
+double performBinop(Binop op, double a, double b) {
+	switch (op) {
+		case Add: return a + b;
+		case Sub: return a - b;
+		default: something;
+	}
+}
+
+enum UsCoin {
+	Penny(1), Nickel(5);
+
+	private final int cents;
+	public int getCentsValue() {
+		return cents;
+	}
+
+	UsCoin(int cents) {
+		this.cents = cents;
+	}
+}
