@@ -1,6 +1,10 @@
 import tester.*;
 import java.applet.Applet;
 import java.awt.Graphics;
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 
 import java.util.*;             // Gives us Arrays
 
@@ -1470,18 +1474,41 @@ class URLUtils {
 	static String shipPath = "";
 	static String targetPath = "";
 	static String winnerPath = "";
+	String tempDir = System.getProperty("java.io.tmpdir");
 	
 	URLUtils() {}
+	
+	// Downloads Resources 
+	void resourcePull() throws IOException {
+		this.urlToPath();
+		URL alienURL = new URL("http://jdnorthcott.com/legacy/java/FI/alien.png");
+		URL drowningURL = new URL("http://jdnorthcott.com/legacy/java/FI/drowning.jpeg");
+		URL helicopterURL = new URL("http://jdnorthcott.com/legacy/java/FI/helicopter.png");
+		URL pilotURL = new URL("http://jdnorthcott.com/legacy/java/FI/pilot-icon.png");
+		URL scubaURL = new URL("http://jdnorthcott.com/legacy/java/FI/scuba.png");
+		URL shipURL = new URL("http://jdnorthcott.com/legacy/java/FI/space-ship.png");
+		URL targetURL = new URL("http://jdnorthcott.com/legacy/java/FI/target.png");
+		URL winnerURL = new URL("http://jdnorthcott.com/legacy/java/FI/winner.jpg");
+		URL[] urls = new URL[] { alienURL, drowningURL, helicopterURL, pilotURL, scubaURL,
+				                 shipURL, targetURL, winnerURL };
+		String[] paths = new String[] { alienPath, drowningPath, helicopterPath, pilotPath,
+				                        scubaPath, shipPath, targetPath, winnerPath };
+		for (int i = 0 ; i < 8 ; i += 1) {
+			FileUtils.copyURLToFile(urls[i], new File(paths[i]));
+		}
+	}
+	
     // Builds all paths
     void urlToPath() {
-	    alienPath = "alien.png";
-	    drowningPath = "drowning.jpeg";
-	    helicopterPath = "helicopter.png";
-	    pilotPath = "pilot-icon.png";
-	    scubaPath = "scuba.png";
-	    shipPath = "space-ship.png";
-	    targetPath = "target.png";
-	    winnerPath = "winner.jpg";
+
+	    alienPath = tempDir + "alien.png";
+	    drowningPath = tempDir + "drowning.jpeg";
+	    helicopterPath = tempDir + "helicopter.png";
+	    pilotPath = tempDir + "pilot-icon.png";
+	    scubaPath = tempDir + "scuba.png";
+	    shipPath = tempDir + "space-ship.png";
+	    targetPath = tempDir + "target.png";
+	    winnerPath = tempDir + "winner.jpg";
     }
 }
 
@@ -1592,12 +1619,13 @@ class ExamplesFIGame {
 		    }
 
 		*/     
-		 public static void main(String [] args) {
+		 public static void main(String [] args) throws IOException {
 			 	URLUtils util = new URLUtils();
 			    Target target = new Target(new Posn(0, 0));
 			    ForbiddenIslandWorld f1 = new ForbiddenIslandWorld(new Empty<Cell>(),
 			            new Person(new Posn(320, 320)), target.makeList());
 			    util.urlToPath();
+			    util.resourcePull();
 		        f1.bigBang(640, 640, .5);
 		 }
 		     
