@@ -345,11 +345,11 @@ class PointPicker {
 // Class for the Main Game
 class MazeGame extends World {
     // The Width of the board
-    static final int WIDTH = 100;
+    static final int WIDTH = 50;
     // The Height of the board
-    static final int HEIGHT = 60;
+    static final int HEIGHT = 30;
     // Size of each cell in pixels
-    static final int CELLSIZE = 10;
+    static final int CELLSIZE = 20;
     // Has the game been initialized?
     static boolean INITIALIZED = false;
     // Sets whether or not to build the maze step by step 
