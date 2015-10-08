@@ -1,0 +1,25 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# IntelliJ configuration, workspace, and output
+*.iws
+.idea/workspace.xml
+classes
+javadoc
+
+# Maven output
+target
+
+# Vim temp files
+.*.sw?
+
+# OS X Desktop settings
+.DS_Store
+javadoc/
