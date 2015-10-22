@@ -88,4 +88,26 @@ public interface CoinGameModel {
       super(msg);
     }
   }
+
+  /**
+   * Gets the winner of the game
+   * @return the name of the player who won
+   * @throws IllegalStateException if the game isn't over yet
+   */
+  String getWinner();
+
+  /**
+   * Adds a single or multiple players to the game
+   * @param players is the String[] of players to be added
+   * @throws IllegalArgumentException if a name isn't unique
+   *
+   */
+  void addPlayers(String... players);
+
+  /**
+   * Gets the name of the player who's next
+   * @return String name of player whose turn it is to move
+   */
+  String whoseTurn();
+
 }
