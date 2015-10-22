@@ -240,6 +240,16 @@ public final class StrictCoinGameModel implements CoinGameModel {
   }
 
   /**
+   * Constructs a builder for configuring and then creating a game model
+   * instance. 
+   *
+   * @return the new builder
+   */
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  /**
    * Builds a {@link StrictCoinGameModel}, allowing the client to configure parameters. This is an
    * instance of the <em>builder pattern</em>.
    */
@@ -296,10 +306,11 @@ public final class StrictCoinGameModel implements CoinGameModel {
      */
 
     public Builder addPlayers(String... names) {
+      this.players.clear();
       for (String n : names) {
         // If a name is repeated, throw an illegal argument exception
         if (this.players.contains(n)) {
-          throw new IllegalArgumentException("Name" + n + "is already taken");
+          throw new IllegalArgumentException("Name " + n + " is already taken");
         } else {
           // If everything is all good, add name
           this.players.add(n);
@@ -316,6 +327,8 @@ public final class StrictCoinGameModel implements CoinGameModel {
      */
     public Builder changeBoard(String template) {
       this.template = template;
+      this.board = this.stringToArrayList(template);
+      this.coins = this.boardToCoins(template);
       return this;
     }
 
