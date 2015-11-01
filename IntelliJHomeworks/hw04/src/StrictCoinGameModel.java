@@ -116,11 +116,15 @@ public final class StrictCoinGameModel implements CoinGameModel {
 
     /**
      * Moves coin number {@code coinIndex} to position {@code newPosition}. Throws {@code
-     * IllegalMoveException} if the requested move is illegal, which can happen in several ways: <p>
-     * <ul> <li>There is no coin with the requested index. <li>The new position is occupied by another
-     * coin. <li>There is some other reason the move is illegal, as specified by the concrete game
-     * class. </ul> <p> Note that {@code coinIndex} refers to the coins as numbered from 0 to {@code
-     * coinCount() - 1}, not their absolute position on the board. However, coins have no identity, so
+     * IllegalMoveException} if the requested move is illegal, which can happen in several ways:
+     * <p>
+     * <ul> <li>There is no coin with the requested index.
+     * <li>The new position is occupied by another coin.
+     * <li>There is some other reason the move is illegal, as specified by the concrete game
+     * class. </ul>
+     * <p> Note that {@code coinIndex} refers to the coins as numbered from 0 to {@code
+     * coinCount() - 1}, not their absolute position on the board.
+     * However, coins have no identity, so
      * if one coin passes another, their indices are exchanged. The leftmost coin is always coin 0,
      * the next leftmost is coin 1, and so on.
      *
@@ -143,8 +147,8 @@ public final class StrictCoinGameModel implements CoinGameModel {
     }
 
     /**
-     * Overrides the builtin toString method.  Makes a string representation of the board with 'O' for
-     * a coin and '-' for empty space.
+     * Overrides the builtin toString method.  Makes a string representation
+     * of the board with 'O' for a coin and '-' for empty space.
      *
      * @return string representaion of the board
      */
@@ -172,7 +176,7 @@ public final class StrictCoinGameModel implements CoinGameModel {
      */
     boolean isValidMove(int coinIndex, int newPos) {
         return coinIndex == 0 && newPos < this.getCoinPosition(coinIndex) && newPos >= 0 ||
-                newPos < this.getCoinPosition(coinIndex) && newPos > getCoinPosition(coinIndex - 1);
+               newPos < this.getCoinPosition(coinIndex) && newPos > getCoinPosition(coinIndex - 1);
     }
 
     @Override
@@ -233,7 +237,8 @@ public final class StrictCoinGameModel implements CoinGameModel {
     /**
      * Modifies the game to reflect a new turn
      *
-     * SIDE EFFECTS: priorPlayer gets the name of who just moved the next person in players gets moved
+     * SIDE EFFECTS: priorPlayer gets the name of who just moved the next person in
+     * players gets moved
      * to the back
      */
     private void nextTurn() {
@@ -252,7 +257,8 @@ public final class StrictCoinGameModel implements CoinGameModel {
     }
 
     /**
-     * Builds a {@link StrictCoinGameModel}, allowing the client to configure parameters. This is an
+     * Builds a {@link StrictCoinGameModel}, allowing the client to configure parameters.
+     * This is an
      * instance of the <em>builder pattern</em>.
      */
     public static final class Builder {
@@ -262,8 +268,8 @@ public final class StrictCoinGameModel implements CoinGameModel {
         private ArrayList<String> players = new ArrayList<>();
 
         /**
-         * Given a string representation of the CoinGameModel converts it into an ArrayList of Booleans
-         * with true representing a coin and false representing nothing
+         * Given a string representation of the CoinGameModel converts it into an
+         * ArrayList of Booleans with true representing a coin and false representing nothing
          *
          * @param str the representing the CoinGameModel
          * @return ArrayList representation of the board
