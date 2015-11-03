@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 /**
  * Represents a note and its information Created by Jonathan on 11/1/2015.
  */
@@ -38,10 +40,31 @@ class Note {
             startBeat > endBeat) {
       throw new IllegalArgumentException("Invalid Note");
     }
+    // Volume has been set to a default of 1 for now
     return new Note(note, octave, startBeat, endBeat, 1);
   }
 
   //TODO: need to add JavaDoc to all of these methods
+  NoteTypes getType() {
+    return this.type;
+  }
+
+  int getOctave() {
+    return this.octave;
+  }
+
+  int getStartBeat() {
+    return this.startBeat;
+  }
+
+  int getEndBeat() {
+    return this.endBeat;
+  }
+
+  int getVolume() {
+    return this.volume;
+  }
+
   void changeStart(int newStart) {
     if (newStart < 0 || newStart >= endBeat) {
       throw new IllegalArgumentException("Invalid startBeat");
@@ -72,5 +95,29 @@ class Note {
       throw new IllegalArgumentException("Invalid volume");
     }
     this.volume = newVolume;
+  }
+
+  @Override
+  public String toString() {
+    return this.type.toString() + Integer.toString(this.octave);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (other instanceof Note) {
+      Note otherNote = (Note) other;
+      return this.octave == otherNote.octave &&
+              this.startBeat == otherNote.startBeat &&
+              this.endBeat == otherNote.endBeat &&
+              this.type == otherNote.type &&
+              this.volume == otherNote.volume;
+    } else {
+      return false;
+    }
+  }
+
+  boolean overlap(Note other) {
+    return this.type == other.type &&
+            this.octave == other.octave;
   }
 }
