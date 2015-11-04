@@ -35,6 +35,7 @@ class Note {
    * @return the new note
    * @throws IllegalArgumentException if arguments don't make a proper note
    */
+  // TODO: Implement volume later on when it is important
   static final Note makeNote(NoteTypes note, int octave, int startBeat, int endBeat) {
     if (octave < 0 || octave > 10 || startBeat < 0 || endBeat < 0 || endBeat < startBeat ||
             startBeat > endBeat) {
@@ -44,27 +45,51 @@ class Note {
     return new Note(note, octave, startBeat, endBeat, 1);
   }
 
-  //TODO: need to add JavaDoc to all of these methods
+  /**
+   * Returns the type of the note
+   * @return returns the NoteType of this note
+   */
   NoteTypes getType() {
     return this.type;
   }
 
+  /**
+   * Returns the note's octave
+   * @return the octave of this note
+   */
   int getOctave() {
     return this.octave;
   }
 
+  /**
+   * Returns the startBeat of the note
+   * @return the startBeat of this note
+   */
   int getStartBeat() {
     return this.startBeat;
   }
 
+  /**
+   * Returns the end beat of the note
+   * @return the endBeat of this note
+   */
   int getEndBeat() {
     return this.endBeat;
   }
 
+  /**
+   * Returns the volume of the note
+   * @return the volume of this note
+   */
   int getVolume() {
     return this.volume;
   }
 
+  /**
+   * Changes the startBeat of this note
+   * @param newStart the new startBeat
+   * @throws IllegalArgumentException if startBeat is invalid
+   */
   void changeStart(int newStart) {
     if (newStart < 0 || newStart >= endBeat) {
       throw new IllegalArgumentException("Invalid startBeat");
@@ -72,6 +97,11 @@ class Note {
     this.startBeat = newStart;
   }
 
+  /**
+   * Changes the endBeat of this note
+   * @param newEnd the new endBeat
+   * @throws IllegalArgumentException if invalid endBeat
+   */
   void changeEnd(int newEnd) {
     if (newEnd < 0 || newEnd <= startBeat) {
       throw new IllegalArgumentException("Invalid endBeat");
@@ -79,10 +109,19 @@ class Note {
     this.endBeat = newEnd;
   }
 
+  /**
+   * Changes the type of the note
+   * @param newType the new type for this note
+   */
   void changeType(NoteTypes newType) {
     this.type = newType;
   }
 
+  /**
+   * Changes the octave of this note
+   * @param newOctave the new octave
+   * @throws IllegalArgumentException if the octave is invalid
+   */
   void changeOctave(int newOctave) {
     if (newOctave < 0 || newOctave > 10) {
       throw new IllegalArgumentException("Invalid octave");
@@ -90,6 +129,11 @@ class Note {
     this.octave = newOctave;
   }
 
+  /**
+   * Changes the volume of this note
+   * @param newVolume the new volume
+   * @throws IllegalArgumentException if the volume is invalid
+   */
   void changeVolume(int newVolume) {
     if (newVolume < 0) {
       throw new IllegalArgumentException("Invalid volume");
@@ -97,11 +141,20 @@ class Note {
     this.volume = newVolume;
   }
 
+  /**
+   * This note as a string
+   * @return Combines note type and octave
+   */
   @Override
   public String toString() {
     return this.type.toString() + Integer.toString(this.octave);
   }
 
+  /**
+   * Overrides the equals method
+   * @param other object (hopefully a note to be checked)
+   * @return true or false if it matches
+   */
   @Override
   public boolean equals(Object other) {
     if (other instanceof Note) {
@@ -116,6 +169,16 @@ class Note {
     }
   }
 
+  @Override
+  public int hashCode() {
+    return 31 * (octave + startBeat + endBeat + type.hashCode() + volume);
+  }
+
+  /**
+   * Checks to see if it overlaps another note
+   * @param other note to be checked
+   * @return true if this note doesn't land on any part of the other note
+   */
   boolean overlap(Note other) {
     return this.type == other.type &&
             this.octave == other.octave;

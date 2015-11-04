@@ -18,6 +18,7 @@ public interface MusicEditorModel {
    * @return a new Note
    * @throws IllegalArgumentException if above variants are broken
    */
+  // Leakage warning
   Note makeNote(NoteTypes note, int octave, int startBeat, int endBeat);
 
   /**
@@ -48,6 +49,7 @@ public interface MusicEditorModel {
    * Changes the type of a note
    * @param note the note to be changed
    * @param newType the new type for the note
+   * @throws IllegalArgumentException if this causes an overlap
    */
   void changeNoteType(Note note, NoteTypes newType);
 
@@ -67,26 +69,45 @@ public interface MusicEditorModel {
    * @return the Note wanted
    * @throws IllegalArgumentException if no note matching those arguments
    */
+  // Leakage warning
   Note getNote(NoteTypes type, int octave, int beat);
 
   /**
    * Adds a Note into the board
    * @param note the note to be added
+   * @throws IllegalArgumentException if it causes an overlap
    */
   void addNote(Note note);
 
   /**
-   * Creates a board based on text board input
-   * @param printedScore text representation of a score
-   * @return the musical arrays
-   * @throws IllegalArgumentException if not a valid printedScore
+   * The amount of beats in the array
+   * @return the length of the score in beats
    */
-  ArrayList<ArrayList<Note>> generateScore(String printedScore);
+  int scoreLength();
+
+  /**
+   * Returns the current beat
+   * @return the current beat
+   */
+  int getCurBeat();
+
+  /**
+   * Returns the tempo of the score
+   * @return the tempo
+   */
+  int getTempo();
+
+  /**
+   * Sets the tempo
+   * @throws IllegalArgumentException if tempo is negative or 0
+   */
+  void setTempo(int newTempo);
 
   /**
    * Outputs the musical array
    * @return the musical array
    */
+  // Leakage warning
   ArrayList<ArrayList<Note>> returnScore();
 
   /**
@@ -107,14 +128,27 @@ public interface MusicEditorModel {
    * Outputs information needed to play music and
    * ticks the beat up
    * @return the Array of notes to be played at this beat
+   * @throws IllegalStateException no more music
    */
+  // Leakage warning
   ArrayList<Note> playMusic();
 
   /**
+   * Outputs the text printout
+   * @return String of the board
+   */
+  String debugOutput();
+
+  // Implement later if needed
+/*
+  */
+/**
    * Adds the two musical arrays together ignoring repeated notes
    * @param secondScore is the music to be combined with current score
-   */
+   *//*
+
   void simultaneousScore(ArrayList<ArrayList<Note>> secondScore);
+*/
 
   /**
    * Adds this score to the end of the current
