@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * The model interface for the Music Editor
@@ -6,28 +7,12 @@ import java.util.ArrayList;
  */
 public interface MusicEditorModel {
   /**
-   * Makes a new note and checks invariants such as:
-   *    - octave, startBeat and endBeat are positive
-   *    - octave is less than or equal to ten
-   *    - startBeat is less than end beat
-   *
-   * @param note the type of Note to be played
-   * @param octave the pitch of the Note to be played
-   * @param startBeat the start beat of the Note
-   * @param endBeat the end beat of the Note
-   * @return a new Note
-   * @throws IllegalArgumentException if above variants are broken
-   */
-  // Leakage warning
-  Note makeNote(NoteTypes note, int octave, int startBeat, int endBeat);
-
-  /**
    * Changes the Start beat of a note
    * @param note the note to be changed
    * @param startBeat the new start beat
    * @throws IllegalArgumentException if startBeat is negative or greater than end
    */
-  void changeNoteStart(Note note, int startBeat);
+  void changeNoteStart(AbstractNote note, int startBeat);
 
   /**
    * Changes the End beat of a note
@@ -35,7 +20,7 @@ public interface MusicEditorModel {
    * @param endBeat the new end beat
    * @throws  IllegalArgumentException if endBeat is negative or less than start
    */
-  void changeNoteEnd(Note note, int endBeat);
+  void changeNoteEnd(AbstractNote note, int endBeat);
 
   /**
    * Changes the Octave of a note
@@ -43,7 +28,7 @@ public interface MusicEditorModel {
    * @param octave the new octave
    * @throws IllegalArgumentException if octave < 0 or octave > 10
    */
-  void changeNoteOctave(Note note, int octave);
+  void changeNoteOctave(AbstractNote note, int octave);
 
   /**
    * Changes the type of a note
@@ -51,7 +36,7 @@ public interface MusicEditorModel {
    * @param newType the new type for the note
    * @throws IllegalArgumentException if this causes an overlap
    */
-  void changeNoteType(Note note, NoteTypes newType);
+  void changeNoteType(AbstractNote note, NoteTypes newType);
 
   /**
    * Changes the note volume
@@ -59,7 +44,7 @@ public interface MusicEditorModel {
    * @param volume the new volume for the note
    * @throws IllegalArgumentException if volume is negative
    */
-  void changeNoteVol(Note note, int volume);
+  void changeNoteVol(AbstractNote note, int volume);
 
   /**
    * Gets the note based on type and octave during a certain beat
@@ -69,15 +54,14 @@ public interface MusicEditorModel {
    * @return the Note wanted
    * @throws IllegalArgumentException if no note matching those arguments
    */
-  // Leakage warning
-  Note getNote(NoteTypes type, int octave, int beat);
+  AbstractNote getNote(NoteTypes type, int octave, int beat);
 
   /**
    * Adds a Note into the board
    * @param note the note to be added
    * @throws IllegalArgumentException if it causes an overlap
    */
-  void addNote(Note note);
+  void addNote(AbstractNote note);
 
   /**
    * The amount of beats in the array
@@ -107,8 +91,7 @@ public interface MusicEditorModel {
    * Outputs the musical array
    * @return the musical array
    */
-  // Leakage warning
-  ArrayList<ArrayList<Note>> returnScore();
+  ArrayList<Collection<AbstractNote>> returnScore();
 
   /**
    * Updates the current beat of the editor
@@ -122,7 +105,7 @@ public interface MusicEditorModel {
    * @param note is the note to be deleted
    * @throws IllegalArgumentException if no such note
    */
-  void deleteNote(Note note);
+  void deleteNote(AbstractNote note);
 
   /**
    * Outputs information needed to play music and
@@ -130,8 +113,7 @@ public interface MusicEditorModel {
    * @return the Array of notes to be played at this beat
    * @throws IllegalStateException no more music
    */
-  // Leakage warning
-  ArrayList<Note> playMusic();
+  Collection<AbstractNote> playMusic();
 
   /**
    * Outputs the text printout
@@ -139,20 +121,19 @@ public interface MusicEditorModel {
    */
   String debugOutput();
 
-  // Implement later if needed
-/*
-  */
 /**
    * Adds the two musical arrays together ignoring repeated notes
    * @param secondScore is the music to be combined with current score
-   *//*
+   */
+  // TODO: Write this method
+  /*
 
-  void simultaneousScore(ArrayList<ArrayList<Note>> secondScore);
+  void simultaneousScore(ArrayList<ArrayList<AbstractNote>> secondScore);
 */
 
   /**
    * Adds this score to the end of the current
    * @param secondScore is the music to be added at the end
    */
-  void consecutiveScore(ArrayList<ArrayList<Note>> secondScore);
+  void consecutiveScore(ArrayList<Collection<AbstractNote>> secondScore);
 }

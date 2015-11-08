@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -10,7 +11,7 @@ public class MusicEditorImpl implements MusicEditorModel {
   // Tempo for the music
   private int tempo;
   // The Array of notes for each beat
-  private ArrayList<ArrayList<Note>> musicalArray;
+  private ArrayList<ArrayList<AbstractNote>> musicalArray;
   // The deepest note
   private NoteTypes lowNote;
   // The highest note
@@ -27,15 +28,15 @@ public class MusicEditorImpl implements MusicEditorModel {
   // TODO: Going to need to implement a Builder later
   MusicEditorImpl() {
     curBeat = 0;
-    musicalArray = new ArrayList<ArrayList<Note>>();
+    musicalArray = new ArrayList<>();
     // The below assignments are defaults
     tempo = 1;
   }
 
-  @Override
-  public Note makeNote(NoteTypes note, int octave, int startBeat, int endBeat) {
+  protected Note makeNote(NoteTypes note, int octave, int startBeat, int endBeat) {
     return Note.makeNote(note, octave, startBeat, endBeat);
   }
+
 
   /**
    * Checks to see if the change being made (adding a note, changing a note etc.) is valid by seeing
@@ -45,13 +46,16 @@ public class MusicEditorImpl implements MusicEditorModel {
    * @return true if it is valid
    * @throws IllegalArgumentException if change is invalid
    */
-  private boolean validChange(Note potChange) {
+  private boolean validChange(AbstractNote potChange) {
+    if (potChange.getType() == null) {
+      throw new IllegalArgumentException("Can't have null NoteType");
+    }
     for (int i = potChange.getStartBeat(); i <= potChange.getEndBeat(); i += 1) {
       // If index is out of bounds, that beat doesn't exist yet so a new beat is added
       while (i >= this.musicalArray.size()) {
-        this.musicalArray.add(new ArrayList<Note>());
+        this.musicalArray.add(new ArrayList<AbstractNote>());
       }
-      for (Note n : this.musicalArray.get(i)) {
+      for (AbstractNote n : this.musicalArray.get(i)) {
         // Checks every note in the potential notes range to see if they are the same type and
         // octave
         if (potChange.overlap(n)) {
@@ -63,13 +67,13 @@ public class MusicEditorImpl implements MusicEditorModel {
   }
 
   @Override
-  public void changeNoteStart(Note note, int startBeat) {
+  public void changeNoteStart(AbstractNote note, int startBeat) {
     int origStart = note.getStartBeat();
     note.changeStart(startBeat);
     // Is the startBeat earlier than the current start
     if (startBeat < origStart) {
       for (int i = startBeat; i < origStart; i += 1) {
-        for (Note n : this.musicalArray.get(i)) {
+        for (AbstractNote n : this.musicalArray.get(i)) {
           // Make sure they don't overlap another note
           if (note.overlap(n)) {
             // this reverts the mutation
@@ -88,17 +92,31 @@ public class MusicEditorImpl implements MusicEditorModel {
     }
   }
 
+  /**
+   * Trims empty Arrays at the end of the piece when end is changed or notes are removed
+   */
+  private void trimEnd() {
+    int index = this.scoreLength() - 1;
+    while (this.musicalArray.get(index).size() == 0 && index > 0) {
+      if (index < 0) {
+        throw new IllegalStateException("This method was called when it shouldn't have been");
+      }
+      this.musicalArray.remove(index);
+      index -= 1;
+    }
+  }
+
   @Override
-  public void changeNoteEnd(Note note, int endBeat) {
+  public void changeNoteEnd(AbstractNote note, int endBeat) {
     int origEnd = note.getEndBeat();
     note.changeEnd(endBeat);
     // Is the new end later than the current end
     if (endBeat > origEnd) {
       for (int i = endBeat; i > origEnd; i -= 1) {
         while (i >= this.scoreLength()) {
-          this.musicalArray.add(new ArrayList<Note>());
+          this.musicalArray.add(new ArrayList<AbstractNote>());
         }
-        for (Note n : this.musicalArray.get(i)) {
+        for (AbstractNote n : this.musicalArray.get(i)) {
           // Checks note range to check if there is an overlap
           if (note.overlap(n)) {
             // Reverts the mutation
@@ -113,12 +131,44 @@ public class MusicEditorImpl implements MusicEditorModel {
       // The end is earlier than the current end
       for (int i = origEnd; i > endBeat; i -= 1) {
         this.musicalArray.get(i).remove(note);
+        this.trimEnd();
       }
     }
   }
 
+  /**
+   * Computes the note range of the piece
+   */
+  private void updateRange() {
+    int highOctave = -1;
+    int highNote = -1;
+    int lowOctave = -1;
+    int lowNote = -1;
+    for (ArrayList<AbstractNote> a : this.musicalArray) {
+      for (AbstractNote n : a) {
+        if (n.getOctave() >= highOctave && n.getType().noteOrder() > highNote) {
+          highOctave = n.getOctave();
+          highNote = n.getType().noteOrder();
+        }
+        if (n.getOctave() <= lowOctave && n.getType().noteOrder() < lowNote) {
+          lowOctave = n.getOctave();
+          lowNote = n.getType().noteOrder();
+        }
+      }
+    }
+
+    if (highOctave != -1 && highNote != -1) {
+      this.highOctave = highOctave;
+      this.highNote = NoteTypes.valueLookup(highNote);
+    }
+    if (lowOctave != -1 && lowNote != -1) {
+      this.lowOctave = lowOctave;
+      this.lowNote = NoteTypes.valueLookup(lowNote);
+    }
+  }
+
   @Override
-  public void changeNoteOctave(Note note, int octave) {
+  public void changeNoteOctave(AbstractNote note, int octave) {
     // Creates a temporary note
     Note potChange = this.makeNote(note.getType(), octave, note.getStartBeat(), note.getEndBeat());
     // Checks to see if this note was changed, would it overlap anywhere
@@ -135,10 +185,11 @@ public class MusicEditorImpl implements MusicEditorModel {
         this.lowNote = note.getType();
       }
     }
+    this.updateRange();
   }
 
   @Override
-  public void changeNoteType(Note note, NoteTypes newType) {
+  public void changeNoteType(AbstractNote note, NoteTypes newType) {
     // Creates a temporary note
     Note potChange = this.makeNote(newType, note.getOctave(), note.getStartBeat(),
             note.getEndBeat());
@@ -155,18 +206,24 @@ public class MusicEditorImpl implements MusicEditorModel {
         this.lowNote = newType;
       }
     }
+    this.updateRange();
   }
 
   @Override
-  public void changeNoteVol(Note note, int volume) {
+  public void changeNoteVol(AbstractNote note, int volume) {
     note.changeVolume(volume);
   }
 
   @Override
-  public Note getNote(NoteTypes type, int octave, int beat) {
+  public AbstractNote getNote(NoteTypes type, int octave, int beat) {
+    try {
+      this.musicalArray.get(beat);
+    } catch (IndexOutOfBoundsException e) {
+      throw new IllegalArgumentException("No such note");
+    }
     // Gets the Array of notes at a certain beat
-    ArrayList<Note> beatNotes = this.musicalArray.get(beat);
-    for (Note n : beatNotes) {
+    ArrayList<AbstractNote> beatNotes = this.musicalArray.get(beat);
+    for (AbstractNote n : beatNotes) {
       // If the octave and type are the same at this beat, it is the note we are looking for
       // because duplicate same notes are not allowed at this point
       if (type == n.getType() && octave == n.getOctave()) {
@@ -177,7 +234,7 @@ public class MusicEditorImpl implements MusicEditorModel {
   }
 
   @Override
-  public void addNote(Note note) {
+  public void addNote(AbstractNote note) {
     // Checks to see if this note overlaps any others
     try {
       this.validChange(note);
@@ -242,8 +299,10 @@ public class MusicEditorImpl implements MusicEditorModel {
   }
 
   @Override
-  public ArrayList<ArrayList<Note>> returnScore() {
-    return this.musicalArray;
+  public ArrayList<Collection<AbstractNote>> returnScore() {
+    ArrayList<Collection<AbstractNote>> shield = new ArrayList<>();
+    shield.addAll(this.musicalArray);
+    return shield;
   }
 
   @Override
@@ -258,21 +317,25 @@ public class MusicEditorImpl implements MusicEditorModel {
   }
 
   @Override
-  public void deleteNote(Note note) {
+  public void deleteNote(AbstractNote note) {
     for (int i = note.getStartBeat(); i <= note.getEndBeat(); i += 1) {
       this.musicalArray.get(i).remove(note);
     }
+    this.trimEnd();
+    this.updateRange();
   }
 
   @Override
-  public ArrayList<Note> playMusic() {
+  public Collection<AbstractNote> playMusic() {
     this.changeCurBeat(curBeat + 1);
     try {
       this.musicalArray.get(curBeat - 1);
     } catch (IndexOutOfBoundsException e) {
       throw new IllegalStateException("No more music");
     }
-    return this.musicalArray.get(curBeat - 1);
+    ArrayList<AbstractNote> shield = new ArrayList<>();
+    shield.addAll(this.musicalArray.get(curBeat - 1));
+    return shield;
   }
 
   /**
@@ -352,7 +415,7 @@ public class MusicEditorImpl implements MusicEditorModel {
     HashMap<String, Integer> rangeMap = this.createRangeHMap(acc);
     // Current beat
     int beatNumber = 0;
-    for (ArrayList<Note> a : this.musicalArray) {
+    for (ArrayList<AbstractNote> a : this.musicalArray) {
       // Has to create a placeholder line with spaces in order to insert by index
       StringBuilder newLine = new StringBuilder();
       for (int i = indxRange + 10; i > 1; i -= 1) {
@@ -360,10 +423,11 @@ public class MusicEditorImpl implements MusicEditorModel {
       }
       // Starts the line by adding beat number
       newLine.replace(
-              Integer.toString(this.scoreLength()).length() - Integer.toString(beatNumber).length(),
+              Integer.toString(this.scoreLength()).length() -
+                      Integer.toString(beatNumber).length(),
               Integer.toString(this.scoreLength()).length(), Integer.toString(beatNumber));
       // adds each node to the new line represented by an X
-      for (Note n : a) {
+      for (AbstractNote n : a) {
         String nodeLoc = n.toString();
         if (beatNumber == n.getStartBeat()) {
           newLine.replace(rangeMap.get(nodeLoc), rangeMap.get(nodeLoc) + 1, "X");
@@ -386,10 +450,10 @@ public class MusicEditorImpl implements MusicEditorModel {
   }
 
   @Override
-  public void consecutiveScore(ArrayList<ArrayList<Note>> secondScore) {
+  public void consecutiveScore(ArrayList<Collection<AbstractNote>> secondScore) {
     // Push secondScore's notes start and end beats by the length of this musicalArray
     for (int i = 0; i < secondScore.size(); i += 1) {
-      for (Note n : secondScore.get(i)) {
+      for (AbstractNote n : secondScore.get(i)) {
         if (n.getStartBeat() == i) {
           n.changeEnd(n.getEndBeat() + this.scoreLength());
           n.changeStart(n.getStartBeat() + this.scoreLength());

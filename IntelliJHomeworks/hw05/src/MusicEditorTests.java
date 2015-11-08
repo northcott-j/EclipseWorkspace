@@ -7,13 +7,6 @@ import static org.junit.Assert.*;
  * Test class for the Music Editor Created by Jonathan on 11/2/2015.
  */
 public class MusicEditorTests {
-/*  @Test
-  public void greatTest() {
-    e1.addNote(n4);
-    assertEquals(" ",
-            e1);
-  }*/
-
   // makeNote() Tests
   @Test
   public void validNote() {
@@ -102,6 +95,16 @@ public class MusicEditorTests {
     editor.changeNoteEnd(note, 5);
     assertEquals(5, note.getEndBeat());
     assertEquals(editor.getNote(NoteTypes.CSharp, 3, 5), note);
+  }
+
+  @Test
+  public void noteEndTrimTest() {
+    MusicEditorImpl editor = new MusicEditorImpl();
+    Note note = editor.makeNote(NoteTypes.CSharp, 3, 0, 99);
+    editor.addNote(note);
+    assertEquals(100, editor.scoreLength());
+    editor.changeNoteEnd(note, 5);
+    assertEquals(6, editor.scoreLength());
   }
 
   @Test
