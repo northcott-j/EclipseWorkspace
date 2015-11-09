@@ -13,7 +13,7 @@ public final class MusicEditorImpl implements MusicEditorModel {
   // Tempo for the music
   private int tempo;
   // The Array of notes for each beat
-  private ArrayList<ArrayList<AbstractNote>> musicalArray;
+  private ArrayList<Collection<AbstractNote>> musicalArray;
   // The deepest note
   private NoteTypes lowNote;
   // The highest note
@@ -121,6 +121,7 @@ public final class MusicEditorImpl implements MusicEditorModel {
 
   /**
    * Adds space if needed for a note
+   *
    * @param note the note that needs space allocation
    */
   private void addEmptyBeats(AbstractNote note) {
@@ -130,7 +131,6 @@ public final class MusicEditorImpl implements MusicEditorModel {
   }
 
   @Override
-  // TODO: Remove or change overlap tests
   // TODO: Add tests that overlap multiple notes
   public void changeNoteStart(AbstractNote note, int startBeat) {
     // Remove the note
@@ -199,7 +199,7 @@ public final class MusicEditorImpl implements MusicEditorModel {
     int highNote = -2;
     int lowOctave = 10;
     int lowNote = 14;
-    for (ArrayList<AbstractNote> a : this.musicalArray) {
+    for (Collection<AbstractNote> a : this.musicalArray) {
       for (AbstractNote n : a) {
         if (n.getOctave() >= highOctave && n.getType().noteOrder() > highNote) {
           highOctave = n.getOctave();
@@ -278,7 +278,7 @@ public final class MusicEditorImpl implements MusicEditorModel {
       throw new IllegalArgumentException("No such note");
     }
     // Gets the Array of notes at a certain beat
-    ArrayList<AbstractNote> beatNotes = this.musicalArray.get(beat);
+    Collection<AbstractNote> beatNotes = this.musicalArray.get(beat);
     for (AbstractNote n : beatNotes) {
       // If the octave and type are the same at this beat, it is the note we are looking for
       // because duplicate same notes are not allowed at this point
@@ -448,7 +448,7 @@ public final class MusicEditorImpl implements MusicEditorModel {
     HashMap<String, Integer> rangeMap = this.createRangeHMap(acc);
     // Current beat
     int beatNumber = 0;
-    for (ArrayList<AbstractNote> a : this.musicalArray) {
+    for (Collection<AbstractNote> a : this.musicalArray) {
       // Has to create a placeholder line with spaces in order to insert by index
       StringBuilder newLine = new StringBuilder();
       for (int i = indxRange + 10; i > 1; i -= 1) {
@@ -480,6 +480,18 @@ public final class MusicEditorImpl implements MusicEditorModel {
   @Override
   public String debugOutput() {
     return this.toString();
+  }
+
+  @Override
+  // TODO: Need tests for this method
+  public void simultaneousScore(ArrayList<Collection<AbstractNote>> secondScore) {
+    for (int i = 0; i < secondScore.size(); i += 1) {
+      for (AbstractNote n : secondScore.get(i)) {
+        if (n.getStartBeat() == i) {
+          this.addNote(n);
+        }
+      }
+    }
   }
 
   @Override

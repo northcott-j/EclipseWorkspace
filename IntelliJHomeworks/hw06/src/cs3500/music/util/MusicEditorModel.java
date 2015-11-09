@@ -164,11 +164,8 @@ public interface MusicEditorModel {
  * Adds the two musical arrays together ignoring repeated notes
  * @param secondScore is the music to be combined with current score
  */
-  // TODO: Write this method
-  /*
 
-  void simultaneousScore(ArrayList<ArrayList<AbstractNote>> secondScore);
-*/
+  void simultaneousScore(ArrayList<Collection<AbstractNote>> secondScore);
 
   /**
    * Adds this score to the end of the current
