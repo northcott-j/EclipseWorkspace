@@ -75,14 +75,17 @@ public class MusicEditorTests {
     editor.changeNoteStart(note, 5);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void noteStartOverlaps() {
     MusicEditorImpl editor = MusicEditorImpl.makeEditor();
-    AbstractNote note = editor.makeNote(NoteTypes.CSharp, 3, 3, 4, 0, 0);
-    AbstractNote note2 = editor.makeNote(NoteTypes.CSharp, 3, 1, 2, 0, 0);
+    AbstractNote note = editor.makeNote(NoteTypes.CSharp, 3, 3, 4, 0, 10);
+    AbstractNote note2 = editor.makeNote(NoteTypes.CSharp, 3, 1, 2, 0, 10);
     editor.addNote(note);
     editor.addNote(note2);
     editor.changeNoteStart(note, 1);
+    assertEquals(4, note.getEndBeat());
+    assertEquals(1, note.getStartBeat());
+    assertEquals(note, editor.getNote(NoteTypes.CSharp, 3, 2));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -141,7 +144,7 @@ public class MusicEditorTests {
     editor.changeNoteEnd(note, 1);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void noteEndOverlaps() {
     MusicEditorImpl editor = MusicEditorImpl.makeEditor();
     AbstractNote note = editor.makeNote(NoteTypes.CSharp, 3, 3, 4, 0, 0);
@@ -149,6 +152,9 @@ public class MusicEditorTests {
     editor.addNote(note);
     editor.addNote(note2);
     editor.changeNoteEnd(note2, 3);
+    assertEquals(2, note2.getEndBeat());
+    assertEquals(note2, editor.getNote(NoteTypes.CSharp, 3, 1));
+    assertEquals(note, editor.getNote(NoteTypes.CSharp, 3, 3));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -187,7 +193,7 @@ public class MusicEditorTests {
     editor.changeNoteOctave(note, -3);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void noteOctaveOverlap() {
     MusicEditorImpl editor = MusicEditorImpl.makeEditor();
     AbstractNote note = editor.makeNote(NoteTypes.CSharp, 3, 2, 4, 0, 0);
@@ -195,6 +201,7 @@ public class MusicEditorTests {
     editor.addNote(note);
     editor.addNote(note2);
     editor.changeNoteOctave(note, 4);
+    assertEquals(note2, editor.getNote(NoteTypes.CSharp, 4, 2));
   }
 
   // changeNoteType() Tests
@@ -217,7 +224,7 @@ public class MusicEditorTests {
     editor.getNote(NoteTypes.CSharp, 3, 3);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void noteTypeOverlaps() {
     MusicEditorImpl editor = MusicEditorImpl.makeEditor();
     AbstractNote note = editor.makeNote(NoteTypes.CSharp, 3, 2, 4, 0, 0);
@@ -225,6 +232,7 @@ public class MusicEditorTests {
     editor.addNote(note);
     editor.addNote(note2);
     editor.changeNoteType(note, NoteTypes.A);
+    assertEquals(note2, editor.getNote(NoteTypes.A, 3, 2));
   }
 
   // changeNoteVolume() Tests
@@ -233,8 +241,8 @@ public class MusicEditorTests {
     MusicEditorImpl editor = MusicEditorImpl.makeEditor();
     AbstractNote note = editor.makeNote(NoteTypes.CSharp, 3, 2, 4, 0, 0);
     editor.addNote(note);
-    editor.changeNoteVol(note, 500);
-    assertEquals(500, editor.getNote(NoteTypes.CSharp, 3, 3).getVolume());
+    editor.changeNoteVol(note, 120);
+    assertEquals(120, editor.getNote(NoteTypes.CSharp, 3, 3).getVolume());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -284,13 +292,15 @@ public class MusicEditorTests {
     assertEquals(101, editor.scoreLength());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void addNoteOverlap() {
     MusicEditorImpl editor = MusicEditorImpl.makeEditor();
     AbstractNote note = editor.makeNote(NoteTypes.CSharp, 3, 2, 10, 0, 0);
     AbstractNote note2 = editor.makeNote(NoteTypes.CSharp, 3, 3, 100, 0, 0);
     editor.addNote(note);
     editor.addNote(note2);
+    assertEquals(2, note.getEndBeat());
+    assertEquals(note2, editor.getNote(NoteTypes.CSharp, 3, 3));
   }
 
   // scoreLength() Tests

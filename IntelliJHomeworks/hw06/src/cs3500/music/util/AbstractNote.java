@@ -106,7 +106,7 @@ public abstract class AbstractNote {
    * @throws IllegalArgumentException if invalid endBeat
    */
   void changeEnd(int newEnd) {
-    if (newEnd < 0 || newEnd <= startBeat) {
+    if (newEnd < 0 || newEnd < startBeat) {
       throw new IllegalArgumentException("Invalid endBeat");
     }
     this.endBeat = newEnd;
@@ -155,7 +155,7 @@ public abstract class AbstractNote {
    * @throws IllegalArgumentException if the volume is invalid
    */
   void changeVolume(int newVolume) {
-    if (newVolume < 0 && newVolume > 127) {
+    if (newVolume < 0 || newVolume > 127) {
       throw new IllegalArgumentException("Invalid volume");
     }
     this.volume = newVolume;

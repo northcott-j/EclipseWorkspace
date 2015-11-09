@@ -1,10 +1,13 @@
+/*
 package cs3500.music.view;
-
+// TODO: I commented out everything
 import javax.sound.midi.*;
 
+*/
 /**
  * A skeleton for MIDI playback
- */
+ *//*
+
 public class MidiViewImpl implements YourViewInterfaceHere {
   private final Synthesizer synth;
   private final Receiver receiver;
@@ -18,7 +21,8 @@ public class MidiViewImpl implements YourViewInterfaceHere {
       e.printStackTrace();
     }
   }
-  /**
+  */
+/**
    * Relevant classes and methods from the javax.sound.midi library:
    * <ul>
    *  <li>{@link MidiSystem#getSynthesizer()}</li>
@@ -47,7 +51,8 @@ public class MidiViewImpl implements YourViewInterfaceHere {
    * @see <a href="https://en.wikipedia.org/wiki/General_MIDI">
    *   https://en.wikipedia.org/wiki/General_MIDI
    *   </a>
-   */
+   *//*
+
 
   public void playNote() throws InvalidMidiDataException {
     MidiMessage start = new ShortMessage(ShortMessage.NOTE_ON, 0, 60, 64);
@@ -57,3 +62,4 @@ public class MidiViewImpl implements YourViewInterfaceHere {
     this.receiver.close(); // Only call this once you're done playing *all* notes
   }
 }
+*/

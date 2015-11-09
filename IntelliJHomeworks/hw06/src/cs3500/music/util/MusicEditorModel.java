@@ -45,7 +45,7 @@ public interface MusicEditorModel {
    *
    * @param note   the note to be changed
    * @param octave the new octave
-   * @throws IllegalArgumentException if octave < 0 or octave > 10
+   * @throws IllegalArgumentException if octave < -1 or octave > 9
    */
   void changeNoteOctave(AbstractNote note, int octave);
 
@@ -54,7 +54,6 @@ public interface MusicEditorModel {
    *
    * @param note    the note to be changed
    * @param newType the new type for the note
-   * @throws IllegalArgumentException if this causes an overlap
    */
   void changeNoteType(AbstractNote note, NoteTypes newType);
 
@@ -65,6 +64,7 @@ public interface MusicEditorModel {
    * @param instrument the new instrument for the note
    * @throws IllegalArgumentException if instrument is negative
    */
+  // TODO: Need to write tests
   void changeNoteInstrument(AbstractNote note, int instrument);
 
   /**
@@ -91,7 +91,6 @@ public interface MusicEditorModel {
    * Adds a Note into the board
    *
    * @param note the note to be added
-   * @throws IllegalArgumentException if it causes an overlap
    */
   void addNote(AbstractNote note);
 
