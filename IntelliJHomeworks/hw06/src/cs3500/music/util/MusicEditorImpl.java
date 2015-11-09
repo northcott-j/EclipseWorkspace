@@ -37,18 +37,6 @@ public final class MusicEditorImpl implements MusicEditorModel {
     tempo = 1;
   }
 
-  /**
-   * Makes a Note with volume and instrument set as 0
-   *
-   * @param note      the note type
-   * @param octave    the octave for the note
-   * @param startBeat the start bet
-   * @param endBeat   the end beat
-   * @return a new Note
-   */
-  public Note makeNote(NoteTypes note, int octave, int startBeat, int endBeat) {
-    return Note.makeNote(note, octave, startBeat, endBeat, 0, 0);
-  }
 
   /**
    * Creates a MusicEditorImpl
@@ -59,8 +47,15 @@ public final class MusicEditorImpl implements MusicEditorModel {
     return new MusicEditorImpl();
   }
 
+  @Override
+  public AbstractNote makeNote(NoteTypes type, int octave, int start, int end,
+                               int instrument, int volume) {
+    return Note.makeNote(type, octave, start, end, instrument, volume);
+  }
+
   public static final class Builder implements CompositionBuilder<MusicEditorModel> {
     private MusicEditorImpl accEditor = new MusicEditorImpl();
+
     @Override
     public MusicEditorModel build() {
       return accEditor;
@@ -77,7 +72,7 @@ public final class MusicEditorImpl implements MusicEditorModel {
                                                         int instrument, int pitch, int volume) {
       NoteTypes type = NoteTypes.valueLookup(pitch % 12);
       int octave = (pitch - (pitch % 12)) / 12 - 1;
-      AbstractNote note = Note.makeNote(type, octave, start, end, instrument, volume);
+      AbstractNote note = accEditor.makeNote(type, octave, start, end, instrument, volume);
       accEditor.addNote(note);
       return this;
     }
@@ -85,8 +80,8 @@ public final class MusicEditorImpl implements MusicEditorModel {
 
 
   /**
-   * Checks to see if the change being made (adding a note, changing a note etc.)
-   * is valid by seeing if it overlaps a note already in the musical array
+   * Checks to see if the change being made (adding a note, changing a note etc.) is valid by seeing
+   * if it overlaps a note already in the musical array
    *
    * @param potChange the changed note
    * @return true if it is valid
@@ -216,7 +211,8 @@ public final class MusicEditorImpl implements MusicEditorModel {
   @Override
   public void changeNoteOctave(AbstractNote note, int octave) {
     // Creates a temporary note
-    Note potChange = this.makeNote(note.getType(), octave, note.getStartBeat(), note.getEndBeat());
+    Note potChange = Note.makeNote(note.getType(), octave, note.getStartBeat(), note.getEndBeat(),
+            note.getInstrument(), note.getVolume());
     // Checks to see if this note was changed, would it overlap anywhere
     if (this.validChange(potChange)) {
       note.changeOctave(octave);
@@ -237,8 +233,8 @@ public final class MusicEditorImpl implements MusicEditorModel {
   @Override
   public void changeNoteType(AbstractNote note, NoteTypes newType) {
     // Creates a temporary note
-    Note potChange = this.makeNote(newType, note.getOctave(), note.getStartBeat(),
-            note.getEndBeat());
+    Note potChange = Note.makeNote(newType, note.getOctave(), note.getStartBeat(),
+            note.getEndBeat(), note.getInstrument(), note.getInstrument());
     // Checks to see if change was made, would this note overlap a current one
     if (this.validChange(potChange)) {
       note.changeType(newType);
@@ -253,6 +249,11 @@ public final class MusicEditorImpl implements MusicEditorModel {
       }
     }
     this.updateRange();
+  }
+
+  @Override
+  public void changeNoteInstrument(AbstractNote note, int instrument) {
+    note.changeInstrument(instrument);
   }
 
   @Override

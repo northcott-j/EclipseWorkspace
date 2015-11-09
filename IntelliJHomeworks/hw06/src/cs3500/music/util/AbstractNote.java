@@ -1,4 +1,5 @@
 package cs3500.music.util;
+
 /**
  * Abstract representation of a Note Created by Jonathan on 11/8/2015.
  */
@@ -11,12 +12,12 @@ public abstract class AbstractNote {
   protected int volume;
 
   /**
-   * @param type      is the type of note that it is
-   * @param octave    is the pitch of the note
-   * @param startBeat is the beat the note starts on
-   * @param endBeat   is the beat the note ends on
+   * @param type       is the type of note that it is
+   * @param octave     is the pitch of the note
+   * @param startBeat  is the beat the note starts on
+   * @param endBeat    is the beat the note ends on
    * @param instrument this is the instrument number
-   * @param volume    the volume of the node (not used right now)
+   * @param volume     the volume of the node (not used right now)
    */
   protected AbstractNote(NoteTypes type, int octave, int startBeat, int endBeat,
                          int instrument, int volume) {
@@ -62,6 +63,15 @@ public abstract class AbstractNote {
    */
   public int getEndBeat() {
     return this.endBeat;
+  }
+
+  /**
+   * Returns the instrument of the note
+   *
+   * @return the instrument of this note
+   */
+  public int getInstrument() {
+    return this.instrument;
   }
 
   /**
@@ -119,6 +129,19 @@ public abstract class AbstractNote {
       throw new IllegalArgumentException("Invalid octave");
     }
     this.octave = newOctave;
+  }
+
+  /**
+   * Changes the instrument of this note
+   *
+   * @param instrument the new instrument
+   * @throws IllegalArgumentException if instrument is invalid
+   */
+  void changeInstrument(int instrument) {
+    if (instrument < 0) {
+      throw new IllegalArgumentException("Invalid instrument");
+    }
+    this.instrument = instrument;
   }
 
   /**
