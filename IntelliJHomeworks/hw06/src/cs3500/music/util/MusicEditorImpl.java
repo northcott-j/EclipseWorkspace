@@ -29,7 +29,6 @@ public final class MusicEditorImpl implements MusicEditorModel {
    * musicalArray starts empty and can be changed either by adding a printedscore or by individually
    * adding notes
    */
-  // TODO: Going to need to implement a Builder later
   MusicEditorImpl() {
     curBeat = 0;
     musicalArray = new ArrayList<>();
@@ -78,35 +77,6 @@ public final class MusicEditorImpl implements MusicEditorModel {
     }
   }
 
-
-  /**
-   * Checks to see if the change being made (adding a note, changing a note etc.) is valid by seeing
-   * if it overlaps a note already in the musical array
-   *
-   * @param potChange the changed note
-   * @return true if it is valid
-   * @throws IllegalArgumentException if change is invalid
-   */
-  private boolean validChange(AbstractNote potChange) {
-    if (potChange.getType() == null) {
-      throw new IllegalArgumentException("Can't have null NoteType");
-    }
-    for (int i = potChange.getStartBeat(); i <= potChange.getEndBeat(); i += 1) {
-      // If index is out of bounds, that beat doesn't exist yet so a new beat is added
-      while (i >= this.musicalArray.size()) {
-        this.musicalArray.add(new ArrayList<AbstractNote>());
-      }
-      for (AbstractNote n : this.musicalArray.get(i)) {
-        // Checks every note in the potential notes range to see if they are the same type and
-        // octave
-        if (potChange.overlap(n)) {
-          throw new IllegalArgumentException("Not a valid change");
-        }
-      }
-    }
-    return true;
-  }
-
   @Override
   public void changeNoteStart(AbstractNote note, int startBeat) {
     int origStart = note.getStartBeat();
@@ -117,13 +87,11 @@ public final class MusicEditorImpl implements MusicEditorModel {
         for (AbstractNote n : this.musicalArray.get(i)) {
           // Make sure they don't overlap another note
           if (note.overlap(n)) {
-            // this reverts the mutation
-            note.changeStart(origStart);
-            throw new IllegalArgumentException("This change causes an overlap at beat "
-                    + Integer.toString(i));
+            n.changeVolume(Math.min(127, (n.getVolume() + note.getVolume())));
+          } else {
+            this.musicalArray.get(i).add(note);
           }
         }
-        this.musicalArray.get(i).add(note);
       }
     } else {
       // The new start is later than the current start
@@ -160,13 +128,11 @@ public final class MusicEditorImpl implements MusicEditorModel {
         for (AbstractNote n : this.musicalArray.get(i)) {
           // Checks note range to check if there is an overlap
           if (note.overlap(n)) {
-            // Reverts the mutation
-            note.changeEnd(origEnd);
-            throw new IllegalArgumentException("This change causes an overlap at beat "
-                    + Integer.toString(i));
+            n.changeVolume(Math.min(127, (n.getVolume() + note.getVolume())));
+          } else {
+            this.musicalArray.get(i).add(note);
           }
         }
-        this.musicalArray.get(i).add(note);
       }
     } else {
       // The end is earlier than the current end
@@ -210,42 +176,32 @@ public final class MusicEditorImpl implements MusicEditorModel {
 
   @Override
   public void changeNoteOctave(AbstractNote note, int octave) {
-    // Creates a temporary note
-    Note potChange = Note.makeNote(note.getType(), octave, note.getStartBeat(), note.getEndBeat(),
-            note.getInstrument(), note.getVolume());
-    // Checks to see if this note was changed, would it overlap anywhere
-    if (this.validChange(potChange)) {
-      note.changeOctave(octave);
-      // Is this a new max high octave?
-      if (octave > this.highOctave) {
-        this.highOctave = octave;
-        this.highNote = note.getType();
-      }
-      // Is this a new max low octave?
-      else if (octave < this.lowOctave) {
-        this.lowOctave = octave;
-        this.lowNote = note.getType();
+    note.changeOctave(octave);
+    for (int i = note.getStartBeat(); i <= note.getEndBeat(); i += 1) {
+      for (AbstractNote n : this.musicalArray.get(i)) {
+        // Checks note range to check if there is an overlap
+        if (note.overlap(n)) {
+          n.changeVolume(Math.min(127, (n.getVolume() + note.getVolume())));
+        } else {
+          this.musicalArray.get(i).add(note);
+        }
       }
     }
     this.updateRange();
   }
 
+
   @Override
   public void changeNoteType(AbstractNote note, NoteTypes newType) {
-    // Creates a temporary note
-    Note potChange = Note.makeNote(newType, note.getOctave(), note.getStartBeat(),
-            note.getEndBeat(), note.getInstrument(), note.getInstrument());
-    // Checks to see if change was made, would this note overlap a current one
-    if (this.validChange(potChange)) {
-      note.changeType(newType);
-      // If this note is of the highest octave, is the new note higher than the current max?
-      if (newType.noteOrder() > this.highNote.noteOrder() && note.getOctave() == this.highOctave) {
-        this.highNote = newType;
-      }
-      // If this note is of the lowest ovtave, is the new note lower than the current low?
-      else if (newType.noteOrder() < this.lowNote.noteOrder() &&
-              note.getOctave() == this.lowOctave) {
-        this.lowNote = newType;
+    note.changeType(newType);
+    for (int i = note.getStartBeat(); i <= note.getEndBeat(); i += 1) {
+      for (AbstractNote n : this.musicalArray.get(i)) {
+        // Checks note range to check if there is an overlap
+        if (note.overlap(n)) {
+          n.changeVolume(Math.min(127, (n.getVolume() + note.getVolume())));
+        } else {
+          this.musicalArray.get(i).add(note);
+        }
       }
     }
     this.updateRange();
@@ -282,44 +238,18 @@ public final class MusicEditorImpl implements MusicEditorModel {
 
   @Override
   public void addNote(AbstractNote note) {
-    // Checks to see if this note overlaps any others
-    try {
-      this.validChange(note);
-    } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("Adding this note causes an overlap");
-    }
     // Adds the note in at each beat
     for (int i = note.getStartBeat(); i <= note.getEndBeat(); i += 1) {
-      this.musicalArray.get(i).add(note);
+      for (AbstractNote n : this.musicalArray.get(i)) {
+        // Checks note range to check if there is an overlap
+        if (note.overlap(n)) {
+          n.changeVolume(Math.min(127, (n.getVolume() + note.getVolume())));
+        } else {
+          this.musicalArray.get(i).add(note);
+        }
+      }
     }
-    // Is there not a high note?
-    if (this.highNote == null) {
-      this.highNote = note.getType();
-      this.highOctave = note.getOctave();
-    }
-    // Is there not a low note?
-    if (this.lowNote == null) {
-      this.lowNote = note.getType();
-      this.lowOctave = note.getOctave();
-    }
-    // Is the new note a higher octave?
-    if (note.getOctave() > this.highOctave) {
-      this.highOctave = note.getOctave();
-      this.highNote = note.getType();
-      // Is the new note a lower octave?
-    } else if (note.getOctave() < this.lowOctave) {
-      this.lowOctave = note.getOctave();
-      this.lowNote = note.getType();
-      // Are they the same octave and the notetype is higher?
-    } else if (note.getOctave() == this.highOctave &&
-            note.getType().noteOrder() > this.highNote.noteOrder()) {
-      this.highNote = note.getType();
-    }
-    // Are they the same octave and the notetype is lower?
-    else if (note.getOctave() == this.lowOctave &&
-            note.getType().noteOrder() < this.highNote.noteOrder()) {
-      this.lowNote = note.getType();
-    }
+    this.updateRange();
   }
 
   @Override

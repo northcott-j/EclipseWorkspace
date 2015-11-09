@@ -21,6 +21,9 @@ public abstract class AbstractNote {
    */
   protected AbstractNote(NoteTypes type, int octave, int startBeat, int endBeat,
                          int instrument, int volume) {
+    if (type == null) {
+      throw new IllegalArgumentException("Type can't be null");
+    }
     this.type = type;
     this.octave = octave;
     this.startBeat = startBeat;
@@ -138,6 +141,7 @@ public abstract class AbstractNote {
    * @throws IllegalArgumentException if instrument is invalid
    */
   void changeInstrument(int instrument) {
+    // TODO: Need to know instrument range
     if (instrument < 0) {
       throw new IllegalArgumentException("Invalid instrument");
     }
@@ -151,7 +155,7 @@ public abstract class AbstractNote {
    * @throws IllegalArgumentException if the volume is invalid
    */
   void changeVolume(int newVolume) {
-    if (newVolume < 0) {
+    if (newVolume < 0 && newVolume > 127) {
       throw new IllegalArgumentException("Invalid volume");
     }
     this.volume = newVolume;
@@ -165,7 +169,8 @@ public abstract class AbstractNote {
    */
   boolean overlap(AbstractNote other) {
     return this.type == other.type &&
-            this.octave == other.octave;
+            this.octave == other.octave &&
+            this.instrument == other.instrument;
   }
 }
 

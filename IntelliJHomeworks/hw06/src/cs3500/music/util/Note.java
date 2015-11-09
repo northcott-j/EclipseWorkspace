@@ -56,6 +56,7 @@ final class Note extends AbstractNote {
               this.startBeat == otherNote.startBeat &&
               this.endBeat == otherNote.endBeat &&
               this.type == otherNote.type &&
+              this.instrument == otherNote.instrument &&
               this.volume == otherNote.volume;
     } else {
       return false;
@@ -64,7 +65,8 @@ final class Note extends AbstractNote {
 
   @Override
   public int hashCode() {
-    return 31 * (octave + startBeat + endBeat + type.hashCode() + volume);
+    return 31 * (octave + startBeat + endBeat + type.hashCode() + volume
+    + instrument);
   }
 
 }
