@@ -1,11 +1,15 @@
+package cs3500.music.util;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import cs3500.music.MusicEditor;
+
 /**
  * Implementing the Music Editor Interface Created by Jonathan on 11/1/2015.
  */
-public class MusicEditorImpl implements MusicEditorModel {
+public final class MusicEditorImpl implements MusicEditorModel {
   // The current beat of this MusicEditorImpl
   private int curBeat;
   // Tempo for the music
@@ -33,14 +37,56 @@ public class MusicEditorImpl implements MusicEditorModel {
     tempo = 1;
   }
 
-  protected Note makeNote(NoteTypes note, int octave, int startBeat, int endBeat) {
-    return Note.makeNote(note, octave, startBeat, endBeat);
+  /**
+   * Makes a Note with volume and instrument set as 0
+   *
+   * @param note      the note type
+   * @param octave    the octave for the note
+   * @param startBeat the start bet
+   * @param endBeat   the end beat
+   * @return a new Note
+   */
+  public Note makeNote(NoteTypes note, int octave, int startBeat, int endBeat) {
+    return Note.makeNote(note, octave, startBeat, endBeat, 0, 0);
+  }
+
+  /**
+   * Creates a MusicEditorImpl
+   *
+   * @return a new instaceof MusicEditorImpl
+   */
+  public static MusicEditorImpl makeEditor() {
+    return new MusicEditorImpl();
+  }
+
+  public static final class Builder implements CompositionBuilder<MusicEditorModel> {
+    private MusicEditorImpl accEditor = new MusicEditorImpl();
+    @Override
+    public MusicEditorModel build() {
+      return accEditor;
+    }
+
+    @Override
+    public CompositionBuilder<MusicEditorModel> setTempo(int tempo) {
+      accEditor.setTempo(tempo);
+      return this;
+    }
+
+    @Override
+    public CompositionBuilder<MusicEditorModel> addNote(int start, int end,
+                                                        int instrument, int pitch, int volume) {
+      NoteTypes type = NoteTypes.valueLookup(pitch % 12);
+      int octave = (pitch - (pitch % 12)) / 12 - 1;
+      AbstractNote note = Note.makeNote(type, octave, start, end, instrument, volume);
+      accEditor.addNote(note);
+      return this;
+    }
   }
 
 
   /**
-   * Checks to see if the change being made (adding a note, changing a note etc.) is valid by seeing
-   * if it overlaps a note already in the musical array
+   * Checks to see if the change being made (adding a note, changing a note etc.)
+   * is valid by seeing if it overlaps a note already in the musical array
    *
    * @param potChange the changed note
    * @return true if it is valid

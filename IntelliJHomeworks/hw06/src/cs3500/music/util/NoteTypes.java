@@ -1,3 +1,4 @@
+package cs3500.music.util;
 import java.util.HashMap;
 import java.util.Map;
 

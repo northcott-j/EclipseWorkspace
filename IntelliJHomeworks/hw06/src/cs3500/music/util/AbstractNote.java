@@ -1,11 +1,13 @@
+package cs3500.music.util;
 /**
  * Abstract representation of a Note Created by Jonathan on 11/8/2015.
  */
-abstract class AbstractNote {
+public abstract class AbstractNote {
   protected NoteTypes type;
   protected int octave;
   protected int startBeat;
   protected int endBeat;
+  protected int instrument;
   protected int volume;
 
   /**
@@ -13,13 +15,16 @@ abstract class AbstractNote {
    * @param octave    is the pitch of the note
    * @param startBeat is the beat the note starts on
    * @param endBeat   is the beat the note ends on
+   * @param instrument this is the instrument number
    * @param volume    the volume of the node (not used right now)
    */
-  protected AbstractNote(NoteTypes type, int octave, int startBeat, int endBeat, int volume) {
+  protected AbstractNote(NoteTypes type, int octave, int startBeat, int endBeat,
+                         int instrument, int volume) {
     this.type = type;
     this.octave = octave;
     this.startBeat = startBeat;
     this.endBeat = endBeat;
+    this.instrument = instrument;
     this.volume = volume;
   }
 
@@ -28,7 +33,7 @@ abstract class AbstractNote {
    *
    * @return returns the NoteType of this note
    */
-  NoteTypes getType() {
+  public NoteTypes getType() {
     return this.type;
   }
 
@@ -37,7 +42,7 @@ abstract class AbstractNote {
    *
    * @return the octave of this note
    */
-  int getOctave() {
+  public int getOctave() {
     return this.octave;
   }
 
@@ -46,7 +51,7 @@ abstract class AbstractNote {
    *
    * @return the startBeat of this note
    */
-  int getStartBeat() {
+  public int getStartBeat() {
     return this.startBeat;
   }
 
@@ -55,7 +60,7 @@ abstract class AbstractNote {
    *
    * @return the endBeat of this note
    */
-  int getEndBeat() {
+  public int getEndBeat() {
     return this.endBeat;
   }
 
@@ -64,7 +69,7 @@ abstract class AbstractNote {
    *
    * @return the volume of this note
    */
-  int getVolume() {
+  public int getVolume() {
     return this.volume;
   }
 
@@ -110,7 +115,7 @@ abstract class AbstractNote {
    * @throws IllegalArgumentException if the octave is invalid
    */
   void changeOctave(int newOctave) {
-    if (newOctave < 0 || newOctave > 10) {
+    if (newOctave < -1 || newOctave > 9) {
       throw new IllegalArgumentException("Invalid octave");
     }
     this.octave = newOctave;

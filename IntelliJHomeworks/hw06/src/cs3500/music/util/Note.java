@@ -1,29 +1,35 @@
+package cs3500.music.util;
+
 /**
  * Represents a concrete Note and its information Created by Jonathan on 11/1/2015.
  */
 final class Note extends AbstractNote {
 
-  private Note(NoteTypes type, int octave, int startBeat, int endBeat, int volume) {
-    super(type, octave, startBeat, endBeat, volume);
+  private Note(NoteTypes type, int octave, int startBeat, int endBeat,
+               int instrument, int volume) {
+    super(type, octave, startBeat, endBeat, instrument, volume);
   }
 
   /**
    * Creates a note and enforces invariants
    *
-   * @param note      is the type of note
-   * @param octave    is the octave or pitch of the note
-   * @param startBeat is the start beat of the note
-   * @param endBeat   is the end beat of the note
+   * @param note       is the type of note
+   * @param octave     is the octave or pitch of the note
+   * @param startBeat  is the start beat of the note
+   * @param endBeat    is the end beat of the note
+   * @param instrument the number for the instrument
+   * @param volume     the number for the volume
    * @return the new note
    * @throws IllegalArgumentException if arguments don't make a proper note
    */
-  static Note makeNote(NoteTypes note, int octave, int startBeat, int endBeat) {
-    if (octave < 0 || octave > 10 || startBeat < 0 || endBeat < 0 || endBeat < startBeat ||
-            startBeat > endBeat || note == null) {
+  static Note makeNote(NoteTypes note, int octave, int startBeat, int endBeat, int instrument,
+                       int volume) {
+    if (octave < -1 || octave > 9 || startBeat < 0 || endBeat < 0 || endBeat < startBeat ||
+            startBeat > endBeat || note == null || volume < 0 || instrument < 0) {
       throw new IllegalArgumentException("Invalid Note");
     }
     // Volume has been set to a default of 1 for now
-    return new Note(note, octave, startBeat, endBeat, 1);
+    return new Note(note, octave, startBeat, endBeat, instrument, volume);
   }
 
   /**
