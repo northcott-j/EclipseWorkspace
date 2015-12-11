@@ -47,11 +47,11 @@ public interface GuiSpecificController extends Controller {
   void setMouseHandler(MouseListener mh);
 
   /**
-   * Returns the key that was pressed down; -1 if no key was selected.
+   * Checks if the given key is being pressed down.
    *
-   * @return key unicode for key of interest
+   * @param key unicode for key of interest
    */
-  int getPressed();
+  boolean isPressed(int key);
 
   /**
    * Adds a new note to the model.
@@ -97,4 +97,22 @@ public interface GuiSpecificController extends Controller {
    * Prints the input log stored within the controller.
    */
   String printLog();
+
+  /**
+   * Passes up the default cellSize
+   * @return the cellSize
+   */
+  int getCellSize();
+
+  /**
+   * Passes up the default X_PADDING
+   * @return the x padding
+   */
+  int getXpad();
+
+  /**
+   * Passes up the default Y_PADDING
+   * @return the y padding
+   */
+  int getYpad();
 }

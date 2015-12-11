@@ -58,13 +58,13 @@ public class ControllerTests {
 
     // Test initial state
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 65);
+    assertEquals(this.controller.isPressed(65), false);
     // Adding the key event, and adding the corresponding message to the expected log
     this.controller.mockEvent("Key", k);
     this.expected.append("Key pressed: A, 65\n");
     // Testing for effect
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 83);
+    assertEquals(this.controller.isPressed(83), false);
 
 //    // Test initial state
 //    assertEquals(expected.toString(), this.controller.printLog());
@@ -85,13 +85,13 @@ public class ControllerTests {
 
     // Test initial state
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 83);
+    assertEquals(this.controller.isPressed(83), false);
     // Adding the key event, and adding the corresponding message to the expected log
     controller.mockEvent("Key", k);
     expected.append("Key pressed: S, 83\n");
     // Testing for effect
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 83);
+    assertEquals(this.controller.isPressed(83), true);
 
 //    // Test initial state
 //    assertEquals(expected.toString(), this.controller.printLog());
@@ -112,13 +112,13 @@ public class ControllerTests {
 
     // Test initial state
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 68);
+    assertEquals(this.controller.isPressed(68), false);
     // Adding the key event, and adding the corresponding message to the expected log
     controller.mockEvent("Key", k);
     expected.append("Key pressed: D, 68\n");
     // Testing for effect
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 68);
+    assertEquals(this.controller.isPressed(68), true);
 
 //    // Test initial state
 //    assertEquals(expected.toString(), this.controller.printLog());
@@ -147,13 +147,13 @@ public class ControllerTests {
 
     // Test initial state
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 70);
+    assertEquals(this.controller.isPressed(70), false);
     // Adding the key event, and adding the corresponding message to the expected log
     controller.mockEvent("Key", k);
     expected.append("Key pressed: F, 70\n");
     // Testing for effect
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 70);
+    assertEquals(this.controller.isPressed(70), true);
 
 //    // Test initial state
 //    assertEquals(expected.toString(), this.controller.printLog());
@@ -182,13 +182,13 @@ public class ControllerTests {
 
     // Test initial state
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 87);
+    assertEquals(this.controller.isPressed(87), false);
     // Adding the key event, and adding the corresponding message to the expected log
     controller.mockEvent("Key", k);
     expected.append("Key pressed: W, 87\n");
     // Testing for effect
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 87);
+    assertEquals(this.controller.isPressed(87), true);
 
 //    // Test initial state
 //    assertEquals(expected.toString(), this.controller.printLog());
@@ -217,13 +217,13 @@ public class ControllerTests {
 
     // Test initial state
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 69);
+    assertEquals(this.controller.isPressed(69), false);
     // Adding the key event, and adding the corresponding message to the expected log
     controller.mockEvent("Key", k);
     expected.append("Key pressed: E, 69\n");
     // Testing for effect
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 69);
+    assertEquals(this.controller.isPressed(69), true);
 
 //    // Test initial state
 //    assertEquals(expected.toString(), this.controller.printLog());
@@ -243,13 +243,13 @@ public class ControllerTests {
 
     // Test initial state
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 81);
+    assertEquals(this.controller.isPressed(81), false);
     // Adding the key event, and adding the corresponding message to the expected log
     controller.mockEvent("Key", k);
     expected.append("Key pressed: Q, 81\n");
     // Testing for effect
     assertEquals(expected.toString(), this.controller.printLog());
-    assertEquals(this.controller.getPressed(), 81);
+    assertEquals(this.controller.isPressed(81), true);
 
 //    // Test initial state
 //    assertEquals(expected.toString(), this.controller.printLog());

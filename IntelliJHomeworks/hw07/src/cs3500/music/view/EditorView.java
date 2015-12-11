@@ -89,7 +89,7 @@ public class EditorView extends javax.swing.JFrame implements GuiView {
   public void draw(ViewModel vm) {
     // Expands board beyond the default if the Model expands
     if (vm.scoreLength() != 0) {
-      if (scoreHeight < vm.scoreHeight()) {
+      if (scoreHeight <= vm.scoreHeight()) {
         scoreHeight = vm.scoreHeight();
         notesInRange = vm.notesInRange();
       }
@@ -172,18 +172,18 @@ public class EditorView extends javax.swing.JFrame implements GuiView {
   }
 
   @Override
-  public void goToStart() {
+  public void goToStart(Integer k) {
     internalScrollPane.getHorizontalScrollBar().setValue(0);
   }
 
   @Override
-  public void goToEnd() {
+  public void goToEnd(Integer k) {
     int max = internalScrollPane.getHorizontalScrollBar().getMaximum();
     internalScrollPane.getHorizontalScrollBar().setValue(max);
   }
 
   @Override
-  public void scrollUp() {
+  public void scrollUp(Integer k) {
     int curValue = internalScrollPane.getVerticalScrollBar().getValue();
     int nxtValue = Math.min(internalScrollPane.getVerticalScrollBar().getMaximum(),
             curValue - CELL_SIZE);
@@ -191,7 +191,7 @@ public class EditorView extends javax.swing.JFrame implements GuiView {
   }
 
   @Override
-  public void scrollDown() {
+  public void scrollDown(Integer k) {
     int curValue = internalScrollPane.getVerticalScrollBar().getValue();
     int nxtValue = Math.max(0,
             curValue + CELL_SIZE);
@@ -199,7 +199,7 @@ public class EditorView extends javax.swing.JFrame implements GuiView {
   }
 
   @Override
-  public void scrollLeft() {
+  public void scrollLeft(Integer k) {
     int curValue = internalScrollPane.getHorizontalScrollBar().getValue();
     int nxtValue = Math.min(internalScrollPane.getHorizontalScrollBar().getMaximum(),
             curValue - CELL_SIZE);
@@ -207,7 +207,7 @@ public class EditorView extends javax.swing.JFrame implements GuiView {
   }
 
   @Override
-  public void scrollRight() {
+  public void scrollRight(Integer k) {
     int curValue = internalScrollPane.getHorizontalScrollBar().getValue();
     int nxtValue = Math.max(0,
             curValue + CELL_SIZE);
@@ -271,6 +271,7 @@ public class EditorView extends javax.swing.JFrame implements GuiView {
     notesInRange.addAll(this.notesInRange);
     int currentLowOctave = min[1];
     // If we are already at the lowest octave,
+    // TODO :: Hard coded octave range
     if (currentLowOctave == -1) {
       // Just add to the lowest note
       while (currentLowNote > 0) {
@@ -335,6 +336,7 @@ public class EditorView extends javax.swing.JFrame implements GuiView {
     int pitch;
     int octave;
     // Special case if octave is -1
+    // TODO :: Hard coded octave range
     if (noteAndOctave.contains("-1")) {
       // If its a sharp
       if (noteAndOctave.length() == 4) {
@@ -525,6 +527,7 @@ public class EditorView extends javax.swing.JFrame implements GuiView {
       NoteTypes pitch;
       int octave;
       // Turns the Note string into a useable NoteType and Octave
+      // TODO :: Hard coded Octave range
       if (note.contains("-1")) {
         // If its a sharp
         if (note.length() == 4) {

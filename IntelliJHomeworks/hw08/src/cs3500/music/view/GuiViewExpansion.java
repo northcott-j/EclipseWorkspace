@@ -1,21 +1,18 @@
 package cs3500.music.view;
 
-import javax.sound.midi.InvalidMidiDataException;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.List;
 
+import javax.sound.midi.InvalidMidiDataException;
+
+import cs3500.music.model.ViewModel;
+
 /**
  * Sub-interface specifically for GUI's that listen to inputs Created by Jonathan on 11/18/2015.
  */
-public interface GuiView extends View {
-  /**
-   * Checks to see if the board is rendered
-   *
-   * @return true if board is drawn
-   */
-  boolean drawn();
+public interface GuiViewExpansion extends ViewExpansion {
 
   /**
    * Redraws the board after an update
@@ -32,7 +29,7 @@ public interface GuiView extends View {
    *
    * @return the list of the string of notes in range
    */
-  List<String> getNotesInRange();
+  List<String> getNotesInRange(ViewModel vm);
 
   /**
    * Assigns the mousehandler to the View
@@ -48,25 +45,21 @@ public interface GuiView extends View {
 
   /**
    * Takes you to the desired part of the piece {beginning, or end}.
-   *
-   * @param k value of the key that caused this method to trigger
    */
-  void goToStart(Integer k);
+  void goToStart();
 
-  void goToEnd(Integer k);
+  void goToEnd();
 
   /**
    * Allows you to navigate the composition.
-   *
-   * @param k value of the key that caused this method to trigger
    */
-  void scrollUp(Integer k);
+  void scrollUp();
 
-  void scrollDown(Integer k);
+  void scrollDown();
 
-  void scrollLeft(Integer k);
+  void scrollLeft();
 
-  void scrollRight(Integer k);
+  void scrollRight();
 
   /**
    * Allows you to expand the board

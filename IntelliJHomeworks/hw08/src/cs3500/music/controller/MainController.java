@@ -2,15 +2,18 @@ package cs3500.music.controller;
 
 import cs3500.music.model.MusicEditorImpl;
 import cs3500.music.model.MusicEditorModel;
+import cs3500.music.model.ViewModel;
 import cs3500.music.util.MusicReader;
-import cs3500.music.view.*;
+import cs3500.music.view.FactoryView;
+import cs3500.music.view.GuiView;
+import cs3500.music.view.GuiViewAdapter;
+import cs3500.music.view.NonGuiViewAdapter;
 
 import javax.sound.midi.InvalidMidiDataException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 
 /**
  * Adapter package between the Main method and the Controllers
@@ -40,35 +43,50 @@ public class MainController {
     String arg2 = args[1].toLowerCase();
     // Defining the initial state of the model
     MusicEditorModel model;
-    // Stores proper file types
-    String[] pieceList = new String[]{"mary.txt", "mystery-1.txt", "mystery-2.txt",
-            "test-file.txt", "martet.txt", "mystery-3.txt", "default", "fire.txt"};
-    ArrayList<String> pieces = new ArrayList<>(Arrays.asList(pieceList));
     // Checks for a valid file name, and sets the model data accordingly
+    String[] viewList = new String[]{"playback", "midi", "console", "editor"};
+    ArrayList<String> views = new ArrayList<>(Arrays.asList(viewList));
     String pieceName;
-    if (pieces.contains(arg1) && !pieces.contains(arg2)) {
-      pieceName = arg1;
-    } else if (pieces.contains(arg2) && !pieces.contains(arg1)) {
+    String viewName;
+    if (views.contains(arg1) && !views.contains(arg2)) {
+      viewName = arg1;
       pieceName = arg2;
+    } else if (views.contains(arg2) && !views.contains(arg1)) {
+      viewName = arg2;
+      pieceName = arg1;
     } else {
+      throw new IOException("Invalid data: please enter a correct view name.");
+    }
+    try {
+      model = this.setPiece(pieceName);
+    } catch (IOException e) {
       throw new IOException("Invalid data: please enter a correct piece name.");
     }
-    model = this.setPiece(pieceName);
 
     // Builds and runs the desired view
-    if (arg1.equals("midi") || arg2.equals("midi")) {
-      NonGuiController.makeController(model, new MidiView()).run();
-    } else if (arg1.equals("console") || arg2.equals("console")) {
-      NonGuiController.makeController(model, ConsoleView.builder()
-              .input(new Scanner(System.in))
-              .output(System.out)
-              .build()).run();
-    } else if (arg1.equals("editor") || arg2.equals("editor")) {
-      GuiController.makeController(model, new EditorView(), "run").run();
-    } else if (arg1.equals("playback") || arg2.equals("playback")) {
-      GuiController.makeController(model, new PlaybackView(), "run").run();
-    } else {
-      throw new IOException("Invalid input: please enter a correct view type.");
+    FactoryView factoryView = new FactoryView();
+    ViewModel vm = adaptModelToViewModel(model);
+    switch (viewName) {
+      case "midi":
+        NonGuiController.makeController(model, vm,
+                new NonGuiViewAdapter(factoryView.getView(vm, "midi"))).run();
+        break;
+      case "console":
+        NonGuiController.makeController(model, vm,
+                new NonGuiViewAdapter(factoryView.getView(vm, "txt"))).run();
+        break;
+      case "editor":
+        GuiController.makeController(model, vm,
+                // This is a controlled cast guaranteed to be a GuiView
+                new GuiViewAdapter((GuiView)factoryView.getView(vm, "gui")), "run").run();
+        break;
+      case "playback":
+        GuiController.makeController(model, vm,
+                // This is a controlled cast guaranteed to be a GuiView
+                new GuiViewAdapter((GuiView)factoryView.getView(vm, "composite")), "run").run();
+        break;
+      default:
+        throw new IOException("Invalid input: please enter a correct view type.");
     }
   }
 
@@ -88,9 +106,25 @@ public class MainController {
     } else if (pieceName.equals("default")) {
       model = MusicEditorImpl.makeEditor();
     } else {
-        model = MusicReader.parseFile(new FileReader(pieceName), new MusicEditorImpl.Builder());
+      model = MusicReader.parseFile(new FileReader(pieceName), new MusicEditorImpl.Builder());
     }
     return model;
+  }
+
+  /**
+   * Adapts a {@link MusicEditorModel} into a {@link ViewModel}. The adapted result
+   * shares state with its adaptee.
+   *
+   * @param adaptee the {@code MusicEditorModel} to adapt
+   * @return a {@code ViewModel} backed by {@code adaptee}
+   */
+  private static ViewModel adaptModelToViewModel(MusicEditorModel adaptee) {
+    return new ViewModel(adaptee) {
+      @Override
+      public int scoreLength() {
+        return super.scoreLength();
+      }
+    };
   }
 
 }

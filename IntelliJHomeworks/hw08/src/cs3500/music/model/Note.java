@@ -3,11 +3,11 @@ package cs3500.music.model;
 /**
  * Represents a concrete Note and its information Created by Jonathan on 11/1/2015.
  */
-final class Note extends AbstractNote {
+public final class Note extends AbstractNote {
 
-  private Note(NoteTypes type, int octave, int startBeat, int endBeat,
+  private Note(NoteTypes pitch, int octave, int startBeat, int endBeat,
                int instrument, int volume) {
-    super(type, octave, startBeat, endBeat, instrument, volume);
+    super(pitch, octave, startBeat, endBeat, instrument, volume);
   }
 
   /**
@@ -23,11 +23,10 @@ final class Note extends AbstractNote {
    * @throws IllegalArgumentException if arguments don't make a proper note
    */
   static Note makeNote(NoteTypes note, int octave, int startBeat, int endBeat,
-            int instrument, int volume) {
+                       int instrument, int volume) {
     if (octave < -1 || octave > 9 || startBeat < 0 || endBeat < 0 || endBeat < startBeat ||
             startBeat > endBeat || note == null || volume < 0 || instrument < 0) {
-      throw new IllegalArgumentException("Invalid Note: " + note.toString() + " " + octave
-              + " " + startBeat + " " + endBeat + " " + instrument + " " + volume);
+      throw new IllegalArgumentException("Invalid Note");
     }
     // Volume has been set to a default of 1 for now
     return new Note(note, octave, startBeat, endBeat, instrument, volume);
@@ -35,7 +34,7 @@ final class Note extends AbstractNote {
 
   // Defines super abstract method
   public int midiValue() {
-    return (this.octave + 1) * 12 + this.type.noteOrder();
+    return (this.octave + 1) * 12 + this.pitch;
   }
 
   /**
@@ -45,7 +44,7 @@ final class Note extends AbstractNote {
    */
   @Override
   public String toString() {
-    return this.type.toString() + Integer.toString(this.octave);
+    return NoteTypes.valueLookup(this.pitch).toString() + Integer.toString(this.octave);
   }
 
   /**
@@ -61,7 +60,7 @@ final class Note extends AbstractNote {
       return this.octave == otherNote.octave &&
               this.startBeat == otherNote.startBeat &&
               this.endBeat == otherNote.endBeat &&
-              this.type == otherNote.type &&
+              this.pitch == otherNote.pitch &&
               this.instrument == otherNote.instrument &&
               this.volume == otherNote.volume;
     } else {
@@ -71,8 +70,7 @@ final class Note extends AbstractNote {
 
   @Override
   public int hashCode() {
-    return 31 * (octave + startBeat + endBeat + type.hashCode() + volume
+    return 31 * (octave + startBeat + endBeat + pitch + volume
             + instrument);
   }
-
 }
